@@ -33,6 +33,15 @@
     @dragstart="handleDragStart"
     @dragend="handleDragEnd"
   >
+    <!-- ==================== 宠物形象 ==================== -->
+    <div class="pet-avatar">
+      <span class="cat-ears">🐱</span>
+      <span class="pet-emoji">🐌</span>
+    </div>
+
+    <!-- ==================== 宠物名字 ==================== -->
+    <div class="pet-name">{{ pet.name }}</div>
+
     <!-- ==================== 属性条（当在家时显示） ==================== -->
     <div v-if="pet.isAtHome" class="pet-stats">
       <!-- 饱食度条 -->
@@ -79,15 +88,6 @@
           <span class="stat-value">{{ pet.health }}</span>
         </div>
       </div>
-    </div>
-
-    <!-- ==================== 宠物名字 ==================== -->
-    <div class="pet-name">{{ pet.name }}</div>
-
-    <!-- ==================== 宠物形象 ==================== -->
-    <div class="pet-avatar">
-      <span class="cat-ears">🐱</span>
-      <span class="pet-emoji">🐌</span>
     </div>
 
     <!-- ==================== 状态指示器（当不在家的宠物） ==================== -->
@@ -430,8 +430,8 @@ export default {
 
 /* 宠物属性条容器 */
 .pet-stats {
-  /* 下边距 */
-  margin-bottom: 5px;
+  /* 上边距 */
+  margin-top: 8px;
   /* 背景 - 半透明深色 */
   background: rgba(0, 0, 0, 0.7);
   /* 圆角 */
