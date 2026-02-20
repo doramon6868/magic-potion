@@ -302,9 +302,9 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* 固定大小 */
+  justify-content: center;
+  /* 宽度固定，高度自适应内容 */
   width: 140px;
-  height: 140px;
   /* 禁止选中文字 */
   user-select: none;
   /* 确保宠物在最上层显示 */

@@ -259,20 +259,21 @@ export default {
     rgba(155, 89, 182, 0.2) 40%,
     rgba(44, 22, 66, 0.6) 100%
   );
-  position: relative;
 }
 
 /* 宠物包装器 - 确保宠物正确显示在水晶球中央 */
 .pet-wrapper {
   position: absolute;
-  top: 50%;
+  top: 55%;
   left: 50%;
   transform: translate(-50%, -50%);
   width: 160px;
-  height: 160px;
+  /* 高度自适应，容纳头像+名字+状态条 */
+  min-height: 200px;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+  flex-direction: column;
   pointer-events: none;
   z-index: 10;
 }
