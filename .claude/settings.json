@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "Notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell.exe -Command [Console]::Beep(800, 300)"
+          }
+        ]
+      }
+    ]
+  }
+}

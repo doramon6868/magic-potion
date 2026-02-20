@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <!--
+    Magic Potion - 魔法药水游戏
+    这是一个基于 Vue 3 的宠物养成游戏
+
+    游戏概念：
+    - 玩家有一个水晶球，里面住着一只魔法宠物
+    - 通过拖拽来喂养宠物、带宠物外出玩耍
+    - 宠物会飞入飞出水晶球，经历各种冒险
+  -->
+
+  <!-- 字符编码，确保中文正常显示 -->
+  <meta charset="UTF-8">
+
+  <!-- 视口设置，让游戏在手机和电脑上都能正常显示 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- 页面标题，显示在浏览器标签上 -->
+  <title>Magic Potion - 魔法药水</title>
+
+  <!-- 引入全局样式 -->
+  <style>
+    /*
+      全局样式
+      这些样式会应用到整个页面
+    */
+
+    /* 重置所有元素的默认样式 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* 页面主体样式 */
+    body {
+      /* 使用深色背景，突出紫色主题 */
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      /* 最小高度设为100视口高度，确保背景铺满整个屏幕 */
+      min-height: 100vh;
+      /* 使用系统默认字体 */
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      /* 隐藏滚动条，因为游戏不需要滚动 */
+      overflow: hidden;
+    }
+
+    /*
+      紫色主题变量
+      这些 CSS 变量可以在整个项目中使用
+      方便统一修改颜色主题
+    */
+    :root {
+      /* 主紫色 - 游戏主题色 */
+      --primary-purple: #9b59b6;
+      /* 浅紫色 - 用于高亮 */
+      --light-purple: #bb8fce;
+      /* 深紫色 - 用于阴影 */
+      --dark-purple: #6c3483;
+      /* 魔法蓝 - 用于水晶球效果 */
+      --magic-blue: #5dade2;
+      /* 发光效果颜色 */
+      --glow-color: rgba(155, 89, 182, 0.6);
+    }
+  </style>
+</head>
+<body>
+  <!--
+    Vue 应用的挂载点
+    Vue 会把这个 div 替换成 App.vue 的内容
+    所有的游戏界面都会渲染在这里面
+  -->
+  <div id="app"></div>
+
+  <!--
+    引入主 JavaScript 文件
+    type="module" 表示这是一个 ES 模块，可以使用 import/export
+    Vite 会处理这个入口文件，并自动处理所有依赖
+  -->
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

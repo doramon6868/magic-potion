@@ -1,0 +1,22 @@
+{
+  "name": "magic-potion",
+  "version": "1.0.0",
+  "description": "Magic Potion - 魔法药水宠物养成游戏",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@playwright/test": "^1.58.2",
+    "naive-ui": "^2.37.0",
+    "pinia": "^2.1.0",
+    "v-drag-drop": "^4.0.0",
+    "vue": "^3.4.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.0.0",
+    "vite": "^5.0.0"
+  }
+}
