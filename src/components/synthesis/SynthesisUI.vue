@@ -68,7 +68,7 @@
         </button>
       </div>
 
-      <!-- 右侧：材料槽 -->
+      <!-- 右侧：材料槽和背包 -->
       <div class="materials-section">
         <h3 class="section-title">🎒 材料槽</h3>
 
@@ -120,12 +120,32 @@
             </span>
           </div>
         </div>
+
+        <!-- 碎片背包 - 可以拖拽到槽位 -->
+        <div class="fragment-inventory">
+          <h4 class="inventory-title">📦 碎片背包</h4>
+          <div class="inventory-items">
+            <Item
+              v-for="item in fragmentItems"
+              :key="item.id"
+              :item="item"
+              show-quantity
+              :is-draggable="true"
+              :class="item.rarity || 'common'"
+            />
+            <div v-if="fragmentItems.length === 0" class="empty-inventory">
+              <span class="empty-icon">📭</span>
+              <span class="empty-text">暂无碎片</span>
+              <span class="empty-hint">去商店购买或探索获得</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
     <!-- 底部提示 -->
     <div class="synthesis-hint">
-      💡 提示：从背包拖拽碎片到右侧槽位，然后点击合成按钮
+      💡 提示：从右下角碎片背包拖拽碎片到上方槽位，或点击"自动填充材料"
     </div>
 
     <!-- 结果弹窗 -->
@@ -144,6 +164,7 @@
 import { mapStores } from 'pinia'
 import { useSynthesisStore } from '../../stores/synthesis.js'
 import { usePetCollectionStore } from '../../stores/petCollection.js'
+import { useBackpackStore } from '../../stores/backpack.js'
 import { getAllPetTypes } from '../../config/petTypes.js'
 import { getFragmentType } from '../../config/fragmentTypes.js'
 import { getPotionNameByRarity } from '../../config/synthesisRecipes.js'
@@ -151,6 +172,7 @@ import PetPreview from './PetPreview.vue'
 import SynthesisSlot from './SynthesisSlot.vue'
 import SynthesisAnimation from './SynthesisAnimation.vue'
 import SynthesisResult from './SynthesisResult.vue'
+import Item from '../Item.vue'
 
 export default {
   name: 'SynthesisUI',
@@ -159,7 +181,8 @@ export default {
     PetPreview,
     SynthesisSlot,
     SynthesisAnimation,
-    SynthesisResult
+    SynthesisResult,
+    Item
   },
 
   props: {
@@ -178,7 +201,7 @@ export default {
   },
 
   computed: {
-    ...mapStores(useSynthesisStore, usePetCollectionStore),
+    ...mapStores(useSynthesisStore, usePetCollectionStore, useBackpackStore),
 
     showModal: {
       get() {
@@ -245,6 +268,14 @@ export default {
     potionName() {
       if (!this.selectedRecipe) return '药水'
       return getPotionNameByRarity(this.selectedRecipe.requiredPotion.rarity)
+    },
+
+    /**
+     * fragmentItems: 从背包中筛选出碎片物品
+     * @returns {Array}
+     */
+    fragmentItems() {
+      return this.backpackStore.items.filter(item => item.category === 'fragment')
     }
   },
 
@@ -560,5 +591,65 @@ export default {
     flex-wrap: wrap;
     justify-content: center;
   }
+}
+
+/* 碎片背包 */
+.fragment-inventory {
+  margin-top: 16px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 12px;
+  border: 2px dashed #c4b5fd;
+}
+
+.inventory-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #7c3aed;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.inventory-items {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.inventory-items :deep(.item-container) {
+  padding: 8px;
+}
+
+.inventory-items :deep(.item-icon) {
+  font-size: 28px;
+}
+
+.inventory-items :deep(.item-name) {
+  font-size: 11px;
+}
+
+.empty-inventory {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 10px;
+  color: rgba(107, 33, 168, 0.5);
+}
+
+.empty-icon {
+  font-size: 28px;
+  margin-bottom: 6px;
+}
+
+.empty-text {
+  font-size: 12px;
+  margin-bottom: 2px;
+}
+
+.empty-hint {
+  font-size: 10px;
 }
 </style>
