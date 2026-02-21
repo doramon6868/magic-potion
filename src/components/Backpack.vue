@@ -89,20 +89,18 @@ export default {
 
 <style scoped>
 /**
- * 背包面板样式
+ * 背包面板样式 - 参考合成界面风格
  */
 
 /* 背包面板容器 */
 .backpack-panel {
-  width: 220px;
-  background: rgba(255, 255, 255, 0.7);
+  background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
   border-radius: 20px;
   border: 2px solid rgba(197, 179, 224, 0.5);
   padding: 15px;
   display: flex;
   flex-direction: column;
-  max-height: 400px;
-  box-shadow: 0 4px 20px rgba(197, 179, 224, 0.2);
+  box-shadow: 0 4px 20px rgba(139, 92, 246, 0.15);
 }
 
 /* 背包头部 */

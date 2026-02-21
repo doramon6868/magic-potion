@@ -3,7 +3,7 @@
 
   这是整个应用的容器组件
   它负责：
-  1. 布局整个游戏界面（顶部栏、左侧背包、中间水晶球、右侧户外区）
+  1. 布局整个游戏界面（顶部栏、左侧宠物+背包、中间宠物展示区、右侧户外区）
   2. 引入所有子组件
   3. 控制商店弹窗的显示/隐藏
 
@@ -36,14 +36,16 @@
     <!-- ==================== 中间游戏区域 ==================== -->
     <div class="game-area">
       <!--
-        左侧：背包
-        物品可以直接拖拽到中间的水晶球
+        左侧：宠物信息 + 背包
+        宠物头像和属性条放在背包上方
       -->
-      <Backpack class="backpack-wrapper" />
+      <div class="left-panel">
+        <PetDisplay class="pet-display-wrapper" />
+        <Backpack class="backpack-wrapper" />
+      </div>
 
       <!--
-        中间：水晶球（游戏核心区域）
-        这是宠物居住的地方，也是主要交互区域
+        中间：宠物互动区域（简化版圆形水晶球）
         可以接收：
         - 从背包拖拽来的物品（喂养）
         - 从户外区拖拽回来的宠物（召回）
@@ -89,6 +91,7 @@
 // ==================== 导入子组件 ====================
 import TopBar from './components/TopBar.vue'
 import CrystalBall from './components/CrystalBall.vue'
+import PetDisplay from './components/PetDisplay.vue'
 import OutdoorPlay from './components/OutdoorPlay.vue'
 import OutdoorHunt from './components/OutdoorHunt.vue'
 import Backpack from './components/Backpack.vue'
@@ -117,6 +120,7 @@ export default {
   components: {
     TopBar,
     CrystalBall,
+    PetDisplay,
     OutdoorPlay,
     OutdoorHunt,
     Backpack,
@@ -289,16 +293,34 @@ export default {
   min-height: 600px;
 }
 
-/* 背包容器 */
-.backpack-wrapper {
+/* 左侧面板容器 - 宠物 + 背包 */
+.left-panel {
   /* 固定宽度 */
-  width: 250px;
+  width: 280px;
   /* 弹性不收缩 */
   flex-shrink: 0;
-  /* 最大高度限制，防止超出视口 */
-  max-height: calc(100vh - 150px);
+  /* 垂直排列 */
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  /* 最大高度限制 */
+  max-height: calc(100vh - 100px);
+}
+
+/* 宠物显示区域 */
+.pet-display-wrapper {
+  /* 不收缩 */
+  flex-shrink: 0;
+}
+
+/* 背包容器 */
+.backpack-wrapper {
+  /* 占据剩余空间 */
+  flex: 1;
   /* 超出时可滚动 */
   overflow-y: auto;
+  /* 最小高度 */
+  min-height: 200px;
 }
 
 /* 水晶球容器 */
@@ -311,7 +333,7 @@ export default {
   align-items: center;
   /* 确保有足够高度显示完整的水晶球 */
   min-height: 400px;
-  padding-top: 40px;
+  padding-top: 20px;
 }
 
 /* 户外区域容器 */
