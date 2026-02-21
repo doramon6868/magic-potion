@@ -46,28 +46,28 @@
     </div>
 
     <!-- 物品名称 -->
-    <div class="item-name">{{ item.name }}</div>
+    <div class="item-name">{{ $t(`items.list.${item.key}.name`) }}</div>
 
     <!-- 稀有度标签 -->
     <div v-if="item.rarity" class="rarity-tag" :class="item.rarity">
-      {{ getRarityLabel(item.rarity) }}
+      {{ $t(`items.rarity.${item.rarity}`) }}
     </div>
 
     <!-- 物品效果（只在背包中显示） -->
     <div v-if="isDraggable" class="item-effect">
       <!-- 显示饱食度效果 -->
-      <span v-if="item.foodValue > 0">+{{ item.foodValue }} 饱食度</span>
+      <span v-if="item.foodValue > 0">{{ $t('item.hungerValue', { value: item.foodValue }) }}</span>
       <!-- 显示心情效果 -->
-      <span v-if="item.moodValue > 0" class="mood-effect">+{{ item.moodValue }} 心情</span>
+      <span v-if="item.moodValue > 0" class="mood-effect">{{ $t('item.moodValue', { value: item.moodValue }) }}</span>
       <!-- 显示buff效果 -->
       <span v-if="item.buff" class="buff-effect">{{ getBuffShortDesc(item) }}</span>
       <!-- 纯心情道具 -->
-      <span v-if="item.category === 'mood' && item.foodValue === 0" class="mood-effect">+{{ item.moodValue }} 心情</span>
+      <span v-if="item.category === 'mood' && item.foodValue === 0" class="mood-effect">{{ $t('item.moodValue', { value: item.moodValue }) }}</span>
     </div>
 
     <!-- 风味文本提示（只在背包中显示） -->
-    <div v-if="isDraggable && item.flavorText" class="item-flavor-text">
-      💫 {{ item.flavorText }}
+    <div v-if="isDraggable && item.key" class="item-flavor-text">
+      💫 {{ $t(`items.list.${item.key}.flavor`) }}
     </div>
 
   </div>
@@ -159,39 +159,34 @@ export default {
     getBuffShortDesc(item) {
       if (!item.buff) return ''
 
-      switch (item.buff.type) {
+      const buffType = item.buff.type
+      switch (buffType) {
         case 'hunt_reward_boost':
-          return `战斗+${Math.round(item.buff.value * 100)}%`
+          return this.$t('item.buff.combatBonus', { percent: Math.round(item.buff.value * 100) })
         case 'hunger_cost_reduce':
-          return `消耗-${Math.round(item.buff.value * 100)}%`
+          return this.$t('item.buff.consumptionReduction', { percent: Math.round(item.buff.value * 100) })
         case 'death_money_protect':
-          return '死亡保金币'
+          return this.$t('item.buff.keepGold')
         case 'auto_heal':
-          return '自动回血'
+          return this.$t('item.buff.autoHeal')
         case 'exp_boost':
-          return `经验×${item.buff.value}`
+          return this.$t('item.buff.expMultiplier', { multiplier: item.buff.value })
         case 'death_chance_reduce':
-          return '降低死亡'
+          return this.$t('item.buff.deathReduction')
         case 'reset_decay':
-          return '重置衰减'
+          return this.$t('item.buff.timeRewind')
         default:
-          return '特殊效果'
+          return this.$t('item.buff.generic')
       }
     },
 
     /**
-     * getRarityLabel: 获取稀有度中文标签
+     * getRarityLabel: 获取稀有度标签
      * @param {string} rarity - 稀有度代码
-     * @returns {string} 稀有度中文名称
+     * @returns {string} 稀有度名称
      */
     getRarityLabel(rarity) {
-      const labels = {
-        common: '普通',
-        uncommon: '优秀',
-        rare: '稀有',
-        epic: '史诗'
-      }
-      return labels[rarity] || ''
+      return this.$t(`items.rarity.${rarity}`) || ''
     },
 
     /**
@@ -217,7 +212,7 @@ export default {
       // 设置正在拖拽状态（用于样式）
       this.isDragging = true
 
-      console.log('开始拖拽物品:', this.item.name)
+      console.log('开始拖拽物品:', this.$t(`items.list.${this.item.key}.name`))
 
       // 触发自定义事件，让父组件知道开始拖拽
       this.$emit('drag-start', this.dragData)
@@ -230,7 +225,7 @@ export default {
       // 重置拖拽状态
       this.isDragging = false
 
-      console.log('拖拽结束:', this.item.name)
+      console.log('拖拽结束:', this.$t(`items.list.${this.item.key}.name`))
 
       // 触发自定义事件
       this.$emit('drag-end', this.dragData)

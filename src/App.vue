@@ -47,8 +47,9 @@
         可以接收：
         - 从背包拖拽来的物品（喂养）
         - 从户外区拖拽回来的宠物（召回）
+        - 点击打开合成界面
       -->
-      <CrystalBall class="crystal-ball-wrapper" />
+      <CrystalBall class="crystal-ball-wrapper" @open-synthesis="showSynthesis = true" />
 
       <!--
         右侧：户外区域（森林 + 游猎区）
@@ -65,6 +66,12 @@
 
     <!-- ==================== 存档管理弹窗 ==================== -->
     <SaveManager ref="saveManager" />
+
+    <!-- ==================== 合成界面弹窗 ==================== -->
+    <SynthesisUI v-model:show="showSynthesis" @viewCollection="showPetCollection = true" />
+
+    <!-- ==================== 宠物图鉴弹窗 ==================== -->
+    <PetCollection v-model:show="showPetCollection" />
 
     <!-- ==================== 底部通知栏 ==================== -->
     <NotificationBar />
@@ -88,10 +95,13 @@ import Backpack from './components/Backpack.vue'
 import Shop from './components/Shop.vue'
 import NotificationBar from './components/NotificationBar.vue'
 import SaveManager from './components/SaveManager.vue'
+import SynthesisUI from './components/synthesis/SynthesisUI.vue'
+import PetCollection from './components/synthesis/PetCollection.vue'
 
 // ==================== 导入 Store ====================
 import { useGameStore } from './stores/game.js'
 import { useSaveStore } from './stores/save.js'
+import { usePetCollectionStore } from './stores/petCollection.js'
 
 export default {
   /**
@@ -112,7 +122,9 @@ export default {
     Backpack,
     Shop,
     NotificationBar,
-    SaveManager
+    SaveManager,
+    SynthesisUI,
+    PetCollection
   },
 
   /**
@@ -130,6 +142,14 @@ export default {
        * true = 显示，false = 隐藏
        */
       showShop: false,
+      /**
+       * showSynthesis: 控制合成界面的显示
+       */
+      showSynthesis: false,
+      /**
+       * showPetCollection: 控制宠物图鉴的显示
+       */
+      showPetCollection: false,
       /**
        * moodTimer: 心情衰减定时器ID
        * 用于每分钟减少宠物心情
@@ -198,16 +218,20 @@ export default {
      */
     async loadLastSave() {
       const saveStore = useSaveStore()
+      const petCollectionStore = usePetCollectionStore()
 
       try {
         const loaded = await saveStore.loadLastSave()
 
         if (!loaded) {
           console.log('没有现有存档，开始新游戏')
+          // 初始化初始宠物
+          petCollectionStore.initWithStarterPet()
         }
       } catch (error) {
         console.error('加载存档失败:', error)
-        // 出错时继续开始新游戏
+        // 出错时初始化初始宠物
+        petCollectionStore.initWithStarterPet()
       }
     },
 

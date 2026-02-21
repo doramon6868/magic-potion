@@ -13,7 +13,7 @@
   <div v-if="gameStore.activeBuffs.length > 0" class="buff-status-bar">
     <div class="buff-header">
       <span class="buff-icon">🛡️</span>
-      <span class="buff-title">增益效果</span>
+      <span class="buff-title">{{ $t('buffStatus.title') }}</span>
     </div>
 
     <div class="buff-list">
@@ -24,7 +24,7 @@
         :class="buff.type"
       >
         <span class="buff-item-icon">{{ buff.icon }}</span>
-        <span class="buff-item-name">{{ buff.name }}</span>
+        <span class="buff-item-name">{{ $t(`items.list.${buff.name}.name`) }}</span>
         <span class="buff-item-desc">{{ getBuffDescription(buff) }}</span>
       </div>
     </div>
@@ -59,19 +59,19 @@ export default {
     getBuffDescription(buff) {
       switch (buff.type) {
         case 'hunt_reward_boost':
-          return `战斗奖励+${Math.round(buff.value * 100)}%`
+          return this.$t('buffStatus.combatBonus', { percent: Math.round(buff.value * 100) })
         case 'hunger_cost_reduce':
-          return `消耗-${Math.round(buff.value * 100)}%`
+          return this.$t('buffStatus.consumptionReduction', { percent: Math.round(buff.value * 100) })
         case 'death_money_protect':
-          return '死亡保金币'
+          return this.$t('buffStatus.keepGold')
         case 'auto_heal':
-          return `低血时自动恢复`
+          return this.$t('buffStatus.autoHeal')
         case 'exp_boost':
-          return `经验×${buff.value}`
+          return this.$t('buffStatus.expMultiplier', { multiplier: buff.value })
         case 'death_chance_reduce':
-          return `死亡-${Math.round(buff.value * 100)}%`
+          return this.$t('buffStatus.deathReduction', { percent: Math.round(buff.value * 100) })
         default:
-          return '效果已激活'
+          return this.$t('buffStatus.active')
       }
     }
   }

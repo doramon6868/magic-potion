@@ -46,7 +46,7 @@
     <div v-if="pet.isAtHome" class="pet-stats">
       <!-- 饱食度条 -->
       <div class="stat-bar">
-        <div class="stat-label">饱食度</div>
+        <div class="stat-label">{{ $t('pet.stats.hunger') }}</div>
         <div class="stat-progress">
           <!-- 进度条背景 -->
           <div class="stat-track">
@@ -63,7 +63,7 @@
 
       <!-- 心情条 -->
       <div class="stat-bar">
-        <div class="stat-label">心情</div>
+        <div class="stat-label">{{ $t('pet.stats.mood') }}</div>
         <div class="stat-progress">
           <div class="stat-track">
             <div
@@ -77,7 +77,7 @@
 
       <!-- 健康条 -->
       <div class="stat-bar">
-        <div class="stat-label">健康</div>
+        <div class="stat-label">{{ $t('pet.stats.health') }}</div>
         <div class="stat-progress">
           <div class="stat-track">
             <div

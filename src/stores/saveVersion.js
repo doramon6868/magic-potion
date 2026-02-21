@@ -15,44 +15,50 @@ export const SAVE_VERSION_HISTORY = {
     createdAt: '2026-02-20',
     description: '初始版本',
     migrations: null  // 第一个版本不需要迁移
+  },
+  2: {
+    version: 2,
+    createdAt: '2026-02-21',
+    description: '添加宠物合成系统',
+    migrations: migrateV1ToV2
   }
-  // 未来版本在这里添加
-  // 2: {
-  //   version: 2,
-  //   createdAt: '2026-03-01',
-  //   description: '添加宠物外观系统',
-  //   migrations: migrateV1ToV2
-  // }
 }
 
 /**
  * 当前最新版本
  * 这是游戏当前支持的存档格式版本
  */
-export const CURRENT_SAVE_VERSION = 1
+export const CURRENT_SAVE_VERSION = 2
 
 /**
- * 迁移函数示例（未来使用）
- * 用于将旧版本存档升级到新版本
+ * 迁移函数：版本1 -> 版本2
+ * 添加宠物合成系统相关数据结构
  *
  * @param {Object} oldData - 旧版本存档数据
  * @returns {Object} 新版本存档数据
  */
-// eslint-disable-next-line no-unused-vars
 function migrateV1ToV2(oldData) {
-  // 创建新数据结构的副本
+  // 迁移宠物数据到新的收集系统
+  const migratedPet = {
+    instanceId: 'pet_starter_' + Date.now(),
+    petType: 'cat',
+    ...oldData.game.pet
+  }
+
   return {
     ...oldData,
     meta: {
       ...oldData.meta,
       version: 2
     },
-    game: {
-      ...oldData.game,
-      pet: {
-        ...oldData.game.pet,
-        appearance: 'default'  // 新增字段
-      }
+    // 新增：宠物收集数据
+    petCollection: {
+      ownedPets: [migratedPet],
+      activePetId: migratedPet.instanceId
+    },
+    // 新增：合成失败计数
+    synthesis: {
+      failCount: {}
     }
   }
 }

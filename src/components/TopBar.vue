@@ -16,15 +16,17 @@
   -->
   <div class="top-bar">
 
-    <!-- ==================== 左侧：存档按钮 + 游戏标题 ==================== -->
+    <!-- ==================== 左侧：存档按钮 + 语言切换 + 游戏标题 ==================== -->
     <div class="left-section">
       <div
         class="top-button save-button"
         @click="openSaveManager"
       >
         <span class="button-icon">💾</span>
-        <span class="button-text">存档</span>
+        <span class="button-text">{{ $t('ui.save') }}</span>
       </div>
+      <!-- 语言切换组件 -->
+      <LanguageSwitcher />
       <div class="game-title">
         <span class="title-icon">✨</span>
         <span class="title-text">Magic Potion</span>
@@ -47,7 +49,7 @@
       <!-- 商店图标 -->
       <span class="button-icon">🏪</span>
       <!-- 按钮文字 -->
-      <span class="button-text">商店</span>
+      <span class="button-text">{{ $t('ui.shop') }}</span>
     </div>
 
   </div>
@@ -57,10 +59,16 @@
 // ==================== 导入依赖 ====================
 import { mapStores } from 'pinia'
 import { useGameStore } from '../stores/game.js'
+import LanguageSwitcher from './LanguageSwitcher.vue'
 
 export default {
   // 组件名称
   name: 'TopBar',
+
+  // 注册子组件
+  components: {
+    LanguageSwitcher
+  },
 
   /**
    * emits: 声明组件会触发的事件

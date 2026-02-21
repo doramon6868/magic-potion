@@ -37,6 +37,13 @@ import naive from 'naive-ui'
  */
 import App from './App.vue'
 
+/**
+ * i18n - 国际化配置
+ * 支持中英文切换
+ */
+import i18n from './i18n'
+import { useSettingsStore } from './stores/settings'
+
 // ==================== 创建应用 ====================
 
 /**
@@ -63,6 +70,13 @@ app.use(createPinia())
 // - n-progress: 进度条
 // - n-card: 卡片
 app.use(naive)
+
+// 安装 i18n，支持中英文切换
+app.use(i18n)
+
+// 初始化语言设置
+const settingsStore = useSettingsStore()
+settingsStore.initLanguage()
 
 // ==================== 挂载应用 ====================
 

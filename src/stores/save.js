@@ -14,6 +14,9 @@ import { useGameStore } from './game.js'
 import { useBackpackStore } from './backpack.js'
 import { useOutdoorStore } from './outdoor.js'
 import { useNotificationStore } from './notification.js'
+import { usePetCollectionStore } from './petCollection.js'
+import { useSynthesisStore } from './synthesis.js'
+import i18n from '../i18n'
 import {
   CURRENT_SAVE_VERSION,
   validateSaveData,
@@ -89,15 +92,16 @@ export const useSaveStore = defineStore('save', {
      * @returns {Function} 格式化函数
      */
     formattedPlayTime: () => (minutes) => {
-      if (!minutes || minutes < 0) return '0分钟'
+      const { t } = i18n.global
+      if (!minutes || minutes < 0) return t('saveManager.timeFormat.minutes', { minutes: 0 })
 
       const hours = Math.floor(minutes / 60)
       const mins = minutes % 60
 
       if (hours > 0) {
-        return `${hours}小时${mins}分钟`
+        return t('saveManager.timeFormat.hoursMinutes', { hours, minutes: mins })
       }
-      return `${mins}分钟`
+      return t('saveManager.timeFormat.minutes', { minutes: mins })
     }
   },
 
@@ -118,6 +122,8 @@ export const useSaveStore = defineStore('save', {
       const gameStore = useGameStore()
       const backpackStore = useBackpackStore()
       const outdoorStore = useOutdoorStore()
+      const petCollectionStore = usePetCollectionStore()
+      const synthesisStore = useSynthesisStore()
 
       // 获取当前时间戳
       const now = Date.now()
@@ -147,6 +153,13 @@ export const useSaveStore = defineStore('save', {
           huntingPet: outdoorStore.huntingPet ? { ...outdoorStore.huntingPet } : null,
           playStartTime: outdoorStore.playStartTime,
           huntStartTime: outdoorStore.huntStartTime
+        },
+        petCollection: {
+          ownedPets: JSON.parse(JSON.stringify(petCollectionStore.ownedPets)),
+          activePetId: petCollectionStore.activePetId
+        },
+        synthesis: {
+          failCount: { ...synthesisStore.failCount }
         }
       }
     },
@@ -171,7 +184,7 @@ export const useSaveStore = defineStore('save', {
 
         console.log('💾 自动保存成功')
       } catch (error) {
-        console.error('自动保存失败:', error)
+        console.error(i18n.global.t('notifications.save.saveFailed', { error: error.message }))
       } finally {
         this.isSaving = false
       }
@@ -211,7 +224,7 @@ export const useSaveStore = defineStore('save', {
         console.log(`💾 已保存到槽位 ${slotIndex + 1}: ${snapshot.meta.name}`)
         return true
       } catch (error) {
-        console.error('保存失败:', error)
+        console.error(i18n.global.t('notifications.save.saveFailed', { error: error.message }))
         throw error
       } finally {
         this.isSaving = false
@@ -263,6 +276,8 @@ export const useSaveStore = defineStore('save', {
       const gameStore = useGameStore()
       const backpackStore = useBackpackStore()
       const outdoorStore = useOutdoorStore()
+      const petCollectionStore = usePetCollectionStore()
+      const synthesisStore = useSynthesisStore()
       const notificationStore = useNotificationStore()
 
       // 计算离线时间
@@ -289,19 +304,34 @@ export const useSaveStore = defineStore('save', {
       outdoorStore.playStartTime = saveData.outdoor.playStartTime
       outdoorStore.huntStartTime = saveData.outdoor.huntStartTime
 
+      // 恢复宠物收集数据（如果有，兼容旧存档）
+      if (saveData.petCollection) {
+        petCollectionStore.ownedPets = JSON.parse(JSON.stringify(saveData.petCollection.ownedPets))
+        petCollectionStore.activePetId = saveData.petCollection.activePetId
+      } else {
+        // 旧存档迁移：初始化宠物收集
+        petCollectionStore.initWithStarterPet(saveData.game.pet)
+      }
+
+      // 恢复合成数据（如果有）
+      if (saveData.synthesis) {
+        synthesisStore.failCount = { ...saveData.synthesis.failCount }
+      }
+
       // 应用离线属性衰减
       if (offlineMinutes > 0) {
         this.applyOfflineDecay(offlineMinutes)
 
         // 显示离线通知
+        const { t } = i18n.global
         if (offlineMinutes >= 60) {
           const hours = Math.floor(offlineMinutes / 60)
           const mins = offlineMinutes % 60
           notificationStore.info(
-            `⏰ 离线 ${hours}小时${mins > 0 ? mins + '分钟' : ''}，宠物属性已自动衰减`
+            t('notifications.offline', { hours, minutes: mins })
           )
         } else {
-          notificationStore.info(`⏰ 离线 ${offlineMinutes} 分钟，宠物属性已自动衰减`)
+          notificationStore.info(t('notifications.offlineMinutes', { minutes: offlineMinutes }))
         }
       }
     },
@@ -333,12 +363,12 @@ export const useSaveStore = defineStore('save', {
 
       // 如果饱食度降得很低，显示警告
       if (gameStore.pet.hunger < 20 && oldHunger >= 20) {
-        notificationStore.warning(`⚠️ 宠物饿坏了！饱食度从 ${oldHunger} 降到 ${gameStore.pet.hunger}`)
+        notificationStore.warning(i18n.global.t('notifications.hungerDrop', { from: oldHunger, to: gameStore.pet.hunger }))
       }
 
       // 如果心情降得很低，显示警告
       if (gameStore.pet.mood < 20 && oldMood >= 20) {
-        notificationStore.warning(`⚠️ 宠物很难过！心情从 ${oldMood} 降到 ${gameStore.pet.mood}`)
+        notificationStore.warning(i18n.global.t('notifications.moodDrop', { from: oldMood, to: gameStore.pet.mood }))
       }
 
       console.log(`离线衰减应用: ${minutes}分钟, 饱食度 ${oldHunger}->${gameStore.pet.hunger}, 心情 ${oldMood}->${gameStore.pet.mood}`)
@@ -570,7 +600,7 @@ export const useSaveStore = defineStore('save', {
         this.autoSave()
       }, interval)
 
-      console.log(`💾 自动保存已启动，间隔: ${interval / 1000}秒`)
+      console.log(i18n.global.t('notifications.save.autoSaveEnabled', { seconds: interval / 1000 }))
     },
 
     /**
@@ -580,7 +610,7 @@ export const useSaveStore = defineStore('save', {
       if (this.autoSaveTimer) {
         clearInterval(this.autoSaveTimer)
         this.autoSaveTimer = null
-        console.log('💾 自动保存已停止')
+        console.log(i18n.global.t('notifications.save.autoSaveDisabled'))
       }
     },
 

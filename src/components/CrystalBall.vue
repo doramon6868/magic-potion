@@ -60,6 +60,16 @@
     <!-- ==================== 水晶球底座 ==================== -->
     <div class="crystal-ball-base"></div>
 
+    <!-- ==================== 合成入口提示 ==================== -->
+    <div
+      v-if="showSynthesisHint"
+      class="synthesis-hint"
+      @click.stop="openSynthesis"
+    >
+      <span class="hint-icon">🔮</span>
+      <span class="hint-text">点击合成</span>
+    </div>
+
   </div>
 </template>
 
@@ -82,7 +92,8 @@ export default {
     return {
       showVortex: false,
       isDragOver: false,
-      dragEnterCounter: 0
+      dragEnterCounter: 0,
+      showSynthesisHint: true
     }
   },
 
@@ -122,6 +133,29 @@ export default {
       this.showVortex = false
       this.isDragOver = false
       this.dragEnterCounter = 0
+      this.showSynthesisHint = true
+    },
+
+    /**
+     * 处理点击水晶球
+     * 打开合成界面
+     */
+    handleClick() {
+      // 只有宠物在家时才显示合成界面
+      if (this.gameStore.pet.isAtHome) {
+        this.$emit('open-synthesis')
+      } else {
+        // 宠物不在家时显示提示
+        const notificationStore = useNotificationStore()
+        notificationStore.info('宠物外出中，等它回家后再来合成吧！')
+      }
+    },
+
+    /**
+     * 打开合成界面
+     */
+    openSynthesis() {
+      this.$emit('open-synthesis')
     },
 
     /**
@@ -325,5 +359,47 @@ export default {
   box-shadow:
     0 10px 30px rgba(0, 0, 0, 0.2),
     inset 0 -5px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* 合成入口提示 */
+.synthesis-hint {
+  position: absolute;
+  bottom: -70px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+  border-radius: 20px;
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  animation: hint-float 2s ease-in-out infinite;
+}
+
+.synthesis-hint:hover {
+  transform: translateX(-50%) translateY(-3px);
+  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.5);
+}
+
+@keyframes hint-float {
+  0%, 100% {
+    transform: translateX(-50%) translateY(0);
+  }
+  50% {
+    transform: translateX(-50%) translateY(-5px);
+  }
+}
+
+.hint-icon {
+  font-size: 18px;
+}
+
+.hint-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: white;
 }
 </style>

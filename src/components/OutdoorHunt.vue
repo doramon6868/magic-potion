@@ -35,16 +35,16 @@
       <!-- 危险图标 -->
       <span class="zone-icon">⚔️</span>
       <!-- 区域名称 -->
-      <span class="zone-name">游猎区</span>
+      <span class="zone-name">{{ $t('areas.hunt.name') }}</span>
       <!-- 危险等级 -->
-      <span class="zone-safety danger">危险</span>
+      <span class="zone-safety danger">{{ $t('areas.hunt.tag') }}</span>
     </div>
 
     <!-- ==================== 区域说明 ==================== -->
     <div class="zone-description">
-      带宠物来这里战斗，获得金币奖励
+      {{ $t('areas.hunt.description') }}
       <br>
-      <span class="warning-text">⚠️ 有 10% 几率死亡</span>
+      <span class="warning-text">⚠️ {{ $t('areas.hunt.warning') }}</span>
     </div>
 
     <!-- ==================== 宠物显示区 ==================== -->
@@ -59,7 +59,7 @@
 
       <div v-else class="empty-hint">
         <span class="hint-icon">⚔️</span>
-        <span class="hint-text">拖拽宠物来战斗</span>
+        <span class="hint-text">{{ $t('areas.hunt.hint') }}</span>
       </div>
     </div>
 
@@ -67,11 +67,11 @@
     <div v-if="outdoorStore.huntingPet" class="reward-preview">
       <div class="reward-item">
         <span class="reward-icon">💰</span>
-        <span class="reward-text">金币 +50~100</span>
+        <span class="reward-text">{{ $t('areas.hunt.reward') }}</span>
       </div>
       <div class="risk-item">
         <span class="risk-icon">💀</span>
-        <span class="risk-text">死亡几率 10%</span>
+        <span class="risk-text">{{ $t('areas.hunt.deathChance') }}</span>
       </div>
     </div>
 

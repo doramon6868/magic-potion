@@ -1,0 +1,329 @@
+{
+  "app": {
+    "title": "Magic Potion",
+    "loading": "Loading..."
+  },
+  "ui": {
+    "backpack": "Backpack",
+    "shop": "Shop",
+    "save": "Save",
+    "close": "Close",
+    "buy": "Buy",
+    "sell": "Sell",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "import": "Import",
+    "export": "Export",
+    "empty": "Empty",
+    "saveOverwrite": "Overwrite",
+    "load": "Load",
+    "currentGold": "Current Gold",
+    "insufficientGold": "Insufficient Gold"
+  },
+  "pet": {
+    "name_default": "Lilac",
+    "stats": {
+      "hunger": "Hunger",
+      "mood": "Mood",
+      "health": "Health"
+    },
+    "status": {
+      "sleeping": "Sleeping",
+      "idle": "Idle",
+      "happy": "Very Happy",
+      "playing": "Playing",
+      "hunting": "Fighting",
+      "tired": "Tired",
+      "sad": "Sad",
+      "eating": "Eating",
+      "unknown": "Unknown"
+    }
+  },
+  "areas": {
+    "forest": {
+      "name": "Forest",
+      "tag": "Safe",
+      "tag_safe": "Safe",
+      "description": "Bring your pet here to play and increase mood",
+      "hint": "Drag pet here",
+      "reward": "Mood +10",
+      "exp_reward": "XP +10"
+    },
+    "hunt": {
+      "name": "Hunting Zone",
+      "tag": "Dangerous",
+      "tag_danger": "Dangerous",
+      "description": "Bring your pet here to battle and earn gold",
+      "warning": "10% chance of death",
+      "hint": "Drag pet to battle",
+      "reward": "Gold +50~100",
+      "deathChance": "Death Chance 10%"
+    }
+  },
+  "items": {
+    "categories": {
+      "food": "Basic Food",
+      "mood": "Mood Items",
+      "combat": "Combat Prep",
+      "risk": "Risk Control",
+      "special": "Special Items"
+    },
+    "rarity": {
+      "common": "Common",
+      "uncommon": "Uncommon",
+      "rare": "Rare",
+      "epic": "Epic"
+    },
+    "effects": {
+      "hunger": "Hunger",
+      "mood": "Mood",
+      "health": "Health"
+    },
+    "list": {
+      "magic_cookie": {
+        "name": "Magic Cookie",
+        "description": "Restores a small amount of hunger",
+        "flavor": "With a hint of lavender fragrance, it's the daily ration of magic apprentices"
+      },
+      "rainbow_candy": {
+        "name": "Rainbow Candy",
+        "description": "Restores hunger and boosts mood",
+        "flavor": "Seven colors of candy dance on the tongue, as if tasting the rainbow"
+      },
+      "magic_cake": {
+        "name": "Magic Cake",
+        "description": "Restores a large amount of hunger",
+        "flavor": "Baked with moonlight cream and starlight flour, every bite is sweet magic"
+      },
+      "stamina_potion": {
+        "name": "Stamina Potion",
+        "description": "Boosts stamina, halves hunger consumption on next adventure",
+        "flavor": "An alchemist's basic recipe, the red liquid glows softly in the bottle"
+      },
+      "joy_toy": {
+        "name": "Joy Toy",
+        "description": "Greatly boosts mood (does not restore hunger)",
+        "flavor": "A magic toy infused with joy spells, pets can't resist pouncing on it"
+      },
+      "combat_ration": {
+        "name": "Combat Ration",
+        "description": "Eat before battle for +30% combat rewards",
+        "flavor": "Made from courage spices and strength herbs, essential before warriors set out"
+      },
+      "rainbow_potion": {
+        "name": "Rainbow Potion",
+        "description": "Restores hunger and mood, a comprehensive recovery potion",
+        "flavor": "A perfect fusion of seven magical elements, the liquid constantly changes color"
+      },
+      "amulet": {
+        "name": "Amulet",
+        "description": "Keep all gold on next death (auto-triggered)",
+        "flavor": "Ancient protective spells are sealed in this rune, emitting a warm glow"
+      },
+      "first_aid_kit": {
+        "name": "First Aid Kit",
+        "description": "Auto-recovers 50 health when health drops below 30 in battle",
+        "flavor": "Carefully prepared by elven healers, it emits a healing aroma when opened"
+      },
+      "revive_potion": {
+        "name": "Revive Potion",
+        "description": "Can revive a dead pet",
+        "flavor": "Legend says it's condensed from phoenix tears, containing the power of rebirth"
+      },
+      "water": {
+        "name": "Water",
+        "description": "Most basic supply, restores a small amount of hunger",
+        "flavor": "Clear spring water from a magical spring, simple but essential"
+      },
+      "exp_scroll": {
+        "name": "EXP Scroll",
+        "description": "Doubles next experience gain",
+        "flavor": "Records the wisdom of ancient sages, text glows and flows into your mind"
+      },
+      "lucky_charm": {
+        "name": "Lucky Charm",
+        "description": "Reduces death chance from 10% to 5% for 1 day",
+        "flavor": "Four-leaf clover essence sealed in crystal, holders feel fate's favor"
+      },
+      "time_hourglass": {
+        "name": "Time Hourglass",
+        "description": "Reset all stat decay for today (full revival effect)",
+        "flavor": "Said to contain solidified time fragments, you can hear time rewinding when flipped"
+      },
+      "cat_fragment": {
+        "name": "Cat Fragment",
+        "description": "A magic shard from Slugcat, used to synthesize pets",
+        "flavor": "Emits a gentle purple glow, collect enough to summon new companions"
+      },
+      "bird_fragment": {
+        "name": "Bird Fragment",
+        "description": "A feather crystal from Wind Feather, used to synthesize pets",
+        "flavor": "Light as air, emanating an aura of freedom"
+      },
+      "fox_fragment": {
+        "name": "Fox Fragment",
+        "description": "Condensed flame sparks from Flame Tail, used to synthesize pets",
+        "flavor": "Contains the warmth of fire, yet feels gentle to the touch"
+      },
+      "dragon_fragment": {
+        "name": "Dragon Fragment",
+        "description": "Tiny crystal from Crystal Dragon scales, used to synthesize pets",
+        "flavor": "The power of ancient dragons slumbers within"
+      }
+    }
+  },
+  "shop": {
+    "title": "🏪 Shop",
+    "currentGold": "💰 Current Gold",
+    "insufficientGold": "Insufficient Gold",
+    "purchaseSuccess": "✅ Purchased {name}!",
+    "purchaseFailed": "💰 Not enough gold!",
+    "categories": {
+      "food": "🍽️ Basic Food",
+      "mood": "😊 Mood Items",
+      "combat": "⚔️ Combat Prep",
+      "charm": "🛡️ Risk Control",
+      "special": "✨ Special Items"
+    }
+  },
+  "notifications": {
+    "pet": {
+      "returned": "Pet has returned home!",
+      "notHome": "⚠️ Pet is not home, cannot feed!",
+      "full": "⚠️ Pet is already full!",
+      "noItem": "❌ Item not found in backpack!",
+      "dead": "💀 Pet is dead, use a revival potion first!",
+      "alreadyDead": "⚠️ Pet is still alive, no need for revival potion!",
+      "moodFull": "⚠️ Pet is already very happy!"
+    },
+    "feed": {
+      "success": "✅ Feeding successful! {item} made your pet happy~ {effect}",
+      "noEffect": "❌ This item has no effect!",
+      "hungerEffect": "Hunger +{value}",
+      "moodEffect": "Mood +{value}",
+      "separator": ", "
+    },
+    "buff": {
+      "activated": "🛡️ {name} activated! {description}",
+      "combatBonus": "Combat reward +{percent}%",
+      "consumptionReduction": "Consumption -{percent}%",
+      "keepGold": "Keep gold on death",
+      "autoHeal": "Auto-heal when low HP",
+      "expMultiplier": "EXP ×{multiplier}",
+      "deathReduction": "Death chance -{percent}%",
+      "timeRewind": "Reset all stat decay",
+      "timeRewindDesc": "⏳ Time rewound! Hunger, Mood, and Health fully restored!",
+      "generic": "Effect activated"
+    },
+    "play": {
+      "complete": "🌲 Play complete! Mood +10, XP +10!"
+    },
+    "battle": {
+      "victory": "🎉 Victory!",
+      "baseReward": "Base reward +{amount}",
+      "bonusReward": "Combat ration bonus +{amount}",
+      "totalReward": "Total {amount} gold!",
+      "expBonus": "EXP scroll active, gained {amount} XP!",
+      "deathWithProtection": "💀 Your pet died in battle! The amulet worked, gold preserved.",
+      "deathNoProtection": "💀 Your pet died in battle! A revival potion is needed.",
+      "autoHeal": "🏥 First aid kit auto-triggered! Health restored by {amount}!"
+    },
+    "save": {
+      "autoSaveEnabled": "💾 Auto-save enabled, interval: {seconds}s",
+      "autoSaveDisabled": "💾 Auto-save disabled",
+      "autoSaved": "💾 Auto-saved successfully",
+      "saved": "💾 Saved to slot {slot}: {name}",
+      "loaded": "📂 Loaded save: {name}",
+      "deleted": "🗑️ Deleted save in slot {slot}",
+      "exported": "📤 Exported save: {name}",
+      "imported": "📥 Imported save to slot {slot}",
+      "saveFailed": "Save failed: {error}",
+      "loadFailed": "Load failed: {error}",
+      "exportFailed": "Export failed: {error}",
+      "importFailed": "Import failed: {error}",
+      "deleteFailed": "Delete failed: {error}"
+    },
+    "offline": "⏰ Offline for {hours}h {minutes}m, pet stats decayed",
+    "offlineMinutes": "⏰ Offline for {minutes} minutes, pet stats decayed",
+    "hungerDrop": "⚠️ Your pet is starving! Hunger dropped from {from} to {to}",
+    "moodDrop": "⚠️ Your pet is sad! Mood dropped from {from} to {to}",
+    "revive": "💖 Revival successful! {name} is reborn! Health restored to {health}",
+    "timeRewind": "⏳ {name} activated! Time rewound, all stats restored!"
+  },
+  "backpack": {
+    "title": "Backpack",
+    "hint": "💡 Drag items to the crystal ball to feed your pet",
+    "empty": "Backpack is empty",
+    "goShop": "Go to the shop to buy items!",
+    "itemCount": "({count})"
+  },
+  "item": {
+    "hungerValue": "+{value} Hunger",
+    "moodValue": "+{value} Mood",
+    "buff": {
+      "combatBonus": "Combat +{percent}%",
+      "consumptionReduction": "Cons. -{percent}%",
+      "keepGold": "Keep gold",
+      "autoHeal": "Auto-heal",
+      "expMultiplier": "EXP ×{multiplier}",
+      "deathReduction": "Death -",
+      "timeRewind": "Reset decay",
+      "generic": "Special effect"
+    }
+  },
+  "buffStatus": {
+    "title": "Active Effects",
+    "active": "Effect active",
+    "combatBonus": "Combat reward +{percent}%",
+    "consumptionReduction": "Consumption -{percent}%",
+    "keepGold": "Keep gold on death",
+    "autoHeal": "Auto-heal when low HP",
+    "expMultiplier": "EXP ×{multiplier}",
+    "deathReduction": "Death -{percent}%"
+  },
+  "saveManager": {
+    "title": "💾 Save Manager",
+    "autoSave": {
+      "title": "🔄 Auto Save",
+      "empty": "No Auto Save",
+      "read": "Load",
+      "export": "Export"
+    },
+    "manualSave": {
+      "title": "💾 Manual Save",
+      "emptySlot": "Empty Slot {number}",
+      "save": "Save",
+      "overwrite": "Overwrite",
+      "load": "Load",
+      "delete": "Delete",
+      "export": "Export"
+    },
+    "import": {
+      "title": "📥 Import Save",
+      "button": "Select save file",
+      "hint": "Supports .json format save files"
+    },
+    "footer": {
+      "lastSaved": "Last saved: {time}",
+      "neverSaved": "Never saved"
+    },
+    "confirmDelete": {
+      "title": "🗑️ Confirm Delete",
+      "message": "Are you sure you want to delete this save? This cannot be undone.",
+      "slotName": "Save name"
+    },
+    "confirmOverwrite": {
+      "title": "💾 Confirm Overwrite",
+      "message": "This slot already has a save. Overwrite it?",
+      "original": "Original save"
+    },
+    "playTime": "Play time: {time}",
+    "timeFormat": {
+      "hoursMinutes": "{hours}h {minutes}m",
+      "minutes": "{minutes}m"
+    },
+    "unsaved": "Unsaved",
+    "invalidTime": "Invalid time"
+  }
+}

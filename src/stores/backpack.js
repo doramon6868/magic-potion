@@ -24,7 +24,7 @@ export const useBackpackStore = defineStore('backpack', {
       // 初始给玩家一些物品用于测试
       {
         id: 1,
-        name: '魔法饼干',
+        key: 'magic_cookie',
         icon: '🍪',
         category: 'food',
         rarity: 'common',
@@ -34,7 +34,7 @@ export const useBackpackStore = defineStore('backpack', {
       },
       {
         id: 2,
-        name: '彩虹糖果',
+        key: 'rainbow_candy',
         icon: '🍬',
         category: 'food',
         rarity: 'common',
@@ -45,29 +45,48 @@ export const useBackpackStore = defineStore('backpack', {
       // 给玩家一些新道具试用
       {
         id: 8,
-        name: '战斗口粮',
+        key: 'combat_ration',
         icon: '⚔️',
         category: 'combat',
         rarity: 'uncommon',
         foodValue: 15,
         moodValue: 0,
-        description: '战斗前食用，下次战斗奖励+30%',
         useCondition: 'before_hunt',
         buff: { type: 'hunt_reward_boost', value: 0.3, duration: 1 },
         quantity: 1
       },
       {
         id: 10,
-        name: '护身符',
+        key: 'amulet',
         icon: '🛡️',
         category: 'charm',
         rarity: 'rare',
         foodValue: 0,
         moodValue: 0,
-        description: '下次死亡时保留全部金币（自动触发）',
         useCondition: 'passive',
         buff: { type: 'death_money_protect', value: 1, duration: 1 },
         quantity: 1
+      },
+      // 初始给一些测试用的碎片
+      {
+        id: 101,
+        key: 'cat_fragment',
+        name: '猫之碎片',
+        icon: '🐱',
+        category: 'fragment',
+        fragmentType: 'cat',
+        rarity: 'common',
+        quantity: 5
+      },
+      {
+        id: 102,
+        key: 'bird_fragment',
+        name: '鸟之碎片',
+        icon: '🐦',
+        category: 'fragment',
+        fragmentType: 'bird',
+        rarity: 'rare',
+        quantity: 3
       }
     ]
   }),

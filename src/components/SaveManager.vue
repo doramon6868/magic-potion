@@ -15,7 +15,7 @@
   -->
   <n-modal
     v-model:show="showModal"
-    title="💾 存档管理"
+    :title="$t('saveManager.title')"
     preset="card"
     style="width: 650px; max-width: 95vw;"
     :mask-closable="false"
@@ -25,7 +25,7 @@
       <div class="save-section">
         <h3 class="section-title">
           <span class="title-icon">🔄</span>
-          自动存档
+          {{ $t('saveManager.autoSave.title') }}
         </h3>
         <div
           class="save-item"
@@ -33,13 +33,13 @@
         >
           <div class="save-info">
             <span class="save-name">
-              {{ autoSaveInfo?.meta?.name || '无自动存档' }}
+              {{ autoSaveInfo?.meta?.name || $t('saveManager.autoSave.empty') }}
             </span>
             <span class="save-time">
               {{ formatTime(autoSaveInfo?.meta?.updatedAt) }}
             </span>
             <span v-if="autoSaveInfo?.meta?.playTime" class="play-time">
-              游戏时长: {{ formattedPlayTime(autoSaveInfo.meta.playTime) }}
+              {{ $t('saveManager.playTime', { time: formattedPlayTime(autoSaveInfo.meta.playTime) }) }}
             </span>
           </div>
           <div class="save-actions">
@@ -49,14 +49,14 @@
               :disabled="!autoSaveInfo"
               @click="loadAutoSave"
             >
-              读取
+              {{ $t('saveManager.autoSave.read') }}
             </n-button>
             <n-button
               size="small"
               :disabled="!autoSaveInfo"
               @click="exportAutoSave"
             >
-              导出
+              {{ $t('saveManager.autoSave.export') }}
             </n-button>
           </div>
         </div>
@@ -66,7 +66,7 @@
       <div class="save-section">
         <h3 class="section-title">
           <span class="title-icon">💾</span>
-          手动存档
+          {{ $t('saveManager.manualSave.title') }}
         </h3>
         <div
           v-for="(slot, index) in 3"
@@ -76,13 +76,13 @@
         >
           <div class="save-info">
             <span class="save-name">
-              {{ getSlotInfo(index)?.meta?.name || `空槽位 ${index + 1}` }}
+              {{ getSlotInfo(index)?.meta?.name || $t('saveManager.manualSave.emptySlot', { number: index + 1 }) }}
             </span>
             <span class="save-time">
               {{ formatTime(getSlotInfo(index)?.meta?.updatedAt) }}
             </span>
             <span v-if="getSlotInfo(index)?.meta?.playTime" class="play-time">
-              游戏时长: {{ formattedPlayTime(getSlotInfo(index).meta.playTime) }}
+              {{ $t('saveManager.playTime', { time: formattedPlayTime(getSlotInfo(index).meta.playTime) }) }}
             </span>
           </div>
           <div class="save-actions">
@@ -91,21 +91,21 @@
               type="primary"
               @click="handleSaveToSlot(index)"
             >
-              {{ getSlotInfo(index) ? '覆盖' : '保存' }}
+              {{ getSlotInfo(index) ? $t('saveManager.manualSave.overwrite') : $t('saveManager.manualSave.save') }}
             </n-button>
             <n-button
               size="small"
               :disabled="!getSlotInfo(index)"
               @click="handleLoadFromSlot(index)"
             >
-              读取
+              {{ $t('saveManager.manualSave.load') }}
             </n-button>
             <n-button
               size="small"
               :disabled="!getSlotInfo(index)"
               @click="exportSlot(index)"
             >
-              导出
+              {{ $t('saveManager.manualSave.export') }}
             </n-button>
             <n-button
               size="small"
@@ -113,7 +113,7 @@
               :disabled="!getSlotInfo(index)"
               @click="confirmDeleteSlot(index)"
             >
-              删除
+              {{ $t('saveManager.manualSave.delete') }}
             </n-button>
           </div>
         </div>
@@ -123,7 +123,7 @@
       <div class="save-section">
         <h3 class="section-title">
           <span class="title-icon">📥</span>
-          导入存档
+          {{ $t('saveManager.import.title') }}
         </h3>
         <div class="import-area">
           <n-upload
@@ -136,19 +136,19 @@
               <template #icon>
                 <span>📂</span>
               </template>
-              选择存档文件
+              {{ $t('saveManager.import.button') }}
             </n-button>
           </n-upload>
-          <span class="import-hint">支持 .json 格式的存档文件</span>
+          <span class="import-hint">{{ $t('saveManager.import.hint') }}</span>
         </div>
       </div>
 
       <!-- ==================== 底部信息 ==================== -->
       <div class="save-footer">
         <span class="last-save-info" v-if="lastSaveTime">
-          上次保存: {{ formatTime(lastSaveTime) }}
+          {{ $t('saveManager.footer.lastSaved', { time: formatTime(lastSaveTime) }) }}
         </span>
-        <span v-else class="last-save-info">尚未保存</span>
+        <span v-else class="last-save-info">{{ $t('saveManager.footer.neverSaved') }}</span>
       </div>
     </div>
   </n-modal>
@@ -157,15 +157,15 @@
   <n-modal
     v-model:show="showDeleteConfirm"
     preset="dialog"
-    title="🗑️ 确认删除"
+    :title="$t('saveManager.confirmDelete.title')"
     type="warning"
-    positive-text="删除"
-    negative-text="取消"
+    :positive-text="$t('ui.delete')"
+    :negative-text="$t('ui.cancel')"
     @positive-click="confirmDelete"
   >
-    <p>确定要删除这个存档吗？此操作无法撤销。</p>
+    <p>{{ $t('saveManager.confirmDelete.message') }}</p>
     <p v-if="deleteTargetIndex >= 0" class="delete-target">
-      存档名称: {{ getSlotInfo(deleteTargetIndex)?.meta?.name || `槽位 ${deleteTargetIndex + 1}` }}
+      {{ $t('saveManager.confirmDelete.slotName') }}: {{ getSlotInfo(deleteTargetIndex)?.meta?.name || $t('saveManager.manualSave.emptySlot', { number: deleteTargetIndex + 1 }) }}
     </p>
   </n-modal>
 
@@ -173,15 +173,15 @@
   <n-modal
     v-model:show="showOverwriteConfirm"
     preset="dialog"
-    title="💾 确认覆盖"
+    :title="$t('saveManager.confirmOverwrite.title')"
     type="warning"
-    positive-text="覆盖"
-    negative-text="取消"
+    :positive-text="$t('saveManager.manualSave.overwrite')"
+    :negative-text="$t('ui.cancel')"
     @positive-click="confirmOverwrite"
   >
-    <p>该槽位已有存档，确定要覆盖吗？</p>
+    <p>{{ $t('saveManager.confirmOverwrite.message') }}</p>
     <p v-if="overwriteTargetIndex >= 0" class="overwrite-target">
-      原存档: {{ getSlotInfo(overwriteTargetIndex)?.meta?.name || `槽位 ${overwriteTargetIndex + 1}` }}
+      {{ $t('saveManager.confirmOverwrite.original') }}: {{ getSlotInfo(overwriteTargetIndex)?.meta?.name || $t('saveManager.manualSave.emptySlot', { number: overwriteTargetIndex + 1 }) }}
     </p>
   </n-modal>
 </template>
@@ -318,11 +318,12 @@ export default {
      * @returns {string} 格式化后的时间字符串
      */
     formatTime(timestamp) {
-      if (!timestamp) return '未保存'
+      if (!timestamp) return this.$t('saveManager.unsaved')
 
       try {
         const date = new Date(timestamp)
-        return date.toLocaleString('zh-CN', {
+        const locale = this.$i18n.locale === 'zh-CN' ? 'zh-CN' : 'en-US'
+        return date.toLocaleString(locale, {
           year: 'numeric',
           month: '2-digit',
           day: '2-digit',
@@ -330,7 +331,7 @@ export default {
           minute: '2-digit'
         })
       } catch (error) {
-        return '时间无效'
+        return this.$t('saveManager.invalidTime')
       }
     },
 

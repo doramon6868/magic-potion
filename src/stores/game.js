@@ -21,6 +21,7 @@
 import { defineStore } from 'pinia'
 import { useBackpackStore } from './backpack.js'
 import { useNotificationStore } from './notification.js'
+import i18n from '../i18n'
 import {
   PET_STATUS,
   DECAY,
@@ -144,19 +145,9 @@ export const useGameStore = defineStore('game', {
      * @returns {string} 状态文本
      */
     petStatusText: (state) => {
-      // 状态文本映射表
-      const statusMap = {
-        'sleeping': '睡觉中',
-        'idle': '发呆中',
-        'happy': '很开心',
-        'playing': '玩耍中',
-        'hunting': '战斗中',
-        'tired': '很疲惫',
-        'sad': '很难过',
-        'eating': '进食中'
-      }
-      // 返回对应的状态文本，如果没有就返回 '未知'
-      return statusMap[state.pet.status] || '未知'
+      // 使用 i18n 获取状态文本
+      const { t } = i18n.global
+      return t(`pet.status.${state.pet.status}`) || t('pet.status.unknown')
     },
 
     /**
@@ -200,14 +191,14 @@ export const useGameStore = defineStore('game', {
      *   - category: 物品分类
      *   - buff: 增益效果
      */
-    feedPet(item) {
+    async feedPet(item) {
       // 获取通知 store
       const notificationStore = useNotificationStore()
 
       // ====== 步骤 1: 检查是否在家 ======
       // 只有在家才能喂食
       if (!this.pet.isAtHome) {
-        notificationStore.warning('⚠️ 宠物不在家，无法喂食！')
+        notificationStore.warning(i18n.global.t('notifications.pet.notHome'))
         return false
       }
 
@@ -223,13 +214,13 @@ export const useGameStore = defineStore('game', {
       }
 
       // 特殊处理：复活药水
-      if (item.category === 'special' && item.name === '复活药水') {
+      if (item.category === 'special' && item.key === 'revive_potion') {
         return this.useRevivePotion(item)
       }
 
       // ====== 步骤 3: 检查是否满饱食度 ======
       if (this.pet.hunger >= 100 && item.foodValue > 0) {
-        notificationStore.warning('⚠️ 宠物已经吃饱了！')
+        notificationStore.warning(i18n.global.t('notifications.pet.full'))
         return false
       }
 
@@ -239,7 +230,7 @@ export const useGameStore = defineStore('game', {
 
       // 如果移除失败（物品不存在或数量不足），返回失败
       if (!removed) {
-        notificationStore.error('❌ 背包中没有这个物品！')
+        notificationStore.error(i18n.global.t('notifications.pet.noItem'))
         return false
       }
 
@@ -255,7 +246,7 @@ export const useGameStore = defineStore('game', {
       // 实际增加的数值（考虑满值限制）
       const actualHungerIncrease = this.pet.hunger - oldHunger
 
-      console.log(`喂食 ${item.name}，饱食度从 ${oldHunger} 增加到 ${this.pet.hunger}`)
+      console.log(`喂食 ${i18n.global.t(`items.list.${item.key}.name`)}，饱食度从 ${oldHunger} 增加到 ${this.pet.hunger}`)
 
       // ====== 步骤 7: 增加心情 ======
       // 根据物品的moodValue增加心情，如果没有则使用默认值
@@ -266,16 +257,35 @@ export const useGameStore = defineStore('game', {
       // 构建效果描述
       let effectText = ''
       if (actualHungerIncrease > 0) {
-        effectText += `饱食度 +${actualHungerIncrease}`
+        effectText += i18n.global.t('notifications.feed.hungerEffect', { value: actualHungerIncrease })
       }
       if (moodIncrease > 0) {
-        effectText += (effectText ? '，' : '') + `心情 +${moodIncrease}`
+        effectText += (effectText ? i18n.global.t('notifications.feed.separator') : '') + i18n.global.t('notifications.feed.moodEffect', { value: moodIncrease })
       }
 
       // 显示喂养成功通知
-      notificationStore.success(`✅ 喂食成功！${item.name}让宠物很开心~ ${effectText}`)
+      notificationStore.success(i18n.global.t('notifications.feed.success', {
+        item: i18n.global.t(`items.list.${item.key}.name`),
+        effect: effectText
+      }))
 
-      // ====== 步骤 8: 延迟后恢复 idle 状态 ======
+      // ====== 步骤 8: 开心度100奖励判定 ======
+      if (this.pet.mood === 100 && this.pet.hunger > 80) {
+        // 5%概率获得对应碎片
+        if (Math.random() < 0.05) {
+          // 动态导入避免循环依赖
+          const { useFragmentStore } = await import('./fragments.js')
+          const { usePetCollectionStore } = await import('./petCollection.js')
+          const fragmentStore = useFragmentStore()
+          const petCollectionStore = usePetCollectionStore()
+
+          const currentPetType = petCollectionStore.activePet?.petType || 'cat'
+          fragmentStore.addFragment(currentPetType, 1)
+          notificationStore.success('🎁 宠物非常开心！送你一个碎片作为礼物！')
+        }
+      }
+
+      // ====== 步骤 9: 延迟后恢复 idle 状态 ======
       setTimeout(() => {
         this.pet.status = 'idle'
       }, PET_STATUS.DURATION.EATING)
@@ -296,7 +306,7 @@ export const useGameStore = defineStore('game', {
 
       // 检查是否有buff
       if (!item.buff) {
-        notificationStore.error('❌ 这个道具没有效果！')
+        notificationStore.error(i18n.global.t('notifications.feed.noEffect'))
         return false
       }
 
@@ -305,12 +315,12 @@ export const useGameStore = defineStore('game', {
         // 从背包移除
         const removed = backpackStore.removeItem(item.id, 1)
         if (!removed) {
-          notificationStore.error('❌ 背包中没有这个物品！')
+          notificationStore.error(i18n.global.t('notifications.pet.noItem'))
           return false
         }
         // 直接触发效果
         this.resetAllDecay()
-        notificationStore.success(`⏳ ${item.name}生效！时间倒流，所有属性已恢复！`)
+        notificationStore.success(i18n.global.t('notifications.timeRewind', { name: i18n.global.t(`items.list.${item.key}.name`) }))
         return true
       }
 
@@ -326,7 +336,7 @@ export const useGameStore = defineStore('game', {
         type: item.buff.type,
         value: item.buff.value,
         duration: item.buff.duration,
-        name: item.name,
+        name: item.key,
         icon: item.icon
       })
 
@@ -334,33 +344,36 @@ export const useGameStore = defineStore('game', {
       let buffDesc = ''
       switch (item.buff.type) {
         case 'hunt_reward_boost':
-          buffDesc = `下次战斗奖励+${Math.round(item.buff.value * 100)}%`
+          buffDesc = i18n.global.t('notifications.buff.combatBonus', { percent: Math.round(item.buff.value * 100) })
           break
         case 'hunger_cost_reduce':
-          buffDesc = `下次探险饱食度消耗-${Math.round(item.buff.value * 100)}%`
+          buffDesc = i18n.global.t('notifications.buff.consumptionReduction', { percent: Math.round(item.buff.value * 100) })
           break
         case 'death_money_protect':
-          buffDesc = '下次死亡保留全部金币'
+          buffDesc = i18n.global.t('notifications.buff.keepGold')
           break
         case 'auto_heal':
-          buffDesc = `健康低于${item.buff.threshold}时自动恢复${item.buff.value}点`
+          buffDesc = i18n.global.t('notifications.buff.autoHeal')
           break
         case 'exp_boost':
-          buffDesc = `下次获得经验×${item.buff.value}`
+          buffDesc = i18n.global.t('notifications.buff.expMultiplier', { multiplier: item.buff.value })
           break
         case 'death_chance_reduce':
-          buffDesc = `死亡概率-${Math.round(item.buff.value * 100)}%`
+          buffDesc = i18n.global.t('notifications.buff.deathReduction', { percent: Math.round(item.buff.value * 100) })
           break
         case 'reset_decay':
-          buffDesc = '重置所有属性衰减'
+          buffDesc = i18n.global.t('notifications.buff.timeRewind')
           this.resetAllDecay()
           break
         default:
-          buffDesc = '增益效果已激活'
+          buffDesc = i18n.global.t('notifications.buff.generic')
       }
 
-      notificationStore.success(`🛡️ ${item.name}已激活！${buffDesc}`)
-      console.log(`激活buff: ${item.name}`, item.buff)
+      notificationStore.success(i18n.global.t('notifications.buff.activated', {
+        name: i18n.global.t(`items.list.${item.key}.name`),
+        description: buffDesc
+      }))
+      console.log(`激活buff: ${i18n.global.t(`items.list.${item.key}.name`)}`, item.buff)
 
       return true
     },
@@ -376,14 +389,14 @@ export const useGameStore = defineStore('game', {
 
       // 检查是否满心情
       if (this.pet.mood >= 100) {
-        notificationStore.warning('⚠️ 宠物心情已经很好了！')
+        notificationStore.warning(i18n.global.t('notifications.pet.moodFull'))
         return false
       }
 
       // 从背包移除
       const removed = backpackStore.removeItem(item.id, 1)
       if (!removed) {
-        notificationStore.error('❌ 背包中没有这个物品！')
+        notificationStore.error(i18n.global.t('notifications.pet.noItem'))
         return false
       }
 
@@ -396,8 +409,11 @@ export const useGameStore = defineStore('game', {
       // 设置开心状态
       this.pet.status = 'happy'
 
-      notificationStore.success(`🎾 和宠物玩耍了${item.name}！心情 +${actualIncrease}`)
-      console.log(`使用${item.name}，心情从 ${oldMood} 增加到 ${this.pet.mood}`)
+      notificationStore.success(i18n.global.t('notifications.feed.success', {
+        item: i18n.global.t(`items.list.${item.key}.name`),
+        effect: i18n.global.t('notifications.feed.moodEffect', { value: actualIncrease })
+      }))
+      console.log(`使用${i18n.global.t(`items.list.${item.key}.name`)}，心情从 ${oldMood} 增加到 ${this.pet.mood}`)
 
       // 延迟后恢复状态
       setTimeout(() => {
@@ -421,14 +437,14 @@ export const useGameStore = defineStore('game', {
 
       // 检查宠物是否死亡
       if (!this.pet.isDead) {
-        notificationStore.warning('⚠️ 宠物还活着，不需要复活药水！')
+        notificationStore.warning(i18n.global.t('notifications.pet.alreadyDead'))
         return false
       }
 
       // 从背包移除
       const removed = backpackStore.removeItem(item.id, 1)
       if (!removed) {
-        notificationStore.error('❌ 背包中没有这个物品！')
+        notificationStore.error(i18n.global.t('notifications.pet.noItem'))
         return false
       }
 
@@ -443,7 +459,10 @@ export const useGameStore = defineStore('game', {
       // 恢复状态
       this.pet.status = 'idle'
 
-      notificationStore.success(`💖 复活成功！${this.pet.name}重获新生！健康值恢复到${this.pet.health}`)
+      notificationStore.success(i18n.global.t('notifications.revive', {
+        name: this.pet.name,
+        health: this.pet.health
+      }))
       console.log(`使用复活药水，宠物复活，健康值: ${this.pet.health}`)
 
       return true
@@ -607,7 +626,7 @@ export const useGameStore = defineStore('game', {
       this.pet.mood = 100
       this.pet.health = 100
 
-      notificationStore.success(`⏳ 时间倒流！饱食度、心情、健康全部恢复！`)
+      notificationStore.success(i18n.global.t('notifications.buff.timeRewindDesc'))
       console.log(`时间沙漏生效: 饱食 ${oldHunger}->100, 心情 ${oldMood}->100, 健康 ${oldHealth}->100`)
     },
 

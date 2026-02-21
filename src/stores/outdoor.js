@@ -8,6 +8,10 @@
 import { defineStore } from 'pinia'
 import { useGameStore } from './game.js'
 import { useNotificationStore } from './notification.js'
+import { useFragmentStore } from './fragments.js'
+import { usePetCollectionStore } from './petCollection.js'
+import { getFragmentType } from '../config/fragmentTypes.js'
+import i18n from '../i18n'
 
 /**
  * 创建 outdoor store
@@ -98,7 +102,7 @@ export const useOutdoorStore = defineStore('outdoor', {
 
       // 检查宠物是否死亡
       if (gameStore.pet.isDead) {
-        notificationStore.error('💀 宠物已经死亡，需要先使用复活药水！')
+        notificationStore.error(i18n.global.t('notifications.pet.dead'))
         return false
       }
 
@@ -120,7 +124,7 @@ export const useOutdoorStore = defineStore('outdoor', {
 
     /**
      * finishPlay: 结束玩耍
-     * 增加宠物的心情
+     * 增加宠物的心情，并有几率掉落碎片
      */
     finishPlay() {
       // 如果没有宠物在玩耍，直接返回
@@ -131,6 +135,8 @@ export const useOutdoorStore = defineStore('outdoor', {
       // 获取 store
       const gameStore = useGameStore()
       const notificationStore = useNotificationStore()
+      const fragmentStore = useFragmentStore()
+      const petCollectionStore = usePetCollectionStore()
 
       // 增加心情（玩耍让宠物开心）
       gameStore.increaseMood(10)
@@ -138,8 +144,18 @@ export const useOutdoorStore = defineStore('outdoor', {
       // 增加经验
       gameStore.addExperience(10)
 
+      // 碎片掉落判定
+      const currentPetType = petCollectionStore.activePet?.petType || 'cat'
+      const droppedFragment = fragmentStore.rollFragmentDrop('forest', currentPetType)
+
+      if (droppedFragment) {
+        fragmentStore.addFragment(droppedFragment, 1)
+        const fragmentConfig = getFragmentType(droppedFragment)
+        notificationStore.success(`🎉 获得碎片！${fragmentConfig?.icon} ${fragmentConfig?.name}`)
+      }
+
       // 显示收益通知
-      notificationStore.success('🌲 玩耍结束！心情 +10，经验 +10！')
+      notificationStore.success(i18n.global.t('notifications.play.complete'))
 
       // 清空玩耍区
       this.playingPet = null
@@ -160,7 +176,7 @@ export const useOutdoorStore = defineStore('outdoor', {
 
       // 检查宠物是否死亡
       if (gameStore.pet.isDead) {
-        notificationStore.error('💀 宠物已经死亡，需要先使用复活药水！')
+        notificationStore.error(i18n.global.t('notifications.pet.dead'))
         return false
       }
 
@@ -231,9 +247,9 @@ export const useOutdoorStore = defineStore('outdoor', {
         const moneyProtectBuff = gameStore.consumeBuff('death_money_protect')
 
         if (moneyProtectBuff) {
-          notificationStore.warning('💀 宠物在战斗中阵亡了！护身符发挥作用，金币已保留。')
+          notificationStore.warning(i18n.global.t('notifications.battle.deathWithProtection'))
         } else {
-          notificationStore.error('💀 宠物在战斗中阵亡了！需要复活药水才能复活。')
+          notificationStore.error(i18n.global.t('notifications.battle.deathNoProtection'))
         }
 
         // 设置死亡状态
@@ -261,15 +277,17 @@ export const useOutdoorStore = defineStore('outdoor', {
         // 增加经验（支持经验加成buff）
         const expAmount = gameStore.addExperience(25)
 
-        // 显示胜利通知
-        let successMsg = '🎉 战斗胜利！'
+        // 构建胜利通知
+        let successMsg = i18n.global.t('notifications.battle.victory')
         if (rewardBuff) {
-          successMsg += `基础奖励 +${reward - bonusReward}，战斗口粮加成 +${bonusReward}，总计 ${reward} 金币！`
+          successMsg += ' ' + i18n.global.t('notifications.battle.baseReward', { amount: reward - bonusReward }) +
+            i18n.global.t('notifications.battle.bonusReward', { amount: bonusReward }) +
+            i18n.global.t('notifications.battle.totalReward', { amount: reward })
         } else {
-          successMsg += `获得 ${reward} 金币！`
+          successMsg += ' ' + i18n.global.t('notifications.battle.totalReward', { amount: reward })
         }
         if (expAmount > 25) {
-          successMsg += ` 经验卷轴生效，获得 ${expAmount} 经验！`
+          successMsg += ' ' + i18n.global.t('notifications.battle.expBonus', { amount: expAmount })
         }
         notificationStore.success(successMsg)
 
@@ -280,7 +298,7 @@ export const useOutdoorStore = defineStore('outdoor', {
             const oldHealth = gameStore.pet.health
             gameStore.pet.health = Math.min(100, gameStore.pet.health + autoHealBuff.value)
             const healedAmount = gameStore.pet.health - oldHealth
-            notificationStore.success(`🏥 急救包自动触发！健康恢复 ${healedAmount} 点！`)
+            notificationStore.success(i18n.global.t('notifications.battle.autoHeal', { amount: healedAmount }))
           }
         }
       }
@@ -296,7 +314,20 @@ export const useOutdoorStore = defineStore('outdoor', {
         this.huntBattleInterval = null
       }
 
-      // ====== 步骤 3: 宠物回家 ======
+      // ====== 步骤 3: 碎片掉落判定 ======
+      const fragmentStore = useFragmentStore()
+      const petCollectionStore = usePetCollectionStore()
+
+      const currentPetType = petCollectionStore.activePet?.petType || 'cat'
+      const droppedFragment = fragmentStore.rollFragmentDrop('hunt', currentPetType)
+
+      if (droppedFragment) {
+        fragmentStore.addFragment(droppedFragment, 1)
+        const fragmentConfig = getFragmentType(droppedFragment)
+        notificationStore.success(`🎉 战斗奖励！获得 ${fragmentConfig?.icon} ${fragmentConfig?.name}`)
+      }
+
+      // ====== 步骤 4: 宠物回家 ======
       gameStore.recallPet()
     },
 

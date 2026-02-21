@@ -34,14 +34,14 @@
       <!-- 森林图标 -->
       <span class="zone-icon">🌲</span>
       <!-- 区域名称 -->
-      <span class="zone-name">森林</span>
+      <span class="zone-name">{{ $t('areas.forest.name') }}</span>
       <!-- 安全等级 -->
-      <span class="zone-safety safe">安全</span>
+      <span class="zone-safety safe">{{ $t('areas.forest.tag') }}</span>
     </div>
 
     <!-- ==================== 区域说明 ==================== -->
     <div class="zone-description">
-      带宠物来这里玩耍，增加心情值
+      {{ $t('areas.forest.description') }}
     </div>
 
     <!-- ==================== 宠物显示区 ==================== -->
@@ -61,7 +61,7 @@
       <!-- 没有宠物时的提示 -->
       <div v-else class="empty-hint">
         <span class="hint-icon">👆</span>
-        <span class="hint-text">拖拽宠物到这里</span>
+        <span class="hint-text">{{ $t('areas.forest.hint') }}</span>
       </div>
     </div>
 
@@ -69,7 +69,7 @@
     <div v-if="outdoorStore.playingPet" class="reward-preview">
       <div class="reward-item">
         <span class="reward-icon">😊</span>
-        <span class="reward-text">心情 +10</span>
+        <span class="reward-text">{{ $t('areas.forest.reward') }}</span>
       </div>
     </div>
 

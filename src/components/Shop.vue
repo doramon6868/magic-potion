@@ -18,7 +18,7 @@
   -->
   <n-modal
     v-model:show="showModel"
-    title="🏪 商店"
+    :title="$t('shop.title')"
     preset="card"
     :style="{ width: '500px', maxWidth: '90vw' }"
     :mask-closable="true"
@@ -28,14 +28,14 @@
 
       <!-- 商店描述 -->
       <div class="shop-description">
-        💰 当前金币: <strong>{{ gameStore.money }}</strong>
+        {{ $t('shop.currentGold') }}: <strong>{{ gameStore.money }}</strong>
       </div>
 
       <!-- 商品分类 -->
       <div class="shop-categories">
         <!-- 基础食物 -->
         <div class="category-section">
-          <div class="category-title">🍽️ 基础食物</div>
+          <div class="category-title">{{ $t('shop.categories.food') }}</div>
           <div class="shop-grid">
             <div
               v-for="item in foodItems"
@@ -48,12 +48,12 @@
             >
               <div class="rarity-badge" :class="item.rarity">{{ getRarityLabel(item.rarity) }}</div>
               <div class="item-icon">{{ item.icon }}</div>
-              <div class="item-name">{{ item.name }}</div>
+              <div class="item-name">{{ $t(`items.list.${item.key}.name`) }}</div>
               <div class="item-effect">
-                <span v-if="item.foodValue > 0">饱食度 +{{ item.foodValue }}</span>
-                <span v-if="item.moodValue > 0" class="mood-effect">心情 +{{ item.moodValue }}</span>
+                <span v-if="item.foodValue > 0">{{ $t('item.hungerValue', { value: item.foodValue }) }}</span>
+                <span v-if="item.moodValue > 0" class="mood-effect">{{ $t('item.moodValue', { value: item.moodValue }) }}</span>
               </div>
-              <div class="item-flavor">{{ item.flavorText }}</div>
+              <div class="item-flavor">{{ $t(`items.list.${item.key}.flavor`) }}</div>
               <div class="item-price">
                 <span class="price-icon">💰</span>
                 <span class="price-value">{{ item.price }}</span>
@@ -63,7 +63,7 @@
                 :disabled="gameStore.money < item.price"
                 @click="buyItem(item)"
               >
-                {{ gameStore.money >= item.price ? '购买' : '金币不足' }}
+                {{ gameStore.money >= item.price ? $t('ui.buy') : $t('ui.insufficientGold') }}
               </button>
             </div>
           </div>
@@ -71,7 +71,7 @@
 
         <!-- 心情道具 -->
         <div class="category-section">
-          <div class="category-title">😊 心情道具</div>
+          <div class="category-title">{{ $t('shop.categories.mood') }}</div>
           <div class="shop-grid">
             <div
               v-for="item in moodItems"
@@ -84,11 +84,11 @@
             >
               <div class="rarity-badge" :class="item.rarity">{{ getRarityLabel(item.rarity) }}</div>
               <div class="item-icon">{{ item.icon }}</div>
-              <div class="item-name">{{ item.name }}</div>
+              <div class="item-name">{{ $t(`items.list.${item.key}.name`) }}</div>
               <div class="item-effect">
-                <span class="mood-effect">心情 +{{ item.moodValue }}</span>
+                <span class="mood-effect">{{ $t('item.moodValue', { value: item.moodValue }) }}</span>
               </div>
-              <div class="item-flavor">{{ item.flavorText }}</div>
+              <div class="item-flavor">{{ $t(`items.list.${item.key}.flavor`) }}</div>
               <div class="item-price">
                 <span class="price-icon">💰</span>
                 <span class="price-value">{{ item.price }}</span>
@@ -98,7 +98,7 @@
                 :disabled="gameStore.money < item.price"
                 @click="buyItem(item)"
               >
-                {{ gameStore.money >= item.price ? '购买' : '金币不足' }}
+                {{ gameStore.money >= item.price ? $t('ui.buy') : $t('ui.insufficientGold') }}
               </button>
             </div>
           </div>
@@ -106,7 +106,7 @@
 
         <!-- 战斗准备 -->
         <div class="category-section">
-          <div class="category-title">⚔️ 战斗准备</div>
+          <div class="category-title">{{ $t('shop.categories.combat') }}</div>
           <div class="shop-grid">
             <div
               v-for="item in combatItems"
@@ -119,11 +119,11 @@
             >
               <div class="rarity-badge" :class="item.rarity">{{ getRarityLabel(item.rarity) }}</div>
               <div class="item-icon">{{ item.icon }}</div>
-              <div class="item-name">{{ item.name }}</div>
+              <div class="item-name">{{ $t(`items.list.${item.key}.name`) }}</div>
               <div class="item-effect special-effect">
                 {{ getBuffDescription(item) }}
               </div>
-              <div class="item-flavor">{{ item.flavorText }}</div>
+              <div class="item-flavor">{{ $t(`items.list.${item.key}.flavor`) }}</div>
               <div class="item-price">
                 <span class="price-icon">💰</span>
                 <span class="price-value">{{ item.price }}</span>
@@ -133,7 +133,7 @@
                 :disabled="gameStore.money < item.price"
                 @click="buyItem(item)"
               >
-                {{ gameStore.money >= item.price ? '购买' : '金币不足' }}
+                {{ gameStore.money >= item.price ? $t('ui.buy') : $t('ui.insufficientGold') }}
               </button>
             </div>
           </div>
@@ -141,7 +141,7 @@
 
         <!-- 风险管控 -->
         <div class="category-section">
-          <div class="category-title">🛡️ 风险管控</div>
+          <div class="category-title">{{ $t('shop.categories.charm') }}</div>
           <div class="shop-grid">
             <div
               v-for="item in charmItems"
@@ -154,11 +154,11 @@
             >
               <div class="rarity-badge" :class="item.rarity">{{ getRarityLabel(item.rarity) }}</div>
               <div class="item-icon">{{ item.icon }}</div>
-              <div class="item-name">{{ item.name }}</div>
+              <div class="item-name">{{ $t(`items.list.${item.key}.name`) }}</div>
               <div class="item-effect special-effect">
                 {{ getBuffDescription(item) }}
               </div>
-              <div class="item-flavor">{{ item.flavorText }}</div>
+              <div class="item-flavor">{{ $t(`items.list.${item.key}.flavor`) }}</div>
               <div class="item-price">
                 <span class="price-icon">💰</span>
                 <span class="price-value">{{ item.price }}</span>
@@ -168,7 +168,7 @@
                 :disabled="gameStore.money < item.price"
                 @click="buyItem(item)"
               >
-                {{ gameStore.money >= item.price ? '购买' : '金币不足' }}
+                {{ gameStore.money >= item.price ? $t('ui.buy') : $t('ui.insufficientGold') }}
               </button>
             </div>
           </div>
@@ -176,7 +176,7 @@
 
         <!-- 特殊道具 -->
         <div class="category-section">
-          <div class="category-title">✨ 特殊道具</div>
+          <div class="category-title">{{ $t('shop.categories.special') }}</div>
           <div class="shop-grid">
             <div
               v-for="item in specialItems"
@@ -189,9 +189,9 @@
             >
               <div class="rarity-badge" :class="item.rarity">{{ getRarityLabel(item.rarity) }}</div>
               <div class="item-icon">{{ item.icon }}</div>
-              <div class="item-name">{{ item.name }}</div>
-              <div class="item-effect">{{ item.description }}</div>
-              <div class="item-flavor">{{ item.flavorText }}</div>
+              <div class="item-name">{{ $t(`items.list.${item.key}.name`) }}</div>
+              <div class="item-effect">{{ $t(`items.list.${item.key}.description`) }}</div>
+              <div class="item-flavor">{{ $t(`items.list.${item.key}.flavor`) }}</div>
               <div class="item-price">
                 <span class="price-icon">💰</span>
                 <span class="price-value">{{ item.price }}</span>
@@ -201,7 +201,7 @@
                 :disabled="gameStore.money < item.price"
                 @click="buyItem(item)"
               >
-                {{ gameStore.money >= item.price ? '购买' : '金币不足' }}
+                {{ gameStore.money >= item.price ? $t('ui.buy') : $t('ui.insufficientGold') }}
               </button>
             </div>
           </div>
@@ -214,7 +214,7 @@
     <template #footer>
       <div class="modal-footer">
         <button class="close-btn" @click="showModel = false">
-          关闭
+          {{ $t('ui.close') }}
         </button>
       </div>
     </template>
@@ -322,7 +322,7 @@ export default {
       this.backpackStore.addItem(item)
 
       // 显示购买成功通知
-      this.notificationStore.success(`✅ 购买了 ${item.name}！`)
+      this.notificationStore.success(this.$t('shop.purchaseSuccess', { name: this.$t(`items.list.${item.key}.name`) }))
     },
 
     /**
@@ -331,41 +331,35 @@ export default {
      * @returns {string} 效果描述
      */
     getBuffDescription(item) {
-      if (!item.buff) return item.description || ''
+      if (!item.buff) return item.key ? this.$t(`items.list.${item.key}.description`) : ''
 
       switch (item.buff.type) {
         case 'hunt_reward_boost':
-          return `下次战斗奖励+${Math.round(item.buff.value * 100)}%`
+          return this.$t('notifications.buff.combatBonus', { percent: Math.round(item.buff.value * 100) })
         case 'hunger_cost_reduce':
-          return `下次探险饱食度消耗-${Math.round(item.buff.value * 100)}%`
+          return this.$t('notifications.buff.consumptionReduction', { percent: Math.round(item.buff.value * 100) })
         case 'death_money_protect':
-          return '下次死亡保留全部金币'
+          return this.$t('notifications.buff.keepGold')
         case 'auto_heal':
-          return `健康低于${item.buff.threshold}时自动恢复${item.buff.value}`
+          return this.$t('notifications.buff.autoHeal')
         case 'exp_boost':
-          return `下次获得经验×${item.buff.value}`
+          return this.$t('notifications.buff.expMultiplier', { multiplier: item.buff.value })
         case 'death_chance_reduce':
-          return `死亡概率-${Math.round(item.buff.value * 100)}%`
+          return this.$t('notifications.buff.deathReduction', { percent: Math.round(item.buff.value * 100) })
         case 'reset_decay':
-          return '重置所有属性衰减'
+          return this.$t('notifications.buff.timeRewind')
         default:
-          return item.description
+          return item.key ? this.$t(`items.list.${item.key}.description`) : ''
       }
     },
 
     /**
      * getRarityLabel: 获取稀有度标签
      * @param {string} rarity - 稀有度代码
-     * @returns {string} 稀有度中文名称
+     * @returns {string} 稀有度名称
      */
     getRarityLabel(rarity) {
-      const labels = {
-        common: '普通',
-        uncommon: '优秀',
-        rare: '稀有',
-        epic: '史诗'
-      }
-      return labels[rarity] || '普通'
+      return this.$t(`items.rarity.${rarity}`) || this.$t('items.rarity.common')
     }
   }
 }

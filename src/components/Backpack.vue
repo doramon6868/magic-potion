@@ -19,13 +19,13 @@
     <!-- 背包标题 -->
     <div class="backpack-header">
       <span class="backpack-icon">🎒</span>
-      <span class="backpack-title">背包</span>
+      <span class="backpack-title">{{ $t('backpack.title') }}</span>
       <span class="item-count">({{ backpackStore.totalItems }})</span>
     </div>
 
     <!-- 背包描述 -->
     <div class="backpack-description">
-      💡 拖拽物品到水晶球来喂养宠物
+      {{ $t('backpack.hint') }}
     </div>
 
     <!-- 物品网格 -->
@@ -52,8 +52,8 @@
       class="empty-backpack"
     >
       <span class="empty-icon">📭</span>
-      <span class="empty-text">背包是空的</span>
-      <span class="empty-hint">去商店购买一些物品吧！</span>
+      <span class="empty-text">{{ $t('backpack.empty') }}</span>
+      <span class="empty-hint">{{ $t('backpack.goShop') }}</span>
     </div>
 
     <!-- 增益效果显示 -->
