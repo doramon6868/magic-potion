@@ -38,7 +38,45 @@
       "sad": "Sad",
       "eating": "Eating",
       "unknown": "Unknown"
-    }
+    },
+    "types": {
+      "cat": {
+        "name": "Lilac",
+        "description": "A cute slugcat with a snail shell and cat's agility",
+        "lore": "Lilac is the first pet you discovered in the magic crystal ball, gentle and loyal, the best companion for your adventure"
+      },
+      "bird": {
+        "name": "Bluebird",
+        "description": "A divine bird with wind power, flying at extreme speed",
+        "lore": "Wind Feather birds come from the magical mountains above the clouds, their feathers can cut through air, bringing refreshing wind"
+      },
+      "fox": {
+        "name": "Red Fox",
+        "description": "A fox with eternally burning flames on its tail, proud but loyal",
+        "lore": "Flame Tail foxes live in magical caves deep within volcanoes, their flames never burn friends, only warm them"
+      },
+      "dragon": {
+        "name": "Crystal",
+        "description": "A young dragon made of pure crystal, possessing the strongest defense",
+        "lore": "Crystal Dragons are descendants of ancient dragon clans, their bodies made of magical crystals that can withstand most damage"
+      }
+    },
+    "passiveSkills": {
+      "windSwiftness": {
+        "name": "Wind Swiftness",
+        "description": "Exploration time reduced by 20%"
+      },
+      "combatFrenzy": {
+        "name": "Combat Frenzy",
+        "description": "Combat rewards increased by 15%"
+      },
+      "crystalShield": {
+        "name": "Crystal Shield",
+        "description": "Hunting death chance reduced by 5%"
+      }
+    },
+    "switchBtn": "Switch Pet",
+    "collection": "Pet Collection"
   },
   "areas": {
     "forest": {
@@ -67,7 +105,8 @@
       "mood": "Mood Items",
       "combat": "Combat Prep",
       "risk": "Risk Control",
-      "special": "Special Items"
+      "special": "Special Items",
+      "synthesis": "Synthesis Potions"
     },
     "rarity": {
       "common": "Common",
@@ -150,6 +189,26 @@
         "name": "Time Hourglass",
         "description": "Reset all stat decay for today (full revival effect)",
         "flavor": "Said to contain solidified time fragments, you can hear time rewinding when flipped"
+      },
+      "common_potion": {
+        "name": "Common Potion",
+        "description": "Basic potion used for pet synthesis",
+        "flavor": "An alchemist's entry-level recipe, emitting a faint magical glow"
+      },
+      "uncommon_potion": {
+        "name": "Advanced Potion",
+        "description": "Advanced potion used for pet synthesis",
+        "flavor": "Enhanced formula with rare herbs, magical energy is more concentrated"
+      },
+      "rare_potion": {
+        "name": "Rare Potion",
+        "description": "Rare potion used for pet synthesis",
+        "flavor": "A precious potion that can only be brewed on full moon nights"
+      },
+      "epic_potion": {
+        "name": "Epic Potion",
+        "description": "Epic potion used for pet synthesis",
+        "flavor": "A legendary recipe, said to contain essence of ancient magic gods"
       },
       "cat_fragment": {
         "name": "Cat Fragment",
@@ -283,7 +342,30 @@
     "deathReduction": "Death -{percent}%"
   },
   "synthesis": {
-    "clickToSynthesize": "Click to Synthesize"
+    "clickToSynthesize": "Click to Synthesize",
+    "title": "Pet Synthesis",
+    "success": "Synthesis Successful!",
+    "failure": "Synthesis Failed",
+    "petListTitle": "Available Pets",
+    "materialsTitle": "Materials",
+    "fragmentLabel": "Fragments",
+    "potionLabel": "Potion",
+    "successRate": "Success Rate",
+    "pityActive": "Pity Active +10%",
+    "startBtn": "Start Synthesis",
+    "autoFillBtn": "Auto-fill Materials",
+    "materialsInsufficient": "Insufficient Materials",
+    "result": {
+      "newPet": "Congratulations! Successfully summoned {name}!",
+      "passiveSkill": "Passive Skill: {name} - {description}",
+      "failureMessage": "Synthesis failed, insufficient magical energy...",
+      "pityProgress": "Pity Progress: {current}/{threshold}",
+      "pityActivated": "Pity activated, next attempt will have increased success rate!"
+    },
+    "hints": {
+      "dragFragment": "Drag fragments from backpack to the slots, then click start synthesis",
+      "locked": "Recipe Locked: {condition}"
+    }
   },
   "saveManager": {
     "title": "💾 Save Manager",
