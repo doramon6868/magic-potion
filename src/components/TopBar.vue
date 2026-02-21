@@ -16,10 +16,19 @@
   -->
   <div class="top-bar">
 
-    <!-- ==================== 左侧：游戏标题 ==================== -->
-    <div class="game-title">
-      <span class="title-icon">✨</span>
-      <span class="title-text">Magic Potion</span>
+    <!-- ==================== 左侧：存档按钮 + 游戏标题 ==================== -->
+    <div class="left-section">
+      <div
+        class="top-button save-button"
+        @click="openSaveManager"
+      >
+        <span class="button-icon">💾</span>
+        <span class="button-text">存档</span>
+      </div>
+      <div class="game-title">
+        <span class="title-icon">✨</span>
+        <span class="title-text">Magic Potion</span>
+      </div>
     </div>
 
     <!-- ==================== 中间：金钱显示 ==================== -->
@@ -62,8 +71,23 @@ export default {
      * open-shop: 打开商店
      * 当用户点击商店按钮时触发
      */
-    'open-shop'
+    'open-shop',
+    /**
+     * open-save-manager: 打开存档管理器
+     * 当用户点击存档按钮时触发
+     */
+    'open-save-manager'
   ],
+
+  methods: {
+    /**
+     * openSaveManager: 打开存档管理器
+     * 触发父组件的事件
+     */
+    openSaveManager() {
+      this.$emit('open-save-manager')
+    }
+  },
 
   /**
    * computed: 计算属性
@@ -205,6 +229,25 @@ export default {
   text-shadow: 0 1px 2px rgba(255, 217, 61, 0.3);
   /* 等宽字体，数字不会跳动 */
   font-family: 'Courier New', monospace;
+}
+
+/* ==================== 左侧区域样式 ==================== */
+
+.left-section {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/* 存档按钮 */
+.save-button {
+  background: rgba(197, 179, 224, 0.2);
+  border: 2px solid rgba(197, 179, 224, 0.3);
+}
+
+.save-button:hover {
+  background: rgba(197, 179, 224, 0.4);
+  border-color: rgba(197, 179, 224, 0.5);
 }
 
 /* ==================== 游戏标题样式 ==================== */

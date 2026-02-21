@@ -42,3 +42,6 @@ final_result.png
 
 # Test screenshots directory
 test-screenshots/
+
+# Playwright MCP logs and screenshots
+.playwright-mcp/

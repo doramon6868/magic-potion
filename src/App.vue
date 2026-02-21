@@ -24,12 +24,13 @@
     <!-- ==================== 顶部功能栏 ==================== -->
     <!--
       TopBar 组件显示：
-      - 左侧：背包按钮（现在直接显示背包，不需要按钮）
+      - 左侧：存档按钮 + 游戏标题
       - 中间：金钱数量
       - 右侧：商店按钮
     -->
     <TopBar
       @open-shop="showShop = true"
+      @open-save-manager="$refs.saveManager.open()"
     />
 
     <!-- ==================== 中间游戏区域 ==================== -->
@@ -62,6 +63,9 @@
     <!-- ==================== 商店弹窗 ==================== -->
     <Shop v-model:show="showShop" />
 
+    <!-- ==================== 存档管理弹窗 ==================== -->
+    <SaveManager ref="saveManager" />
+
     <!-- ==================== 底部通知栏 ==================== -->
     <NotificationBar />
 
@@ -83,9 +87,11 @@ import OutdoorHunt from './components/OutdoorHunt.vue'
 import Backpack from './components/Backpack.vue'
 import Shop from './components/Shop.vue'
 import NotificationBar from './components/NotificationBar.vue'
+import SaveManager from './components/SaveManager.vue'
 
 // ==================== 导入 Store ====================
 import { useGameStore } from './stores/game.js'
+import { useSaveStore } from './stores/save.js'
 
 export default {
   /**
@@ -105,7 +111,8 @@ export default {
     OutdoorHunt,
     Backpack,
     Shop,
-    NotificationBar
+    NotificationBar,
+    SaveManager
   },
 
   /**
@@ -127,30 +134,98 @@ export default {
        * moodTimer: 心情衰减定时器ID
        * 用于每分钟减少宠物心情
        */
-      moodTimer: null
+      moodTimer: null,
+      /**
+       * saveManager: 存档管理组件的引用
+       */
+      saveManager: null
     }
   },
 
   /**
    * mounted: 组件挂载完成后调用
-   * 在这里启动定时器
+   * 在这里初始化存档系统和启动定时器
    */
-  mounted() {
+  async mounted() {
+    const saveStore = useSaveStore()
+
+    // 尝试加载上次使用的存档
+    await this.loadLastSave()
+
+    // 启动自动保存（每60秒自动保存一次）
+    saveStore.initAutoSave()
+
     // 每分钟减少心情
     this.moodTimer = setInterval(() => {
       const gameStore = useGameStore()
       gameStore.decreaseStats()
     }, 60000) // 60000ms = 1分钟
+
+    // 监听页面关闭事件，在离开前保存
+    window.addEventListener('beforeunload', this.handleBeforeUnload)
   },
 
   /**
    * beforeUnmount: 组件卸载前调用
-   * 清理定时器防止内存泄漏
+   * 清理定时器并保存游戏
    */
   beforeUnmount() {
+    const saveStore = useSaveStore()
+
+    // 最后保存一次
+    saveStore.autoSave()
+
+    // 停止自动保存
+    saveStore.stopAutoSave()
+
+    // 清理定时器
     if (this.moodTimer) {
       clearInterval(this.moodTimer)
       this.moodTimer = null
+    }
+
+    // 移除事件监听
+    window.removeEventListener('beforeunload', this.handleBeforeUnload)
+  },
+
+  /**
+   * methods: 组件方法
+   */
+  methods: {
+    /**
+     * loadLastSave: 加载最后使用的存档
+     * 在应用启动时调用
+     */
+    async loadLastSave() {
+      const saveStore = useSaveStore()
+
+      try {
+        const loaded = await saveStore.loadLastSave()
+
+        if (!loaded) {
+          console.log('没有现有存档，开始新游戏')
+        }
+      } catch (error) {
+        console.error('加载存档失败:', error)
+        // 出错时继续开始新游戏
+      }
+    },
+
+    /**
+     * handleBeforeUnload: 处理页面关闭事件
+     * 在用户关闭页面前自动保存
+     */
+    handleBeforeUnload() {
+      const saveStore = useSaveStore()
+      saveStore.autoSave()
+    },
+
+    /**
+     * openSaveManager: 打开存档管理器
+     * 可以通过 ref 调用这个方法
+     */
+    openSaveManager() {
+      this.$refs.saveManager.open()
     }
   }
 }
