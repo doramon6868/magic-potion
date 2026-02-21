@@ -46,7 +46,7 @@
     </div>
 
     <!-- 物品名称 -->
-    <div class="item-name">{{ $t(`items.list.${item.key}.name`) }}</div>
+    <div class="item-name">{{ itemName }}</div>
 
     <!-- 稀有度标签 -->
     <div v-if="item.rarity" class="rarity-tag" :class="item.rarity">
@@ -144,6 +144,32 @@ export default {
         return { draggable: true }
       }
       return {}
+    },
+
+    /**
+     * itemName: 物品显示名称
+     * 如果 item.key 存在，使用 i18n 翻译
+     * 如果 item.key 不存在，使用 item.name 作为 fallback
+     */
+    itemName() {
+      // 防御性检查：确保 item 存在
+      if (!this.item) {
+        return 'Unknown Item'
+      }
+
+      // 如果 key 存在，尝试使用 i18n 翻译
+      if (this.item.key) {
+        const translated = this.$t(`items.list.${this.item.key}.name`)
+        // 如果翻译结果不是键名本身（说明找到了翻译），返回翻译
+        if (translated !== `items.list.${this.item.key}.name`) {
+          return translated
+        }
+        // 如果 i18n 返回键名本身，说明没有找到翻译，使用 item.name 作为 fallback
+        console.warn(`[Item] 未找到物品的 i18n 翻译: key=${this.item.key}, 使用 item.name=${this.item.name}`)
+      }
+
+      // Fallback：使用 item.name 或直接显示 "Unknown"
+      return this.item.name || 'Unknown Item'
     }
   },
 

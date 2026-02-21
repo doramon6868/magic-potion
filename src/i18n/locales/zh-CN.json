@@ -282,6 +282,9 @@
     "expMultiplier": "经验×{multiplier}",
     "deathReduction": "死亡-{percent}%"
   },
+  "synthesis": {
+    "clickToSynthesize": "点击合成"
+  },
   "saveManager": {
     "title": "💾 存档管理",
     "autoSave": {

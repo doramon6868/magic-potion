@@ -282,6 +282,9 @@
     "expMultiplier": "EXP ×{multiplier}",
     "deathReduction": "Death -{percent}%"
   },
+  "synthesis": {
+    "clickToSynthesize": "Click to Synthesize"
+  },
   "saveManager": {
     "title": "💾 Save Manager",
     "autoSave": {

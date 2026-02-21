@@ -67,7 +67,7 @@
       @click.stop="openSynthesis"
     >
       <span class="hint-icon">🔮</span>
-      <span class="hint-text">点击合成</span>
+      <span class="hint-text">{{ $t('synthesis.clickToSynthesize') }}</span>
     </div>
 
   </div>

@@ -24,7 +24,7 @@
         :class="buff.type"
       >
         <span class="buff-item-icon">{{ buff.icon }}</span>
-        <span class="buff-item-name">{{ $t(`items.list.${buff.name}.name`) }}</span>
+        <span class="buff-item-name">{{ getBuffName(buff) }}</span>
         <span class="buff-item-desc">{{ getBuffDescription(buff) }}</span>
       </div>
     </div>
@@ -51,6 +51,36 @@ export default {
    * methods: 组件方法
    */
   methods: {
+    /**
+     * getBuffName: 获取buff显示名称
+     * @param {Object} buff - buff对象
+     * @returns {string}
+     */
+    getBuffName(buff) {
+      // 防御性检查
+      if (!buff || !buff.name) {
+        console.warn('[BuffStatus] buff 或 buff.name 不存在:', buff)
+        return 'Unknown Buff'
+      }
+
+      // 检查 name 是否是有效的 key（英文 key 通常只包含字母、数字、下划线、连字符）
+      const isValidKey = /^[a-zA-Z0-9_-]+$/.test(buff.name)
+
+      if (isValidKey) {
+        // 如果是有效的 key，尝试使用 i18n 翻译
+        const translated = this.$t(`items.list.${buff.name}.name`)
+        // 如果翻译结果不是键名本身，说明找到了翻译
+        if (translated !== `items.list.${buff.name}.name`) {
+          return translated
+        }
+        // i18n 返回键名本身，说明未找到翻译
+        console.warn(`[BuffStatus] 未找到 buff 的 i18n 翻译: key=${buff.name}`)
+      }
+
+      // Fallback：直接使用 buff.name 显示（可能是中文名称）
+      return buff.name
+    },
+
     /**
      * getBuffDescription: 获取buff描述
      * @param {Object} buff - buff对象
