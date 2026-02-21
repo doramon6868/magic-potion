@@ -275,6 +275,7 @@ export default {
   border-radius: 12px;
   border: 2px solid rgba(197, 179, 224, 0.4);
   transition: all 0.3s ease;
+  position: relative;
 }
 
 /* 背包中的物品样式 */
