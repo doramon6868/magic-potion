@@ -18,7 +18,7 @@ export const useBackpackStore = defineStore('backpack', {
   state: () => ({
     /**
      * items: 背包中的物品列表
-     * 每个物品是一个对象，包含 id, name, icon, foodValue, quantity
+     * 每个物品是一个对象，包含 id, name, icon, foodValue, moodValue, category, buff, quantity
      */
     items: [
       // 初始给玩家一些物品用于测试
@@ -26,15 +26,48 @@ export const useBackpackStore = defineStore('backpack', {
         id: 1,
         name: '魔法饼干',
         icon: '🍪',
+        category: 'food',
+        rarity: 'common',
         foodValue: 20,
+        moodValue: 0,
         quantity: 3
       },
       {
         id: 2,
         name: '彩虹糖果',
         icon: '🍬',
+        category: 'food',
+        rarity: 'common',
         foodValue: 15,
+        moodValue: 15,
         quantity: 2
+      },
+      // 给玩家一些新道具试用
+      {
+        id: 8,
+        name: '战斗口粮',
+        icon: '⚔️',
+        category: 'combat',
+        rarity: 'uncommon',
+        foodValue: 15,
+        moodValue: 0,
+        description: '战斗前食用，下次战斗奖励+30%',
+        useCondition: 'before_hunt',
+        buff: { type: 'hunt_reward_boost', value: 0.3, duration: 1 },
+        quantity: 1
+      },
+      {
+        id: 10,
+        name: '护身符',
+        icon: '🛡️',
+        category: 'charm',
+        rarity: 'rare',
+        foodValue: 0,
+        moodValue: 0,
+        description: '下次死亡时保留全部金币（自动触发）',
+        useCondition: 'passive',
+        buff: { type: 'death_money_protect', value: 1, duration: 1 },
+        quantity: 1
       }
     ]
   }),

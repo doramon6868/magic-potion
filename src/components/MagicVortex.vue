@@ -19,10 +19,24 @@
 <template>
   <!--
     旋涡容器
-    使用绝对定位覆盖整个水晶球内部
-    多层嵌套 div 创造复杂的旋涡效果
+    位置调整到水晶球上部，更可见
   -->
   <div class="vortex-container">
+    <!--
+      闪烁星光层
+      多个小光点围绕洞口闪烁
+    -->
+    <div class="sparkles-container">
+      <div class="sparkle sparkle-1"></div>
+      <div class="sparkle sparkle-2"></div>
+      <div class="sparkle sparkle-3"></div>
+      <div class="sparkle sparkle-4"></div>
+      <div class="sparkle sparkle-5"></div>
+      <div class="sparkle sparkle-6"></div>
+      <div class="sparkle sparkle-7"></div>
+      <div class="sparkle sparkle-8"></div>
+    </div>
+
     <!--
       第一层旋涡
       顺时针旋转，速度最慢
@@ -79,20 +93,130 @@ export default {
  * 使用 CSS 动画创造魔法效果
  */
 
-/* 旋涡容器 */
+/* 旋涡容器 - 调整为靠上 */
 .vortex-container {
-  /* 绝对定位，覆盖整个父元素 */
+  /* 绝对定位，放置在水晶球上部 */
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  top: 15%;        /* 从顶部15%开始，使魔法洞更可见 */
+  left: 50%;
+  transform: translateX(-50%);
+  /* 固定大小，比原来更小更像"洞" */
+  width: 120px;
+  height: 120px;
   /* 圆形 */
   border-radius: 50%;
   /* 溢出隐藏 */
   overflow: hidden;
-  /* 模糊效果，让旋涡看起来柔和 */
-  filter: blur(1px);
+  /* 轻微模糊效果 */
+  filter: blur(0.5px);
+}
+
+/* 闪烁星光容器 */
+.sparkles-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none; /* 不阻挡鼠标事件 */
+}
+
+/* 闪烁星光基础样式 - 增强发光效果 */
+.sparkle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  margin-top: -4px;
+  margin-left: -4px;
+  border-radius: 50%;
+  background: white;
+  /* 增强发光效果 */
+  box-shadow:
+    0 0 8px 2px white,
+    0 0 16px 4px rgba(187, 143, 206, 1),
+    0 0 24px 6px rgba(155, 89, 182, 0.8),
+    0 0 32px 8px rgba(155, 89, 182, 0.5);
+  animation: twinkle 1.2s ease-in-out infinite;
+}
+
+/* 星光位置 - 调整在容器内（半径约50px以内） */
+
+/* 星光1 - 上方 - 较大的星光 */
+.sparkle-1 {
+  transform: translate(0, -52px);
+  animation-delay: 0s;
+  width: 10px;
+  height: 10px;
+  margin-top: -5px;
+  margin-left: -5px;
+}
+
+/* 星光2 - 右上方 */
+.sparkle-2 {
+  transform: translate(38px, -38px);
+  animation-delay: 0.15s;
+  width: 6px;
+  height: 6px;
+}
+
+/* 星光3 - 右方 - 小星光 */
+.sparkle-3 {
+  transform: translate(52px, 0);
+  animation-delay: 0.3s;
+  width: 5px;
+  height: 5px;
+  margin-top: -2.5px;
+  margin-left: -2.5px;
+}
+
+/* 星光4 - 右下方 */
+.sparkle-4 {
+  transform: translate(38px, 38px);
+  animation-delay: 0.45s;
+  width: 7px;
+  height: 7px;
+  margin-top: -3.5px;
+  margin-left: -3.5px;
+}
+
+/* 星光5 - 下方 - 较大的星光 */
+.sparkle-5 {
+  transform: translate(0, 52px);
+  animation-delay: 0.6s;
+  width: 10px;
+  height: 10px;
+  margin-top: -5px;
+  margin-left: -5px;
+}
+
+/* 星光6 - 左下方 */
+.sparkle-6 {
+  transform: translate(-38px, 38px);
+  animation-delay: 0.75s;
+  width: 6px;
+  height: 6px;
+}
+
+/* 星光7 - 左方 - 小星光 */
+.sparkle-7 {
+  transform: translate(-52px, 0);
+  animation-delay: 0.9s;
+  width: 5px;
+  height: 5px;
+  margin-top: -2.5px;
+  margin-left: -2.5px;
+}
+
+/* 星光8 - 左上方 */
+.sparkle-8 {
+  transform: translate(-38px, -38px);
+  animation-delay: 1.05s;
+  width: 7px;
+  height: 7px;
+  margin-top: -3.5px;
+  margin-left: -3.5px;
 }
 
 /* 旋涡层基础样式 */
@@ -113,7 +237,7 @@ export default {
 
 /* 第一层 - 最大最慢 */
 .layer-1 {
-  /* 宽度和高度 */
+  /* 宽度和高度 - 调整为适合容器的大小 */
   width: 200%;
   height: 200%;
   /* 从中心偏移一半，实现居中 */
@@ -189,12 +313,12 @@ export default {
   position: absolute;
   top: 50%;
   left: 50%;
-  /* 大小 */
-  width: 60px;
-  height: 60px;
+  /* 大小 - 稍微减小 */
+  width: 50px;
+  height: 50px;
   /* 居中 */
-  margin-top: -30px;
-  margin-left: -30px;
+  margin-top: -25px;
+  margin-left: -25px;
   /* 圆形 */
   border-radius: 50%;
   /**
@@ -227,11 +351,11 @@ export default {
   top: 50%;
   left: 50%;
   /* 小圆点 */
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
   /* 居中 */
-  margin-top: -4px;
-  margin-left: -4px;
+  margin-top: -3px;
+  margin-left: -3px;
   /* 圆形 */
   border-radius: 50%;
   /* 白色发光 */
@@ -241,14 +365,14 @@ export default {
 
 /* 粒子1 - 绕大圈旋转 */
 .particle-1 {
-  /* 使用 CSS 变量控制旋转半径 */
-  --radius: 80px;
+  /* 使用 CSS 变量控制旋转半径 - 调整为更小的半径 */
+  --radius: 50px;
   animation: orbit 2s linear infinite;
 }
 
 /* 粒子2 - 绕中圈旋转，反向 */
 .particle-2 {
-  --radius: 60px;
+  --radius: 38px;
   animation: orbit-reverse 1.5s linear infinite;
   /* 延迟启动，错开位置 */
   animation-delay: -0.5s;
@@ -256,7 +380,7 @@ export default {
 
 /* 粒子3 - 绕小圈旋转 */
 .particle-3 {
-  --radius: 40px;
+  --radius: 28px;
   animation: orbit 1s linear infinite;
   animation-delay: -0.3s;
 }
@@ -327,6 +451,21 @@ export default {
   }
   to {
     transform: rotate(0deg) translateX(var(--radius)) rotate(0deg);
+  }
+}
+
+/**
+ * 闪烁动画
+ * 星光忽明忽暗，同时轻微缩放
+ */
+@keyframes twinkle {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(0.8) translate(var(--twinkle-offset, 0));
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.3) translate(var(--twinkle-offset, 0));
   }
 }
 </style>

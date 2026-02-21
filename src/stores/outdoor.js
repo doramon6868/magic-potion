@@ -7,6 +7,7 @@
 
 import { defineStore } from 'pinia'
 import { useGameStore } from './game.js'
+import { useNotificationStore } from './notification.js'
 
 /**
  * 创建 outdoor store
@@ -92,6 +93,15 @@ export const useOutdoorStore = defineStore('outdoor', {
      * @param {Object} pet - 宠物对象
      */
     sendToPlay(pet) {
+      const gameStore = useGameStore()
+      const notificationStore = useNotificationStore()
+
+      // 检查宠物是否死亡
+      if (gameStore.pet.isDead) {
+        notificationStore.error('💀 宠物已经死亡，需要先使用复活药水！')
+        return false
+      }
+
       // ====== 步骤 1: 保存宠物到玩耍区 ======
       // 创建宠物副本，避免直接修改原对象
       this.playingPet = { ...pet }
@@ -118,8 +128,9 @@ export const useOutdoorStore = defineStore('outdoor', {
 
       console.log('玩耍结束！')
 
-      // 获取 game store 来修改宠物状态
+      // 获取 store
       const gameStore = useGameStore()
+      const notificationStore = useNotificationStore()
 
       // 增加心情（玩耍让宠物开心）
       gameStore.increaseMood(10)
@@ -127,8 +138,8 @@ export const useOutdoorStore = defineStore('outdoor', {
       // 增加经验
       gameStore.addExperience(10)
 
-      // 显示收益提示
-      alert('🌲 玩耍结束！心情 +10，经验 +10！')
+      // 显示收益通知
+      notificationStore.success('🌲 玩耍结束！心情 +10，经验 +10！')
 
       // 清空玩耍区
       this.playingPet = null
@@ -144,6 +155,15 @@ export const useOutdoorStore = defineStore('outdoor', {
      * @param {Object} pet - 宠物对象
      */
     sendToHunt(pet) {
+      const gameStore = useGameStore()
+      const notificationStore = useNotificationStore()
+
+      // 检查宠物是否死亡
+      if (gameStore.pet.isDead) {
+        notificationStore.error('💀 宠物已经死亡，需要先使用复活药水！')
+        return false
+      }
+
       // ====== 步骤 1: 保存宠物到游猎区 ======
       this.huntingPet = { ...pet }
 
@@ -152,7 +172,25 @@ export const useOutdoorStore = defineStore('outdoor', {
 
       console.log('宠物开始战斗了！')
 
-      // ====== 步骤 3: 设置战斗计时器 ======
+      // ====== 步骤 3: 战斗过程中每秒减少健康2点（总共10点）和饱食度 ======
+      let battleTick = 0
+      const battleInterval = setInterval(() => {
+        battleTick++
+        // 每秒减少健康2点，总共5秒减少10点
+        gameStore.pet.health = Math.max(0, gameStore.pet.health - 2)
+        // 同时减少饱食度（战斗消耗体力）
+        gameStore.pet.hunger = Math.max(0, gameStore.pet.hunger - 3)
+
+        // 5秒后结束战斗
+        if (battleTick >= 5) {
+          clearInterval(battleInterval)
+        }
+      }, 1000)
+
+      // 保存定时器ID以便可以取消
+      this.huntBattleInterval = battleInterval
+
+      // ====== 步骤 4: 设置战斗结束计时器 ======
       // 5秒后战斗结束
       this.huntTimer = setTimeout(() => {
         this.finishHunt()
@@ -169,19 +207,37 @@ export const useOutdoorStore = defineStore('outdoor', {
 
       console.log('战斗结束！')
 
-      // 获取 game store
+      // 获取 stores
       const gameStore = useGameStore()
+      const notificationStore = useNotificationStore()
 
-      // ====== 步骤 1: 计算战斗结果 ======
-      // 10% 几率死亡
-      const isDead = Math.random() < 0.1
+      // ====== 步骤 1: 计算死亡概率 ======
+      // 基础死亡概率 10%，幸运护符可降低
+      let deathChance = 0.1
+      const deathReduceBuff = gameStore.consumeBuff('death_chance_reduce')
+      if (deathReduceBuff) {
+        deathChance -= deathReduceBuff.value
+        console.log(`幸运护符生效，死亡概率降低至 ${Math.round(deathChance * 100)}%`)
+      }
+
+      // 计算战斗结果
+      const isDead = Math.random() < deathChance
 
       if (isDead) {
         // ====== 情况 1: 宠物死亡 ======
         console.log('宠物在战斗中阵亡了...')
-        alert('💀 宠物在战斗中阵亡了！需要复活药水才能复活。')
 
-        // 减少健康值
+        // 检查是否有死亡保护buff
+        const moneyProtectBuff = gameStore.consumeBuff('death_money_protect')
+
+        if (moneyProtectBuff) {
+          notificationStore.warning('💀 宠物在战斗中阵亡了！护身符发挥作用，金币已保留。')
+        } else {
+          notificationStore.error('💀 宠物在战斗中阵亡了！需要复活药水才能复活。')
+        }
+
+        // 设置死亡状态
+        gameStore.pet.isDead = true
         gameStore.pet.health = 0
         gameStore.pet.status = 'tired'
 
@@ -189,21 +245,56 @@ export const useOutdoorStore = defineStore('outdoor', {
         // ====== 情况 2: 战斗胜利 ======
         console.log('战斗胜利！')
 
-        // 计算奖励（随机 50-100 金币）
-        const reward = Math.floor(Math.random() * 51) + 50
+        // 计算基础奖励（随机 50-100 金币）
+        let reward = Math.floor(Math.random() * 51) + 50
+
+        // 检查是否有战斗奖励加成buff
+        const rewardBuff = gameStore.consumeBuff('hunt_reward_boost')
+        let bonusReward = 0
+        if (rewardBuff) {
+          bonusReward = Math.floor(reward * rewardBuff.value)
+          reward += bonusReward
+        }
+
         gameStore.earnMoney(reward)
 
-        // 增加经验
-        gameStore.addExperience(25)
+        // 增加经验（支持经验加成buff）
+        const expAmount = gameStore.addExperience(25)
 
-        // 显示胜利提示
-        alert(`🎉 战斗胜利！获得 ${reward} 金币！`)
+        // 显示胜利通知
+        let successMsg = '🎉 战斗胜利！'
+        if (rewardBuff) {
+          successMsg += `基础奖励 +${reward - bonusReward}，战斗口粮加成 +${bonusReward}，总计 ${reward} 金币！`
+        } else {
+          successMsg += `获得 ${reward} 金币！`
+        }
+        if (expAmount > 25) {
+          successMsg += ` 经验卷轴生效，获得 ${expAmount} 经验！`
+        }
+        notificationStore.success(successMsg)
+
+        // 检查是否需要触发自动治疗buff
+        if (gameStore.pet.health < 30) {
+          const autoHealBuff = gameStore.consumeBuff('auto_heal')
+          if (autoHealBuff) {
+            const oldHealth = gameStore.pet.health
+            gameStore.pet.health = Math.min(100, gameStore.pet.health + autoHealBuff.value)
+            const healedAmount = gameStore.pet.health - oldHealth
+            notificationStore.success(`🏥 急救包自动触发！健康恢复 ${healedAmount} 点！`)
+          }
+        }
       }
 
       // ====== 步骤 2: 清空游猎区 ======
       this.huntingPet = null
       this.huntStartTime = null
       this.huntTimer = null
+
+      // 清除战斗过程定时器
+      if (this.huntBattleInterval) {
+        clearInterval(this.huntBattleInterval)
+        this.huntBattleInterval = null
+      }
 
       // ====== 步骤 3: 宠物回家 ======
       gameStore.recallPet()
@@ -227,6 +318,11 @@ export const useOutdoorStore = defineStore('outdoor', {
           clearTimeout(this.huntTimer)
           this.huntTimer = null
         }
+        // 取消战斗过程定时器
+        if (this.huntBattleInterval) {
+          clearInterval(this.huntBattleInterval)
+          this.huntBattleInterval = null
+        }
         this.huntingPet = null
         this.huntStartTime = null
       }
@@ -243,6 +339,9 @@ export const useOutdoorStore = defineStore('outdoor', {
       if (this.huntTimer) {
         clearTimeout(this.huntTimer)
       }
+      if (this.huntBattleInterval) {
+        clearInterval(this.huntBattleInterval)
+      }
 
       // 清空数据
       this.playingPet = null
@@ -250,6 +349,7 @@ export const useOutdoorStore = defineStore('outdoor', {
       this.playStartTime = null
       this.huntStartTime = null
       this.huntTimer = null
+      this.huntBattleInterval = null
     }
   }
 })

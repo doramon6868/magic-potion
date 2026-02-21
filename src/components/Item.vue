@@ -48,9 +48,26 @@
     <!-- 物品名称 -->
     <div class="item-name">{{ item.name }}</div>
 
+    <!-- 稀有度标签 -->
+    <div v-if="item.rarity" class="rarity-tag" :class="item.rarity">
+      {{ getRarityLabel(item.rarity) }}
+    </div>
+
     <!-- 物品效果（只在背包中显示） -->
     <div v-if="isDraggable" class="item-effect">
-      +{{ item.foodValue }} 饱食度
+      <!-- 显示饱食度效果 -->
+      <span v-if="item.foodValue > 0">+{{ item.foodValue }} 饱食度</span>
+      <!-- 显示心情效果 -->
+      <span v-if="item.moodValue > 0" class="mood-effect">+{{ item.moodValue }} 心情</span>
+      <!-- 显示buff效果 -->
+      <span v-if="item.buff" class="buff-effect">{{ getBuffShortDesc(item) }}</span>
+      <!-- 纯心情道具 -->
+      <span v-if="item.category === 'mood' && item.foodValue === 0" class="mood-effect">+{{ item.moodValue }} 心情</span>
+    </div>
+
+    <!-- 风味文本提示（只在背包中显示） -->
+    <div v-if="isDraggable && item.flavorText" class="item-flavor-text">
+      💫 {{ item.flavorText }}
     </div>
 
   </div>
@@ -135,6 +152,49 @@ export default {
    */
   methods: {
     /**
+     * getBuffShortDesc: 获取buff简短描述
+     * @param {Object} item - 道具
+     * @returns {string}
+     */
+    getBuffShortDesc(item) {
+      if (!item.buff) return ''
+
+      switch (item.buff.type) {
+        case 'hunt_reward_boost':
+          return `战斗+${Math.round(item.buff.value * 100)}%`
+        case 'hunger_cost_reduce':
+          return `消耗-${Math.round(item.buff.value * 100)}%`
+        case 'death_money_protect':
+          return '死亡保金币'
+        case 'auto_heal':
+          return '自动回血'
+        case 'exp_boost':
+          return `经验×${item.buff.value}`
+        case 'death_chance_reduce':
+          return '降低死亡'
+        case 'reset_decay':
+          return '重置衰减'
+        default:
+          return '特殊效果'
+      }
+    },
+
+    /**
+     * getRarityLabel: 获取稀有度中文标签
+     * @param {string} rarity - 稀有度代码
+     * @returns {string} 稀有度中文名称
+     */
+    getRarityLabel(rarity) {
+      const labels = {
+        common: '普通',
+        uncommon: '优秀',
+        rare: '稀有',
+        epic: '史诗'
+      }
+      return labels[rarity] || ''
+    },
+
+    /**
      * handleDragStart: 开始拖拽时的处理
      * 使用 HTML5 DataTransfer API 存储数据
      */
@@ -190,9 +250,9 @@ export default {
   flex-direction: column;
   align-items: center;
   padding: 10px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.7);
   border-radius: 12px;
-  border: 2px solid rgba(155, 89, 182, 0.3);
+  border: 2px solid rgba(197, 179, 224, 0.4);
   transition: all 0.3s ease;
 }
 
@@ -202,9 +262,9 @@ export default {
 }
 
 .item-container.in-backpack:hover {
-  border-color: rgba(155, 89, 182, 0.6);
+  border-color: rgba(197, 179, 224, 0.8);
   transform: translateY(-3px);
-  box-shadow: 0 5px 15px rgba(155, 89, 182, 0.3);
+  box-shadow: 0 5px 15px rgba(197, 179, 224, 0.4);
 }
 
 /* 拖拽时的样式 */
@@ -259,7 +319,7 @@ export default {
 .item-name {
   font-size: 13px;
   font-weight: 500;
-  color: white;
+  color: var(--text-dark);
   text-align: center;
   margin-bottom: 4px;
 }
@@ -267,6 +327,123 @@ export default {
 /* 物品效果 */
 .item-effect {
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(74, 74, 106, 0.7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+/* 心情效果 */
+.mood-effect {
+  color: #e88a9a;
+  font-weight: 500;
+}
+
+/* Buff效果 */
+.buff-effect {
+  color: #d4a300;
+  font-size: 10px;
+}
+
+/* ==================== 稀有度样式 ==================== */
+
+/* 物品容器需要相对定位来容纳标签 */
+.item-container {
+  position: relative;
+}
+
+/* 稀有度标签 */
+.rarity-tag {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  padding: 1px 4px;
+  border-radius: 3px;
+  font-size: 9px;
+  font-weight: bold;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* 普通 - 灰色 */
+.rarity-tag.common {
+  background: linear-gradient(135deg, #9e9e9e, #757575);
+  color: white;
+}
+
+/* 优秀 - 绿色 */
+.rarity-tag.uncommon {
+  background: linear-gradient(135deg, #4caf50, #2e7d32);
+  color: white;
+}
+
+/* 稀有 - 蓝色 */
+.rarity-tag.rare {
+  background: linear-gradient(135deg, #2196f3, #1565c0);
+  color: white;
+}
+
+/* 史诗 - 紫色 */
+.rarity-tag.epic {
+  background: linear-gradient(135deg, #9c27b0, #6a1b9a);
+  color: white;
+}
+
+/* 根据稀有度设置边框颜色 */
+.item-container.common {
+  border-color: rgba(158, 158, 158, 0.4);
+}
+
+.item-container.uncommon {
+  border-color: rgba(76, 175, 80, 0.4);
+}
+
+.item-container.rare {
+  border-color: rgba(33, 150, 243, 0.5);
+  box-shadow: 0 0 8px rgba(33, 150, 243, 0.15);
+}
+
+.item-container.epic {
+  border-color: rgba(156, 39, 176, 0.6);
+  box-shadow: 0 0 10px rgba(156, 39, 176, 0.25);
+}
+
+/* 物品容器需要相对定位来容纳标签 */
+.item-container {
+  position: relative;
+}
+
+/* 风味文本 */
+.item-flavor-text {
+  font-size: 10px;
+  color: rgba(74, 74, 106, 0.5);
+  font-style: italic;
+  text-align: center;
+  margin-top: 4px;
+  padding: 0 3px;
+  line-height: 1.2;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+/* 根据稀有度设置边框颜色 */
+.item-container.common {
+  border-color: rgba(158, 158, 158, 0.4);
+}
+
+.item-container.uncommon {
+  border-color: rgba(76, 175, 80, 0.4);
+}
+
+.item-container.rare {
+  border-color: rgba(33, 150, 243, 0.5);
+  box-shadow: 0 0 8px rgba(33, 150, 243, 0.15);
+}
+
+.item-container.epic {
+  border-color: rgba(156, 39, 176, 0.6);
+  box-shadow: 0 0 10px rgba(156, 39, 176, 0.25);
 }
 </style>

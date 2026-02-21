@@ -66,6 +66,7 @@
 <script>
 import { mapStores } from 'pinia'
 import { useGameStore } from '../stores/game.js'
+import { useNotificationStore } from '../stores/notification.js'
 import MagicVortex from './MagicVortex.vue'
 import Pet from './Pet.vue'
 
@@ -186,7 +187,9 @@ export default {
       // 情况2：放下的是宠物（从户外召回）
       if (data.type === 'pet' && data.action === 'recall') {
         this.gameStore.recallPet()
-        alert('宠物回家了！')
+        // 显示宠物回家通知
+        const notificationStore = useNotificationStore()
+        notificationStore.info('🏠 宠物回家了！')
         return
       }
 
@@ -217,11 +220,11 @@ export default {
 
 /* 拖拽经过时的高亮效果 */
 .crystal-ball.drag-over {
-  box-shadow: 0 0 50px rgba(155, 89, 182, 0.8);
+  box-shadow: 0 0 50px rgba(197, 179, 224, 0.8);
   transform: scale(1.02);
 }
 
-/* 水晶球外壳 - 玻璃效果 */
+/* 水晶球外壳 - 玻璃效果 - pastel 薰衣草色 */
 .crystal-ball-outer {
   position: absolute;
   top: 0;
@@ -230,22 +233,22 @@ export default {
   bottom: 0;
   border-radius: 50%;
   box-shadow:
-    inset -10px -10px 20px rgba(0, 0, 0, 0.3),
-    inset 10px 10px 20px rgba(255, 255, 255, 0.2),
+    inset -10px -10px 20px rgba(0, 0, 0, 0.15),
+    inset 10px 10px 20px rgba(255, 255, 255, 0.4),
     0 0 30px var(--glow-color),
-    0 0 60px rgba(155, 89, 182, 0.3),
-    0 20px 40px rgba(0, 0, 0, 0.4);
+    0 0 60px rgba(197, 179, 224, 0.3),
+    0 20px 40px rgba(0, 0, 0, 0.15);
   background: radial-gradient(
     ellipse at 30% 30%,
-    rgba(187, 143, 206, 0.8) 0%,
-    rgba(155, 89, 182, 0.6) 30%,
-    rgba(108, 52, 131, 0.8) 70%,
-    rgba(44, 22, 66, 0.95) 100%
+    rgba(230, 224, 245, 0.9) 0%,
+    rgba(197, 179, 224, 0.7) 30%,
+    rgba(155, 142, 199, 0.8) 70%,
+    rgba(120, 110, 160, 0.95) 100%
   );
   overflow: hidden;
 }
 
-/* 水晶球内部 - 宠物生活的空间 */
+/* 水晶球内部 - 宠物生活的空间 - pastel 天空蓝 */
 .crystal-ball-inner {
   position: absolute;
   top: 15px;
@@ -255,9 +258,9 @@ export default {
   border-radius: 50%;
   background: radial-gradient(
     circle at 40% 40%,
-    rgba(93, 173, 226, 0.3) 0%,
-    rgba(155, 89, 182, 0.2) 40%,
-    rgba(44, 22, 66, 0.6) 100%
+    rgba(168, 216, 234, 0.4) 0%,
+    rgba(197, 179, 224, 0.3) 40%,
+    rgba(100, 90, 140, 0.5) 100%
   );
 }
 
@@ -283,7 +286,7 @@ export default {
   cursor: move;
 }
 
-/* 地毯 - 宠物站立的地方 */
+/* 地毯 - 宠物站立的地方 - pastel 粉 */
 .carpet {
   position: absolute;
   bottom: 30px;
@@ -294,17 +297,17 @@ export default {
   border-radius: 50%;
   background: radial-gradient(
     ellipse at center,
-    #922b21 0%,
-    #641e16 70%,
-    #4a1410 100%
+    #f8c3cd 0%,
+    #e8a8b5 70%,
+    #d895a3 100%
   );
   box-shadow:
-    inset 0 -5px 10px rgba(0, 0, 0, 0.5),
-    0 5px 15px rgba(0, 0, 0, 0.3);
+    inset 0 -5px 10px rgba(0, 0, 0, 0.2),
+    0 5px 15px rgba(0, 0, 0, 0.15);
   z-index: 5;
 }
 
-/* 水晶球底座 */
+/* 水晶球底座 - pastel 紫灰木色 */
 .crystal-ball-base {
   position: absolute;
   bottom: -30px;
@@ -315,12 +318,12 @@ export default {
   border-radius: 50%;
   background: linear-gradient(
     to bottom,
-    #5d4037 0%,
-    #3e2723 40%,
-    #1a1a2e 100%
+    #b8a9c9 0%,
+    #9b8ec7 40%,
+    #7a6fa3 100%
   );
   box-shadow:
-    0 10px 30px rgba(0, 0, 0, 0.5),
-    inset 0 -5px 10px rgba(0, 0, 0, 0.5);
+    0 10px 30px rgba(0, 0, 0, 0.2),
+    inset 0 -5px 10px rgba(0, 0, 0, 0.2);
 }
 </style>

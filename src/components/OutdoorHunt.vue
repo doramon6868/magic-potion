@@ -30,27 +30,6 @@
     @dragleave="handleDragLeave"
     @drop.prevent="handleDrop"
   >
-    <!-- ==================== 战斗主题背景装饰 ==================== -->
-    <div class="battle-decoration">
-      <!-- 月亮 -->
-      <div class="moon">🌙</div>
-      <!-- 火焰 -->
-      <div class="fire fire-1">🔥</div>
-      <div class="fire fire-2">🔥</div>
-      <div class="fire fire-3">🔥</div>
-      <!-- 武器装饰 -->
-      <div class="weapon weapon-1">⚔️</div>
-      <div class="weapon weapon-2">🗡️</div>
-      <div class="weapon weapon-3">🛡️</div>
-      <!-- 骷髅装饰 -->
-      <div class="skull skull-1">💀</div>
-      <div class="skull skull-2">☠️</div>
-      <!-- 蝙蝠 -->
-      <div class="bat bat-1">🦇</div>
-      <div class="bat bat-2">🦇</div>
-      <div class="bat bat-3">🦇</div>
-    </div>
-
     <!-- ==================== 区域标题 ==================== -->
     <div class="zone-header">
       <!-- 危险图标 -->
@@ -243,25 +222,26 @@ export default {
   padding: 15px;
   border-radius: 20px;
   /**
-   * 背景 - 暗红色渐变，表示危险，添加夜空效果
+   * 背景 - pastel 柔和珊瑚色渐变
    */
   background: linear-gradient(
     180deg,
-    rgba(74, 20, 20, 0.8) 0%,
-    rgba(106, 17, 17, 0.7) 50%,
-    rgba(183, 28, 28, 0.6) 100%
+    rgba(255, 179, 186, 0.6) 0%,
+    rgba(255, 194, 199, 0.7) 50%,
+    rgba(255, 138, 149, 0.8) 100%
   );
-  border: 2px solid rgba(244, 67, 54, 0.3);
+  border: 2px solid rgba(255, 179, 186, 0.5);
   transition: all 0.3s ease;
   overflow: hidden;
+  box-shadow: 0 4px 20px rgba(255, 179, 186, 0.3);
 }
 
-/* 拖拽高亮状态 - 红色 */
+/* 拖拽高亮状态 - pastel 珊瑚 */
 .outdoor-hunt.drop-target {
-  border-color: rgba(244, 67, 54, 0.8);
+  border-color: rgba(255, 179, 186, 0.9);
   box-shadow:
-    0 0 30px rgba(244, 67, 54, 0.5),
-    inset 0 0 20px rgba(244, 67, 54, 0.2);
+    0 0 30px rgba(255, 179, 186, 0.6),
+    inset 0 0 20px rgba(255, 179, 186, 0.3);
   transform: scale(1.02);
 }
 
@@ -282,20 +262,19 @@ export default {
 .zone-name {
   font-size: 18px;
   font-weight: bold;
-  color: #ef5350;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  color: #d66a75;
 }
 
-/* 危险等级标签 */
+/* 危险等级标签 - pastel 珊瑚 */
 .zone-safety.danger {
   margin-left: 8px;
   padding: 2px 8px;
   border-radius: 10px;
   font-size: 12px;
   font-weight: bold;
-  background: rgba(244, 67, 54, 0.3);
-  color: #ef5350;
-  border: 1px solid rgba(244, 67, 54, 0.5);
+  background: rgba(255, 179, 186, 0.5);
+  color: #d66a75;
+  border: 1px solid rgba(255, 179, 186, 0.7);
 }
 
 /* ==================== 区域说明 ==================== */
@@ -303,13 +282,13 @@ export default {
 .zone-description {
   text-align: center;
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(140, 80, 90, 0.9);
   margin-bottom: 15px;
 }
 
 /* 警告文字 */
 .warning-text {
-  color: #ef5350;
+  color: #d66a75;
   font-weight: bold;
 }
 
@@ -328,7 +307,7 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(140, 80, 90, 0.6);
 }
 
 .hint-icon {
@@ -346,7 +325,7 @@ export default {
 .reward-preview {
   margin-top: 10px;
   padding: 10px;
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(255, 255, 255, 0.4);
   border-radius: 10px;
 }
 
@@ -370,12 +349,12 @@ export default {
 
 .reward-text {
   font-size: 12px;
-  color: #ffd700;
+  color: #e6a700;
 }
 
 .risk-text {
   font-size: 12px;
-  color: #ef5350;
+  color: #d66a75;
   font-weight: bold;
 }
 

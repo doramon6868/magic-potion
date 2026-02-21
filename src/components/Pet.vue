@@ -432,8 +432,9 @@ export default {
 .pet-stats {
   /* 上边距 */
   margin-top: 8px;
-  /* 背景 - 半透明深色 */
-  background: rgba(0, 0, 0, 0.7);
+  /* 背景 - 半透明白色配合 pastel 紫边框 */
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(197, 179, 224, 0.5);
   /* 圆角 */
   border-radius: 10px;
   /* 内边距 */
@@ -441,7 +442,7 @@ export default {
   /* 宽度 */
   width: 130px;
   /* 阴影 */
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 10px rgba(197, 179, 224, 0.3);
 }
 
 /* 单个属性条 */
@@ -463,8 +464,8 @@ export default {
   width: 40px;
   /* 文字大小 */
   font-size: 12px;
-  /* 颜色 */
-  color: #bb8fce;
+  /* 颜色 - 深色文字便于在浅色背景上阅读 */
+  color: var(--text-dark);
   /* 文字不换行 */
   white-space: nowrap;
 }
@@ -525,8 +526,8 @@ export default {
   text-align: right;
   /* 大小 */
   font-size: 10px;
-  /* 颜色 */
-  color: white;
+  /* 颜色 - 深色文字 */
+  color: var(--text-dark);
   /* 左边距 */
   margin-left: 4px;
 }
@@ -540,9 +541,7 @@ export default {
   /* 文字样式 */
   font-size: 13px;
   font-weight: bold;
-  color: white;
-  /* 阴影 */
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+  color: var(--text-dark);
   /* 不换行 */
   white-space: nowrap;
 }

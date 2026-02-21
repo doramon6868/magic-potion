@@ -34,6 +34,7 @@
         遍历背包中的物品
         v-for: 循环渲染列表
         :key: 每个元素的唯一标识，帮助 Vue 优化更新
+        :class: 根据稀有度添加不同的样式类
       -->
       <Item
         v-for="item in backpackStore.items"
@@ -41,6 +42,7 @@
         :item="item"
         show-quantity
         :is-draggable="true"
+        :class="item.rarity || 'common'"
       />
     </div>
 
@@ -53,6 +55,9 @@
       <span class="empty-text">背包是空的</span>
       <span class="empty-hint">去商店购买一些物品吧！</span>
     </div>
+
+    <!-- 增益效果显示 -->
+    <BuffStatus />
   </div>
 </template>
 
@@ -61,6 +66,7 @@
 import { mapStores } from 'pinia'
 import { useBackpackStore } from '../stores/backpack.js'
 import Item from './Item.vue'
+import BuffStatus from './BuffStatus.vue'
 
 export default {
   // 组件名称
@@ -68,7 +74,8 @@ export default {
 
   // 注册子组件
   components: {
-    Item
+    Item,
+    BuffStatus
   },
 
   /**
@@ -88,13 +95,14 @@ export default {
 /* 背包面板容器 */
 .backpack-panel {
   width: 220px;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(255, 255, 255, 0.7);
   border-radius: 20px;
-  border: 2px solid rgba(155, 89, 182, 0.5);
+  border: 2px solid rgba(197, 179, 224, 0.5);
   padding: 15px;
   display: flex;
   flex-direction: column;
   max-height: 400px;
+  box-shadow: 0 4px 20px rgba(197, 179, 224, 0.2);
 }
 
 /* 背包头部 */
@@ -104,7 +112,7 @@ export default {
   justify-content: center;
   margin-bottom: 10px;
   padding-bottom: 10px;
-  border-bottom: 1px solid rgba(155, 89, 182, 0.3);
+  border-bottom: 1px solid rgba(197, 179, 224, 0.4);
 }
 
 .backpack-icon {
@@ -115,23 +123,23 @@ export default {
 .backpack-title {
   font-size: 18px;
   font-weight: bold;
-  color: #bb8fce;
+  color: var(--text-dark);
 }
 
 .item-count {
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(74, 74, 106, 0.6);
   margin-left: 5px;
 }
 
 /* 背包描述 */
 .backpack-description {
   text-align: center;
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(74, 74, 106, 0.8);
   font-size: 12px;
   margin-bottom: 15px;
   padding: 8px;
-  background: rgba(155, 89, 182, 0.2);
+  background: rgba(197, 179, 224, 0.3);
   border-radius: 8px;
 }
 
@@ -151,7 +159,7 @@ export default {
   flex-direction: column;
   align-items: center;
   padding: 30px 10px;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(74, 74, 106, 0.5);
 }
 
 .empty-icon {

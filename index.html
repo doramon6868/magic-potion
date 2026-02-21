@@ -36,8 +36,8 @@
 
     /* 页面主体样式 */
     body {
-      /* 使用深色背景，突出紫色主题 */
-      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      /* 使用纯浅紫色渐变背景 */
+      background: linear-gradient(135deg, #f0e6ff 0%, #e6d9ff 100%);
       /* 最小高度设为100视口高度，确保背景铺满整个屏幕 */
       min-height: 100vh;
       /* 使用系统默认字体 */
@@ -47,21 +47,31 @@
     }
 
     /*
-      紫色主题变量
+      Pastel 紫蓝粉主题变量
       这些 CSS 变量可以在整个项目中使用
       方便统一修改颜色主题
     */
     :root {
-      /* 主紫色 - 游戏主题色 */
-      --primary-purple: #9b59b6;
-      /* 浅紫色 - 用于高亮 */
-      --light-purple: #bb8fce;
+      /* 柔和紫 - 游戏主题色 */
+      --primary-purple: #c5b3e0;
+      /* 淡薰衣草 - 用于高亮 */
+      --light-purple: #e6e0f5;
       /* 深紫色 - 用于阴影 */
-      --dark-purple: #6c3483;
-      /* 魔法蓝 - 用于水晶球效果 */
-      --magic-blue: #5dade2;
+      --dark-purple: #9b8ec7;
+      /* 天空蓝 - 用于水晶球效果 */
+      --magic-blue: #a8d8ea;
       /* 发光效果颜色 */
-      --glow-color: rgba(155, 89, 182, 0.6);
+      --glow-color: rgba(197, 179, 224, 0.6);
+      /* 深色文字 - 用于浅背景 */
+      --text-dark: #4a4a6a;
+      /* 浅色文字 - 用于深元素 */
+      --text-light: #ffffff;
+      /* 柔和粉 */
+      --soft-pink: #f8c3cd;
+      /* 淡薄荷绿 */
+      --soft-mint: #b8e0d2;
+      /* 柔和金黄 */
+      --soft-gold: #ffd93d;
     }
   </style>
 </head>

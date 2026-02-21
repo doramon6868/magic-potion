@@ -94,16 +94,18 @@ export default {
   /* 内边距 */
   padding: 15px 30px;
   /**
-   * 背景 - 半透明黑色
-   * 让顶部栏在背景上更突出
+   * 背景 - 半透明白色
+   * 让顶部栏在浅色背景上更突出
    */
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(255, 255, 255, 0.7);
+  /* 边框 */
+  border: 2px solid rgba(197, 179, 224, 0.3);
   /* 圆角 */
   border-radius: 15px;
   /* 底部边距 */
   margin-bottom: 20px;
-  /* 内阴影 */
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  /* 阴影 */
+  box-shadow: 0 4px 20px rgba(197, 179, 224, 0.2);
 }
 
 /* ==================== 按钮样式 ==================== */
@@ -126,12 +128,12 @@ export default {
 
 /* 按钮悬停效果 */
 .top-button:hover {
-  /* 背景变亮 */
-  background: rgba(155, 89, 182, 0.3);
+  /* 背景变亮 - pastel 紫 */
+  background: rgba(197, 179, 224, 0.4);
   /* 向上移动一点 */
   transform: translateY(-2px);
   /* 阴影 */
-  box-shadow: 0 5px 15px rgba(155, 89, 182, 0.4);
+  box-shadow: 0 5px 15px rgba(197, 179, 224, 0.4);
 }
 
 /* 按钮点击效果 */
@@ -154,12 +156,10 @@ export default {
 .button-text {
   /* 文字大小 */
   font-size: 14px;
-  /* 颜色 */
-  color: white;
+  /* 颜色 - 深色文字 */
+  color: var(--text-dark);
   /* 字重 */
   font-weight: 500;
-  /* 阴影 */
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 /* ==================== 金钱显示样式 ==================== */
@@ -169,18 +169,18 @@ export default {
   /* 使用 flex 水平排列 */
   display: flex;
   align-items: center;
-  /* 背景 */
-  background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 193, 7, 0.2));
+  /* 背景 - 柔和金黄 */
+  background: linear-gradient(135deg, rgba(255, 217, 61, 0.2), rgba(255, 193, 7, 0.2));
   /* 边框 */
-  border: 2px solid rgba(255, 215, 0, 0.5);
+  border: 2px solid rgba(255, 217, 61, 0.5);
   /* 圆角 */
   border-radius: 25px;
   /* 内边距 */
   padding: 10px 25px;
   /* 阴影 */
   box-shadow:
-    0 4px 15px rgba(255, 215, 0, 0.3),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    0 4px 15px rgba(255, 217, 61, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
 /* 金币图标 */
@@ -197,14 +197,12 @@ export default {
 .money-amount {
   /* 文字大小 */
   font-size: 20px;
-  /* 颜色 - 金色 */
-  color: #ffd700;
+  /* 颜色 - 柔和金黄 */
+  color: #e6a700;
   /* 字重 */
   font-weight: bold;
   /* 阴影 */
-  text-shadow:
-    0 0 10px rgba(255, 215, 0, 0.5),
-    0 2px 4px rgba(0, 0, 0, 0.3);
+  text-shadow: 0 1px 2px rgba(255, 217, 61, 0.3);
   /* 等宽字体，数字不会跳动 */
   font-family: 'Courier New', monospace;
 }
@@ -226,11 +224,10 @@ export default {
 .title-text {
   font-size: 24px;
   font-weight: bold;
-  background: linear-gradient(135deg, #bb8fce, #e91e63);
+  background: linear-gradient(135deg, #c5b3e0, #a8d8ea);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  text-shadow: 0 2px 10px rgba(155, 89, 182, 0.5);
 }
 
 @keyframes sparkle {

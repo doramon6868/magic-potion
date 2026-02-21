@@ -62,6 +62,9 @@
     <!-- ==================== 商店弹窗 ==================== -->
     <Shop v-model:show="showShop" />
 
+    <!-- ==================== 底部通知栏 ==================== -->
+    <NotificationBar />
+
   </div>
 </template>
 
@@ -79,6 +82,10 @@ import OutdoorPlay from './components/OutdoorPlay.vue'
 import OutdoorHunt from './components/OutdoorHunt.vue'
 import Backpack from './components/Backpack.vue'
 import Shop from './components/Shop.vue'
+import NotificationBar from './components/NotificationBar.vue'
+
+// ==================== 导入 Store ====================
+import { useGameStore } from './stores/game.js'
 
 export default {
   /**
@@ -97,7 +104,8 @@ export default {
     OutdoorPlay,
     OutdoorHunt,
     Backpack,
-    Shop
+    Shop,
+    NotificationBar
   },
 
   /**
@@ -114,7 +122,35 @@ export default {
        * showShop: 控制商店弹窗的显示
        * true = 显示，false = 隐藏
        */
-      showShop: false
+      showShop: false,
+      /**
+       * moodTimer: 心情衰减定时器ID
+       * 用于每分钟减少宠物心情
+       */
+      moodTimer: null
+    }
+  },
+
+  /**
+   * mounted: 组件挂载完成后调用
+   * 在这里启动定时器
+   */
+  mounted() {
+    // 每分钟减少心情
+    this.moodTimer = setInterval(() => {
+      const gameStore = useGameStore()
+      gameStore.decreaseStats()
+    }, 60000) // 60000ms = 1分钟
+  },
+
+  /**
+   * beforeUnmount: 组件卸载前调用
+   * 清理定时器防止内存泄漏
+   */
+  beforeUnmount() {
+    if (this.moodTimer) {
+      clearInterval(this.moodTimer)
+      this.moodTimer = null
     }
   }
 }
@@ -151,7 +187,7 @@ export default {
   /* 上边距，和顶部栏保持距离 */
   margin-top: 20px;
   /* 最小高度确保有足够空间 */
-  min-height: 400px;
+  min-height: 600px;
 }
 
 /* 背包容器 */
@@ -160,6 +196,10 @@ export default {
   width: 250px;
   /* 弹性不收缩 */
   flex-shrink: 0;
+  /* 最大高度限制，防止超出视口 */
+  max-height: calc(100vh - 150px);
+  /* 超出时可滚动 */
+  overflow-y: auto;
 }
 
 /* 水晶球容器 */
@@ -178,7 +218,7 @@ export default {
 /* 户外区域容器 */
 .outdoor-wrapper {
   /* 固定宽度 */
-  width: 220px;
+  width: 240px;
   /* 弹性不收缩 */
   flex-shrink: 0;
   /* 垂直排列 */
@@ -190,6 +230,6 @@ export default {
 /* 户外区域 */
 .outdoor-zone {
   /* 高度 */
-  height: 190px;
+  height: 280px;
 }
 </style>

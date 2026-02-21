@@ -29,26 +29,6 @@
     @dragleave="handleDragLeave"
     @drop.prevent="handleDrop"
   >
-    <!-- ==================== 森林主题背景装饰 ==================== -->
-    <div class="forest-decoration">
-      <!-- 太阳 -->
-      <div class="sun">☀️</div>
-      <!-- 云朵 -->
-      <div class="cloud cloud-1">☁️</div>
-      <div class="cloud cloud-2">☁️</div>
-      <!-- 树木装饰 -->
-      <div class="tree tree-1">🌲</div>
-      <div class="tree tree-2">🌳</div>
-      <div class="tree tree-3">🌲</div>
-      <div class="tree tree-4">🌳</div>
-      <!-- 花朵 -->
-      <div class="flower flower-1">🌸</div>
-      <div class="flower flower-2">🌼</div>
-      <div class="flower flower-3">🌺</div>
-      <!-- 草地 -->
-      <div class="grass">🌱</div>
-    </div>
-
     <!-- ==================== 区域标题 ==================== -->
     <div class="zone-header">
       <!-- 森林图标 -->
@@ -254,29 +234,30 @@ export default {
   /* 圆角 */
   border-radius: 20px;
   /**
-   * 背景 - 森林绿色渐变，更明亮的森林天空
+   * 背景 - pastel 薄荷绿色渐变
    */
   background: linear-gradient(
     180deg,
-    rgba(129, 199, 132, 0.4) 0%,
-    rgba(76, 175, 80, 0.5) 50%,
-    rgba(46, 125, 50, 0.6) 100%
+    rgba(168, 230, 207, 0.6) 0%,
+    rgba(184, 224, 210, 0.7) 50%,
+    rgba(127, 205, 187, 0.8) 100%
   );
   /* 边框 */
-  border: 2px solid rgba(76, 175, 80, 0.3);
+  border: 2px solid rgba(168, 230, 207, 0.5);
   /* 过渡动画 */
   transition: all 0.3s ease;
   overflow: hidden;
+  box-shadow: 0 4px 20px rgba(168, 230, 207, 0.3);
 }
 
 /* 拖拽高亮状态 */
 .outdoor-play.drop-target {
   /* 边框变亮 */
-  border-color: rgba(76, 175, 80, 0.8);
+  border-color: rgba(168, 230, 207, 0.9);
   /* 阴影 */
   box-shadow:
-    0 0 30px rgba(76, 175, 80, 0.5),
-    inset 0 0 20px rgba(76, 175, 80, 0.2);
+    0 0 30px rgba(168, 230, 207, 0.6),
+    inset 0 0 20px rgba(168, 230, 207, 0.3);
   /* 放大一点 */
   transform: scale(1.02);
 }
@@ -302,8 +283,7 @@ export default {
 .zone-name {
   font-size: 18px;
   font-weight: bold;
-  color: #81c784;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  color: #5a9a8a;
 }
 
 /* 安全等级标签 */
@@ -319,11 +299,11 @@ export default {
   font-weight: bold;
 }
 
-/* 安全 - 绿色 */
+/* 安全 - pastel 薄荷绿 */
 .zone-safety.safe {
-  background: rgba(76, 175, 80, 0.3);
-  color: #81c784;
-  border: 1px solid rgba(76, 175, 80, 0.5);
+  background: rgba(168, 230, 207, 0.5);
+  color: #5a9a8a;
+  border: 1px solid rgba(168, 230, 207, 0.7);
 }
 
 /* ==================== 区域说明 ==================== */
@@ -334,7 +314,7 @@ export default {
   /* 文字大小 */
   font-size: 12px;
   /* 颜色 */
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(90, 120, 110, 0.9);
   /* 下边距 */
   margin-bottom: 15px;
 }
@@ -361,7 +341,7 @@ export default {
   flex-direction: column;
   align-items: center;
   /* 颜色 */
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(90, 120, 110, 0.6);
 }
 
 /* 提示图标 */
@@ -385,7 +365,7 @@ export default {
   /* 内边距 */
   padding: 10px;
   /* 背景 */
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(255, 255, 255, 0.4);
   /* 圆角 */
   border-radius: 10px;
 }
@@ -407,7 +387,7 @@ export default {
 /* 收益文字 */
 .reward-text {
   font-size: 14px;
-  color: #81c784;
+  color: #5a9a8a;
 }
 
 /* ==================== 森林主题装饰 ==================== */
