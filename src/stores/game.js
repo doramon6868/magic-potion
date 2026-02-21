@@ -21,6 +21,14 @@
 import { defineStore } from 'pinia'
 import { useBackpackStore } from './backpack.js'
 import { useNotificationStore } from './notification.js'
+import {
+  PET_STATUS,
+  DECAY,
+  EXPERIENCE,
+  DEFAULTS,
+  INITIAL,
+  THRESHOLDS
+} from '../config/gameBalance.js'
 
 /**
  * 创建 game store
@@ -39,7 +47,7 @@ export const useGameStore = defineStore('game', {
      * money: 玩家拥有的金币数量
      * 用于在商店购买物品
      */
-    money: 100,
+    money: INITIAL.MONEY,
 
     /**
      * pet: 宠物对象
@@ -56,21 +64,21 @@ export const useGameStore = defineStore('game', {
        * 0 = 非常饥饿，100 = 饱饱的
        * 会随时间下降，需要通过喂食补充
        */
-      hunger: 80,
+      hunger: INITIAL.HUNGER,
 
       /**
        * mood: 心情 (0-100)
        * 0 = 非常难过，100 = 非常开心
        * 通过玩耍增加，会随时间下降
        */
-      mood: 70,
+      mood: INITIAL.MOOD,
 
       /**
        * health: 健康值 (0-100)
        * 0 = 濒死，100 = 非常健康
        * 战斗可能减少健康值
        */
-      health: 100,
+      health: INITIAL.HEALTH,
 
       /**
        * status: 当前状态
@@ -96,7 +104,7 @@ export const useGameStore = defineStore('game', {
        * level: 宠物等级
        * 可以通过积累经验值升级
        */
-      level: 1,
+      level: INITIAL.LEVEL,
 
       /**
        * experience: 当前经验值
@@ -153,25 +161,24 @@ export const useGameStore = defineStore('game', {
 
     /**
      * isPetHungry: 宠物是否饿了
-     * 饱食度低于 30 算饿
+     * 饱食度低于阈值算饿
      * @returns {boolean}
      */
-    isPetHungry: (state) => state.pet.hunger < 30,
+    isPetHungry: (state) => state.pet.hunger < THRESHOLDS.HUNGRY,
 
     /**
      * isPetHappy: 宠物是否开心
-     * 心情大于 70 算开心
+     * 心情大于阈值算开心
      * @returns {boolean}
      */
-    isPetHappy: (state) => state.pet.mood > 70,
+    isPetHappy: (state) => state.pet.mood > THRESHOLDS.HAPPY,
 
     /**
      * petLevelProgress: 宠物升级进度（百分比）
-     * 假设每级需要 100 经验
      * @returns {number} 0-100
      */
     petLevelProgress: (state) => {
-      return state.pet.experience % 100
+      return state.pet.experience % EXPERIENCE.PER_LEVEL
     }
   },
 
@@ -251,9 +258,9 @@ export const useGameStore = defineStore('game', {
       console.log(`喂食 ${item.name}，饱食度从 ${oldHunger} 增加到 ${this.pet.hunger}`)
 
       // ====== 步骤 7: 增加心情 ======
-      // 根据物品的moodValue增加心情，如果没有则默认+5
+      // 根据物品的moodValue增加心情，如果没有则使用默认值
       const oldMood = this.pet.mood
-      const moodIncrease = item.moodValue !== undefined ? item.moodValue : 5
+      const moodIncrease = item.moodValue !== undefined ? item.moodValue : DEFAULTS.MOOD_INCREASE
       this.pet.mood = Math.min(100, this.pet.mood + moodIncrease)
 
       // 构建效果描述
@@ -268,10 +275,10 @@ export const useGameStore = defineStore('game', {
       // 显示喂养成功通知
       notificationStore.success(`✅ 喂食成功！${item.name}让宠物很开心~ ${effectText}`)
 
-      // ====== 步骤 8: 3秒后恢复 idle 状态 ======
+      // ====== 步骤 8: 延迟后恢复 idle 状态 ======
       setTimeout(() => {
         this.pet.status = 'idle'
-      }, 3000)
+      }, PET_STATUS.DURATION.EATING)
 
       // ====== 步骤 9: 返回成功 ======
       return true
@@ -392,12 +399,12 @@ export const useGameStore = defineStore('game', {
       notificationStore.success(`🎾 和宠物玩耍了${item.name}！心情 +${actualIncrease}`)
       console.log(`使用${item.name}，心情从 ${oldMood} 增加到 ${this.pet.mood}`)
 
-      // 3秒后恢复状态
+      // 延迟后恢复状态
       setTimeout(() => {
         if (this.pet.status === 'happy') {
           this.pet.status = 'idle'
         }
-      }, 3000)
+      }, PET_STATUS.DURATION.HAPPY)
 
       return true
     },
@@ -556,19 +563,19 @@ export const useGameStore = defineStore('game', {
      */
     decreaseStats() {
       // 饱食度慢慢下降（在家降得慢，户外降得快）
-      const hungerDecay = this.pet.isAtHome ? 1 : 2
+      const hungerDecay = this.pet.isAtHome ? DECAY.HUNGER_AT_HOME : DECAY.HUNGER_OUTDOOR
       this.pet.hunger = Math.max(0, this.pet.hunger - hungerDecay)
 
-      // 心情每分钟减少5
-      this.pet.mood = Math.max(0, this.pet.mood - 5)
+      // 心情定期衰减
+      this.pet.mood = Math.max(0, this.pet.mood - DECAY.MOOD_DECREASE)
 
       // 如果饱食度很低，宠物会疲惫
-      if (this.pet.hunger < 20) {
+      if (this.pet.hunger < DECAY.TIRED_THRESHOLD) {
         this.pet.status = 'tired'
       }
 
       // 如果心情很低，宠物会难过
-      if (this.pet.mood < 20 && this.pet.status !== 'tired') {
+      if (this.pet.mood < DECAY.SAD_THRESHOLD && this.pet.status !== 'tired') {
         this.pet.status = 'sad'
       }
     },
@@ -622,8 +629,8 @@ export const useGameStore = defineStore('game', {
 
       this.pet.experience += finalAmount
 
-      // 检查是否升级（每100经验升一级）
-      const newLevel = Math.floor(this.pet.experience / 100) + 1
+      // 检查是否升级
+      const newLevel = Math.floor(this.pet.experience / EXPERIENCE.PER_LEVEL) + 1
       if (newLevel > this.pet.level) {
         this.pet.level = newLevel
         console.log(`宠物升级到 ${newLevel} 级！`)

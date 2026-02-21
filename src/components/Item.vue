@@ -348,10 +348,7 @@ export default {
 
 /* ==================== 稀有度样式 ==================== */
 
-/* 物品容器需要相对定位来容纳标签 */
-.item-container {
-  position: relative;
-}
+/* 物品容器需要相对定位来容纳标签（已在第248-257行定义基础样式） */
 
 /* 稀有度标签 */
 .rarity-tag {
@@ -408,11 +405,6 @@ export default {
   box-shadow: 0 0 10px rgba(156, 39, 176, 0.25);
 }
 
-/* 物品容器需要相对定位来容纳标签 */
-.item-container {
-  position: relative;
-}
-
 /* 风味文本 */
 .item-flavor-text {
   font-size: 10px;
@@ -426,24 +418,5 @@ export default {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
-}
-
-/* 根据稀有度设置边框颜色 */
-.item-container.common {
-  border-color: rgba(158, 158, 158, 0.4);
-}
-
-.item-container.uncommon {
-  border-color: rgba(76, 175, 80, 0.4);
-}
-
-.item-container.rare {
-  border-color: rgba(33, 150, 243, 0.5);
-  box-shadow: 0 0 8px rgba(33, 150, 243, 0.15);
-}
-
-.item-container.epic {
-  border-color: rgba(156, 39, 176, 0.6);
-  box-shadow: 0 0 10px rgba(156, 39, 176, 0.25);
 }
 </style>

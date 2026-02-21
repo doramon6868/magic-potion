@@ -96,7 +96,7 @@
             <n-button
               size="small"
               :disabled="!getSlotInfo(index)"
-              @click="loadFromSlot(index)"
+              @click="handleLoadFromSlot(index)"
             >
               读取
             </n-button>
@@ -395,14 +395,15 @@ export default {
     },
 
     /**
-     * loadFromSlot: 从指定槽位加载存档
+     * handleLoadFromSlot: 从指定槽位加载存档
      *
      * @param {number} index - 槽位索引
      */
-    async loadFromSlot(index) {
+    async handleLoadFromSlot(index) {
       const notificationStore = useNotificationStore()
 
       try {
+        // 调用 store 的 loadFromSlot 方法（通过 mapActions 映射）
         await this.loadFromSlot(index)
         notificationStore.success(`📂 已加载存档: ${this.getSlotInfo(index)?.meta?.name || `槽位 ${index + 1}`}`)
         this.close()
