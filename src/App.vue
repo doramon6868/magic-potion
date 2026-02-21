@@ -315,12 +315,14 @@ export default {
 
 /* 背包容器 */
 .backpack-wrapper {
-  /* 占据剩余空间 */
-  flex: 1;
+  /* 固定高度 */
+  height: 280px;
   /* 超出时可滚动 */
   overflow-y: auto;
-  /* 最小高度 */
-  min-height: 200px;
+  /* 背景 */
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  padding: 10px;
 }
 
 /* 水晶球容器 */

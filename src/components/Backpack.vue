@@ -101,6 +101,8 @@ export default {
   display: flex;
   flex-direction: column;
   box-shadow: 0 4px 20px rgba(139, 92, 246, 0.15);
+  /* 高度填满容器 */
+  height: 100%;
 }
 
 /* 背包头部 */
@@ -147,8 +149,10 @@ export default {
   grid-template-columns: repeat(2, 1fr);
   gap: 10px;
   overflow-y: auto;
-  max-height: 250px;
+  /* 占据剩余空间 */
+  flex: 1;
   padding: 5px;
+  min-height: 100px;
 }
 
 /* 空背包提示 */
