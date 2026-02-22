@@ -28,8 +28,14 @@
         <!-- 魔法旋涡特效 -->
         <MagicVortex v-if="showVortex || isDragOver" />
 
-        <!-- 宠物显示（简化版） -->
-        <div v-if="gameStore.pet.isAtHome" class="pet-simple-display">
+        <!-- 宠物显示（可拖拽） -->
+        <div
+          v-if="gameStore.pet.isAtHome"
+          class="pet-simple-display"
+          draggable="true"
+          @dragstart="handlePetDragStart"
+          @dragend="handlePetDragEnd"
+        >
           <div class="simple-avatar" :style="avatarStyle">
             <span class="simple-emoji">{{ petEmoji }}</span>
           </div>
@@ -119,6 +125,39 @@ export default {
   },
 
   methods: {
+    /**
+     * 处理宠物拖拽开始
+     */
+    handlePetDragStart(event) {
+      // 只有在家时才能拖拽
+      if (!this.gameStore.pet.isAtHome) {
+        event.preventDefault()
+        return
+      }
+
+      // 设置拖拽效果
+      event.dataTransfer.effectAllowed = 'move'
+
+      // 存储宠物拖拽数据
+      const dragData = {
+        type: 'pet',
+        action: 'send',
+        pet: this.gameStore.pet
+      }
+      const dataString = JSON.stringify(dragData)
+      event.dataTransfer.setData('application/json', dataString)
+      event.dataTransfer.setData('text/plain', dataString)
+
+      console.log('宠物开始拖拽:', this.gameStore.pet.name)
+    },
+
+    /**
+     * 处理宠物拖拽结束
+     */
+    handlePetDragEnd(event) {
+      console.log('宠物拖拽结束')
+    },
+
     /**
      * 处理点击水晶球
      * 打开合成界面
@@ -298,6 +337,17 @@ export default {
   flex-direction: column;
   align-items: center;
   gap: 8px;
+  cursor: grab;
+  user-select: none;
+  transition: transform 0.2s ease;
+}
+
+.pet-simple-display:active {
+  cursor: grabbing;
+}
+
+.pet-simple-display:hover {
+  transform: scale(1.05);
 }
 
 .simple-avatar {
