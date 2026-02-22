@@ -36,13 +36,9 @@
     <!-- ==================== 中间游戏区域 ==================== -->
     <div class="game-area">
       <!--
-        左侧：宠物信息 + 背包
-        宠物头像和属性条放在背包上方
+        左侧：宠物信息
       -->
-      <div class="left-panel">
-        <PetDisplay class="pet-display-wrapper" />
-        <Backpack class="backpack-wrapper" />
-      </div>
+      <PetDisplay class="pet-display-wrapper" />
 
       <!--
         中间：宠物互动区域（简化版圆形水晶球）
@@ -54,12 +50,15 @@
       <CrystalBall class="crystal-ball-wrapper" @open-synthesis="showSynthesis = true" />
 
       <!--
-        右侧：户外区域（森林 + 游猎区）
-        宠物可以拖拽到这里进行探索或战斗
+        右侧：户外区域 + 背包
+        宠物可以拖拽到户外进行探索或战斗
       -->
-      <div class="outdoor-wrapper">
-        <OutdoorPlay class="outdoor-zone" />
-        <OutdoorHunt class="outdoor-zone" />
+      <div class="right-panel">
+        <div class="outdoor-wrapper">
+          <OutdoorPlay class="outdoor-zone" />
+          <OutdoorHunt class="outdoor-zone" />
+        </div>
+        <Backpack class="backpack-right" />
       </div>
     </div>
 
@@ -293,10 +292,18 @@ export default {
   min-height: 600px;
 }
 
-/* 左侧面板容器 - 宠物 + 背包 */
-.left-panel {
+/* 宠物显示区域 */
+.pet-display-wrapper {
   /* 固定宽度 */
   width: 280px;
+  /* 弹性不收缩 */
+  flex-shrink: 0;
+}
+
+/* 右侧面板 - 户外 + 背包 */
+.right-panel {
+  /* 固定宽度 */
+  width: 260px;
   /* 弹性不收缩 */
   flex-shrink: 0;
   /* 垂直排列 */
@@ -307,16 +314,10 @@ export default {
   max-height: calc(100vh - 100px);
 }
 
-/* 宠物显示区域 */
-.pet-display-wrapper {
-  /* 不收缩 */
-  flex-shrink: 0;
-}
-
-/* 背包容器 */
-.backpack-wrapper {
+/* 右侧背包容器 */
+.backpack-right {
   /* 固定高度 */
-  height: 280px;
+  height: 220px;
   /* 超出时可滚动 */
   overflow-y: auto;
   /* 背景 */
