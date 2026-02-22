@@ -54,11 +54,8 @@
         宠物可以拖拽到户外进行探索或战斗
       -->
       <div class="right-panel">
-        <div class="outdoor-wrapper">
-          <OutdoorPlay class="outdoor-zone" />
-          <OutdoorHunt class="outdoor-zone" />
-        </div>
-        <Backpack class="backpack-right" />
+        <OutdoorPlay class="outdoor-zone" />
+        <OutdoorHunt class="outdoor-zone" />
       </div>
     </div>
 
@@ -93,7 +90,6 @@ import CrystalBall from './components/CrystalBall.vue'
 import PetDisplay from './components/PetDisplay.vue'
 import OutdoorPlay from './components/OutdoorPlay.vue'
 import OutdoorHunt from './components/OutdoorHunt.vue'
-import Backpack from './components/Backpack.vue'
 import Shop from './components/Shop.vue'
 import NotificationBar from './components/NotificationBar.vue'
 import SaveManager from './components/SaveManager.vue'
@@ -122,7 +118,6 @@ export default {
     PetDisplay,
     OutdoorPlay,
     OutdoorHunt,
-    Backpack,
     Shop,
     NotificationBar,
     SaveManager,
@@ -300,7 +295,7 @@ export default {
   flex-shrink: 0;
 }
 
-/* 右侧面板 - 户外 + 背包 */
+/* 右侧面板 - 户外区域 */
 .right-panel {
   /* 固定宽度 */
   width: 260px;
@@ -310,28 +305,6 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 15px;
-  /* 高度自适应 */
-  height: auto;
-}
-
-/* 右侧面板内的户外容器 */
-.right-panel .outdoor-wrapper {
-  /* 宽度填满 */
-  width: 100%;
-}
-
-/* 右侧背包容器 */
-.backpack-right {
-  /* 固定高度 */
-  height: 220px;
-  /* 不收缩 */
-  flex-shrink: 0;
-  /* 超出时可滚动 */
-  overflow-y: auto;
-  /* 背景 */
-  background: rgba(255, 255, 255, 0.3);
-  border-radius: 12px;
-  padding: 10px;
 }
 
 /* 水晶球容器 */

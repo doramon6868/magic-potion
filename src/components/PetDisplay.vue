@@ -41,8 +41,26 @@
       </div>
     </div>
 
+    <!-- 切换按钮 -->
+    <div class="toggle-buttons">
+      <button
+        class="toggle-btn"
+        :class="{ 'active': !showBackpack }"
+        @click="showBackpack = false"
+      >
+        📊 属性
+      </button>
+      <button
+        class="toggle-btn"
+        :class="{ 'active': showBackpack }"
+        @click="showBackpack = true"
+      >
+        🎒 背包 ({{ backpackStore.totalItems }})
+      </button>
+    </div>
+
     <!-- 属性条区域 -->
-    <div class="pet-stats-section">
+    <div v-if="!showBackpack" class="pet-stats-section">
       <!-- 饱食度条 -->
       <div class="stat-bar">
         <div class="stat-icon">🍖</div>
@@ -83,6 +101,25 @@
             <div class="stat-fill health-fill" :style="{ width: gameStore.pet.health + '%' }"></div>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- 背包区域 -->
+    <div v-else class="backpack-section">
+      <div v-if="backpackStore.items.length === 0" class="empty-backpack">
+        <span class="empty-icon">📭</span>
+        <span class="empty-text">背包是空的</span>
+        <span class="empty-hint">去商店购买物品吧</span>
+      </div>
+      <div v-else class="items-grid">
+        <Item
+          v-for="item in backpackStore.items"
+          :key="item.id"
+          :item="item"
+          show-quantity
+          :is-draggable="true"
+          :class="item.rarity || 'common'"
+        />
       </div>
     </div>
 
@@ -129,20 +166,27 @@
 import { mapStores } from 'pinia'
 import { useGameStore } from '../stores/game.js'
 import { usePetCollectionStore } from '../stores/petCollection.js'
+import { useBackpackStore } from '../stores/backpack.js'
 import { useNotificationStore } from '../stores/notification.js'
 import { getPetType } from '../config/petTypes.js'
+import Item from './Item.vue'
 
 export default {
   name: 'PetDisplay',
 
+  components: {
+    Item
+  },
+
   data() {
-  return {
-    showPetSwitcher: false
-  }
-},
+    return {
+      showPetSwitcher: false,
+      showBackpack: false
+    }
+  },
 
   computed: {
-    ...mapStores(useGameStore, usePetCollectionStore),
+    ...mapStores(useGameStore, usePetCollectionStore, useBackpackStore),
 
     petConfig() {
       const petType = this.petCollectionStore.activePet?.petType || 'cat'
@@ -366,6 +410,38 @@ export default {
   color: #7c3aed;
 }
 
+/* 切换按钮区域 */
+.toggle-buttons {
+  display: flex;
+  gap: 8px;
+  margin: 16px 0;
+}
+
+.toggle-btn {
+  flex: 1;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.5);
+  border: 2px solid rgba(139, 92, 246, 0.2);
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.toggle-btn:hover {
+  background: rgba(139, 92, 246, 0.1);
+  border-color: rgba(139, 92, 246, 0.4);
+}
+
+.toggle-btn.active {
+  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+  border-color: transparent;
+  color: white;
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+}
+
 /* 属性条区域 */
 .pet-stats-section {
   background: rgba(255, 255, 255, 0.6);
@@ -484,6 +560,46 @@ export default {
 @keyframes pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.5; }
+}
+
+/* 背包区域 */
+.backpack-section {
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 16px;
+  padding: 12px;
+  min-height: 180px;
+}
+
+.items-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+/* 背包空状态 */
+.empty-backpack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  color: rgba(74, 74, 106, 0.5);
+}
+
+.empty-icon {
+  font-size: 36px;
+  margin-bottom: 8px;
+}
+
+.empty-text {
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.empty-hint {
+  font-size: 12px;
 }
 
 /* 耳朵摇摆动画 */
