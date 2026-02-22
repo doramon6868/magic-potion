@@ -320,11 +320,6 @@ export default {
   width: 100%;
 }
 
-/* 右侧面板内的户外区域 - 减小高度 */
-.right-panel .outdoor-zone {
-  height: 200px;
-}
-
 /* 右侧背包容器 */
 .backpack-right {
   /* 固定高度 */
@@ -352,7 +347,7 @@ export default {
   padding-top: 20px;
 }
 
-/* 户外区域容器 */
+/* 户外区域容器（默认在右侧） */
 .outdoor-wrapper {
   /* 固定宽度 */
   width: 240px;
@@ -364,9 +359,9 @@ export default {
   gap: 15px;
 }
 
-/* 户外区域 */
+/* 户外区域（默认高度） */
 .outdoor-zone {
   /* 高度 */
-  height: 280px;
+  height: 200px;
 }
 </style>
