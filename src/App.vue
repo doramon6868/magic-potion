@@ -310,14 +310,27 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 15px;
-  /* 最大高度限制 */
-  max-height: calc(100vh - 100px);
+  /* 高度自适应 */
+  height: auto;
+}
+
+/* 右侧面板内的户外容器 */
+.right-panel .outdoor-wrapper {
+  /* 宽度填满 */
+  width: 100%;
+}
+
+/* 右侧面板内的户外区域 - 减小高度 */
+.right-panel .outdoor-zone {
+  height: 200px;
 }
 
 /* 右侧背包容器 */
 .backpack-right {
   /* 固定高度 */
   height: 220px;
+  /* 不收缩 */
+  flex-shrink: 0;
   /* 超出时可滚动 */
   overflow-y: auto;
   /* 背景 */
