@@ -25,8 +25,8 @@
     <div class="crystal-ball-body">
       <!-- 内部空间 -->
       <div class="crystal-ball-inner">
-        <!-- 魔法旋涡特效 -->
-        <MagicVortex v-if="showVortex || isDragOver" />
+        <!-- 液态魔法门特效 -->
+        <MagicDoor :is-open="showVortex || isDragOver" />
 
         <!-- 宠物显示（可拖拽） -->
         <div
@@ -73,13 +73,13 @@ import { useGameStore } from '../stores/game.js'
 import { useNotificationStore } from '../stores/notification.js'
 import { usePetCollectionStore } from '../stores/petCollection.js'
 import { getPetType } from '../config/petTypes.js'
-import MagicVortex from './MagicVortex.vue'
+import MagicDoor from './MagicDoor.vue'
 
 export default {
   name: 'CrystalBall',
 
   components: {
-    MagicVortex
+    MagicDoor
   },
 
   data() {
@@ -340,6 +340,8 @@ export default {
   cursor: grab;
   user-select: none;
   transition: transform 0.2s ease;
+  position: relative;
+  z-index: 10;
 }
 
 .pet-simple-display:active {
