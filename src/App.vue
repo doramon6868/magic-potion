@@ -3,7 +3,7 @@
 
   这是整个应用的容器组件
   它负责：
-  1. 布局整个游戏界面（顶部栏、左侧背包、中间水晶球、右侧户外区）
+  1. 布局整个游戏界面（顶部栏、左侧宠物+背包、中间宠物展示区、右侧户外区）
   2. 引入所有子组件
   3. 控制商店弹窗的显示/隐藏
 
@@ -36,14 +36,12 @@
     <!-- ==================== 中间游戏区域 ==================== -->
     <div class="game-area">
       <!--
-        左侧：背包
-        物品可以直接拖拽到中间的水晶球
+        左侧：宠物信息
       -->
-      <Backpack class="backpack-wrapper" />
+      <PetDisplay class="pet-display-wrapper" />
 
       <!--
-        中间：水晶球（游戏核心区域）
-        这是宠物居住的地方，也是主要交互区域
+        中间：宠物互动区域（简化版圆形水晶球）
         可以接收：
         - 从背包拖拽来的物品（喂养）
         - 从户外区拖拽回来的宠物（召回）
@@ -52,10 +50,10 @@
       <CrystalBall class="crystal-ball-wrapper" @open-synthesis="showSynthesis = true" />
 
       <!--
-        右侧：户外区域（森林 + 游猎区）
-        宠物可以拖拽到这里进行探索或战斗
+        右侧：户外区域 + 背包
+        宠物可以拖拽到户外进行探索或战斗
       -->
-      <div class="outdoor-wrapper">
+      <div class="right-panel">
         <OutdoorPlay class="outdoor-zone" />
         <OutdoorHunt class="outdoor-zone" />
       </div>
@@ -89,9 +87,9 @@
 // ==================== 导入子组件 ====================
 import TopBar from './components/TopBar.vue'
 import CrystalBall from './components/CrystalBall.vue'
+import PetDisplay from './components/PetDisplay.vue'
 import OutdoorPlay from './components/OutdoorPlay.vue'
 import OutdoorHunt from './components/OutdoorHunt.vue'
-import Backpack from './components/Backpack.vue'
 import Shop from './components/Shop.vue'
 import NotificationBar from './components/NotificationBar.vue'
 import SaveManager from './components/SaveManager.vue'
@@ -117,9 +115,9 @@ export default {
   components: {
     TopBar,
     CrystalBall,
+    PetDisplay,
     OutdoorPlay,
     OutdoorHunt,
-    Backpack,
     Shop,
     NotificationBar,
     SaveManager,
@@ -289,16 +287,24 @@ export default {
   min-height: 600px;
 }
 
-/* 背包容器 */
-.backpack-wrapper {
+/* 宠物显示区域 */
+.pet-display-wrapper {
   /* 固定宽度 */
-  width: 250px;
+  width: 280px;
   /* 弹性不收缩 */
   flex-shrink: 0;
-  /* 最大高度限制，防止超出视口 */
-  max-height: calc(100vh - 150px);
-  /* 超出时可滚动 */
-  overflow-y: auto;
+}
+
+/* 右侧面板 - 户外区域 */
+.right-panel {
+  /* 固定宽度 */
+  width: 260px;
+  /* 弹性不收缩 */
+  flex-shrink: 0;
+  /* 垂直排列 */
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
 /* 水晶球容器 */
@@ -311,10 +317,10 @@ export default {
   align-items: center;
   /* 确保有足够高度显示完整的水晶球 */
   min-height: 400px;
-  padding-top: 40px;
+  padding-top: 20px;
 }
 
-/* 户外区域容器 */
+/* 户外区域容器（默认在右侧） */
 .outdoor-wrapper {
   /* 固定宽度 */
   width: 240px;
@@ -326,9 +332,9 @@ export default {
   gap: 15px;
 }
 
-/* 户外区域 */
+/* 户外区域（默认高度） */
 .outdoor-zone {
   /* 高度 */
-  height: 280px;
+  height: 200px;
 }
 </style>

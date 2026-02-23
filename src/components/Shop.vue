@@ -206,6 +206,39 @@
             </div>
           </div>
         </div>
+
+        <!-- 合成药水 -->
+        <div class="category-section">
+          <div class="category-title">{{ $t('shop.categories.synthesis') }}</div>
+          <div class="shop-grid">
+            <div
+              v-for="item in synthesisItems"
+              :key="item.id"
+              class="shop-item synthesis-item"
+              :class="[
+                item.rarity,
+                { 'cannot-afford': gameStore.money < item.price }
+              ]"
+            >
+              <div class="rarity-badge" :class="item.rarity">{{ getRarityLabel(item.rarity) }}</div>
+              <div class="item-icon">{{ item.icon }}</div>
+              <div class="item-name">{{ $t(`items.list.${item.key}.name`) }}</div>
+              <div class="item-effect">{{ $t(`items.list.${item.key}.description`) }}</div>
+              <div class="item-flavor">{{ $t(`items.list.${item.key}.flavor`) }}</div>
+              <div class="item-price">
+                <span class="price-icon">💰</span>
+                <span class="price-value">{{ item.price }}</span>
+              </div>
+              <button
+                class="buy-btn synthesis-buy-btn"
+                :disabled="gameStore.money < item.price"
+                @click="buyItem(item)"
+              >
+                {{ gameStore.money >= item.price ? $t('ui.buy') : $t('ui.insufficientGold') }}
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
 
     </div>
@@ -297,6 +330,13 @@ export default {
      */
     specialItems() {
       return this.shopStore.items.filter(item => item.category === 'special')
+    },
+
+    /**
+     * synthesisItems: 合成药水
+     */
+    synthesisItems() {
+      return this.shopStore.items.filter(item => item.category === 'synthesis')
     }
   },
 
@@ -423,6 +463,12 @@ export default {
 .category-section:nth-child(5) .category-title {
   background: rgba(255, 217, 61, 0.3);
   border-left-color: #ffd93d;
+}
+
+/* 合成药水分类标题 */
+.category-section:nth-child(6) .category-title {
+  background: rgba(139, 92, 246, 0.3);
+  border-left-color: #8b5cf6;
 }
 
 /* 商店描述 */
@@ -622,6 +668,24 @@ export default {
 
 .special-buy-btn:hover:not(:disabled) {
   box-shadow: 0 5px 15px rgba(241, 196, 15, 0.4);
+}
+
+/* 合成药水样式 */
+.synthesis-item {
+  border-color: rgba(139, 92, 246, 0.5);
+}
+
+.synthesis-item:hover {
+  border-color: rgba(139, 92, 246, 0.9);
+}
+
+/* 合成药水购买按钮 */
+.synthesis-buy-btn {
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+}
+
+.synthesis-buy-btn:hover:not(:disabled) {
+  box-shadow: 0 5px 15px rgba(139, 92, 246, 0.4);
 }
 
 /* 弹窗底部 */

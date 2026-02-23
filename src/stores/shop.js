@@ -195,6 +195,60 @@ export const useShopStore = defineStore('shop', {
         moodValue: 0,
         useCondition: 'special',
         buff: { type: 'reset_decay', value: 1, duration: 1 }
+      },
+
+      // ========== 合成药水 ==========
+      {
+        id: 101,
+        key: 'common_potion',
+        icon: '🧪',
+        category: 'synthesis',
+        rarity: 'common',
+        price: 10,
+        foodValue: 0,
+        moodValue: 0,
+        useCondition: 'synthesis',
+        description: '用于宠物合成的普通药水',
+        flavorText: '炼金术士的入门配方，散发着淡淡的魔法光芒'
+      },
+      {
+        id: 102,
+        key: 'uncommon_potion',
+        icon: '⚗️',
+        category: 'synthesis',
+        rarity: 'uncommon',
+        price: 35,
+        foodValue: 0,
+        moodValue: 0,
+        useCondition: 'synthesis',
+        description: '用于宠物合成的高级药水',
+        flavorText: '加入了稀有草药的强化配方，魔法能量更加浓郁'
+      },
+      {
+        id: 103,
+        key: 'rare_potion',
+        icon: '🔮',
+        category: 'synthesis',
+        rarity: 'rare',
+        price: 45,
+        foodValue: 0,
+        moodValue: 0,
+        useCondition: 'synthesis',
+        description: '用于宠物合成的稀有药水',
+        flavorText: '只有在满月之夜才能调配成功的珍贵药水'
+      },
+      {
+        id: 104,
+        key: 'epic_potion',
+        icon: '✨',
+        category: 'synthesis',
+        rarity: 'epic',
+        price: 80,
+        foodValue: 0,
+        moodValue: 0,
+        useCondition: 'synthesis',
+        description: '用于宠物合成的史诗药水',
+        flavorText: '传说中的配方，据说含有远古魔神的精华'
       }
     ]
   }),

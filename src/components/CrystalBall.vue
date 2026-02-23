@@ -1,30 +1,18 @@
 <!--
   CrystalBall.vue - 水晶球组件（游戏核心）
 
-  这是游戏中最重要的组件！水晶球是宠物居住的地方，
-  也是所有交互的中心。
+  简化的水晶球设计 - 完美圆形，柔和紫色主题
+  参考合成界面设计风格
 
   主要功能：
   1. 显示水晶球视觉效果（紫色魔法球体）
-  2. 接收拖拽的物品（从背包来的食物）- 使用原生 HTML5 拖拽 API
-  3. 接收拖拽的宠物（从户外召回）- 使用原生 HTML5 拖拽 API
+  2. 接收拖拽的物品（从背包来的食物）
+  3. 接收拖拽的宠物（从户外召回）
   4. 显示旋涡特效（当有东西被拖入时）
-  5. 显示宠物（当宠物在家时）
-
-  拖拽交互：
-  - 拖拽物品到水晶球 = 喂养宠物
-  - 拖拽宠物到水晶球 = 召回宠物回家
+  5. 显示宠物互动区域
 -->
 
 <template>
-  <!--
-    水晶球容器
-    使用原生 HTML5 拖拽 API
-    @dragover: 拖拽经过时触发
-    @dragenter: 拖拽进入时触发
-    @dragleave: 拖拽离开时触发
-    @drop: 放下时触发
-  -->
   <div
     class="crystal-ball"
     :class="{ 'drag-over': isDragOver }"
@@ -33,42 +21,48 @@
     @dragleave="handleDragLeave"
     @drop.prevent="handleDrop"
   >
-    <!-- ==================== 水晶球外壳 ==================== -->
-    <div class="crystal-ball-outer">
-      <!-- 内层球体 - 宠物生活的地方 -->
+    <!-- 水晶球主体 - 完美圆形 -->
+    <div class="crystal-ball-body">
+      <!-- 内部空间 -->
       <div class="crystal-ball-inner">
+        <!-- 天文台穹顶特效 - 包含玻璃覆盖层 -->
+        <ObservatoryDome :is-open="showVortex || isDragOver" />
 
-        <!-- 魔法旋涡特效 -->
-        <MagicVortex v-if="showVortex || isDragOver" />
-
-        <!-- 宠物组件 -->
-        <div v-if="gameStore.pet.isAtHome" class="pet-wrapper">
-          <Pet
-            :pet="gameStore.pet"
-            draggable="true"
-            @dragstart="handlePetDragStart"
-            @dragend="handlePetDragEnd"
-          />
+        <!-- 宠物显示（可拖拽） - 永远在玻璃层下方 -->
+        <div
+          v-if="gameStore.pet.isAtHome"
+          class="pet-simple-display"
+          draggable="true"
+          @dragstart="handlePetDragStart"
+          @dragend="handlePetDragEnd"
+        >
+          <div class="simple-avatar" :style="avatarStyle">
+            <span class="simple-emoji">{{ petEmoji }}</span>
+          </div>
+          <div class="simple-name">{{ gameStore.pet.name }}</div>
+          <div class="simple-hint">拖拽我到右侧玩耍</div>
         </div>
 
-        <!-- 地毯装饰 -->
-        <div class="carpet"></div>
-
+        <!-- 宠物不在家时的提示 -->
+        <div v-else class="empty-hint">
+          <span class="empty-icon">🏠</span>
+          <span class="empty-text">宠物外出中</span>
+        </div>
       </div>
+
+      <!-- 光泽效果 -->
+      <div class="crystal-ball-shine"></div>
     </div>
 
-    <!-- ==================== 水晶球底座 ==================== -->
-    <div class="crystal-ball-base"></div>
-
-    <!-- ==================== 合成入口提示 ==================== -->
-    <div
-      v-if="showSynthesisHint"
-      class="synthesis-hint"
+    <!-- 合成入口按钮 -->
+    <button
+      v-if="showSynthesisHint && gameStore.pet.isAtHome"
+      class="synthesis-btn"
       @click.stop="openSynthesis"
     >
-      <span class="hint-icon">🔮</span>
-      <span class="hint-text">{{ $t('synthesis.clickToSynthesize') }}</span>
-    </div>
+      <span class="btn-icon">🔮</span>
+      <span class="btn-text">{{ $t('synthesis.clickToSynthesize') }}</span>
+    </button>
 
   </div>
 </template>
@@ -77,15 +71,15 @@
 import { mapStores } from 'pinia'
 import { useGameStore } from '../stores/game.js'
 import { useNotificationStore } from '../stores/notification.js'
-import MagicVortex from './MagicVortex.vue'
-import Pet from './Pet.vue'
+import { usePetCollectionStore } from '../stores/petCollection.js'
+import { getPetType } from '../config/petTypes.js'
+import ObservatoryDome from './ObservatoryDome.vue'
 
 export default {
   name: 'CrystalBall',
 
   components: {
-    MagicVortex,
-    Pet
+    ObservatoryDome
   },
 
   data() {
@@ -98,7 +92,28 @@ export default {
   },
 
   computed: {
-    ...mapStores(useGameStore),
+    ...mapStores(useGameStore, usePetCollectionStore),
+
+    petConfig() {
+      const petType = this.petCollectionStore.activePet?.petType || 'cat'
+      return getPetType(petType)
+    },
+
+    petEmoji() {
+      return this.petConfig?.emoji || '🐌'
+    },
+
+    avatarStyle() {
+      const colors = {
+        cat: 'radial-gradient(ellipse at 40% 30%, #c8f0d8 0%, #a8e6cf 30%, #88d8b0 60%, #6b9b7a 100%)',
+        bird: 'radial-gradient(ellipse at 40% 30%, #a8e6f0 0%, #88d8e6 30%, #68c8d8 60%, #4a9ba8 100%)',
+        fox: 'radial-gradient(ellipse at 40% 30%, #ffd4a8 0%, #ffb888 30%, #e89868 60%, #b87848 100%)',
+        dragon: 'radial-gradient(ellipse at 40% 30%, #e8d8f0 0%, #d8c0e8 30%, #c8a8e0 60%, #9878b8 100%)'
+      }
+      return {
+        background: colors[this.petConfig?.type] || colors.cat
+      }
+    },
 
     petDragData() {
       return {
@@ -114,11 +129,22 @@ export default {
      * 处理宠物拖拽开始
      */
     handlePetDragStart(event) {
+      // 只有在家时才能拖拽
+      if (!this.gameStore.pet.isAtHome) {
+        event.preventDefault()
+        return
+      }
+
       // 设置拖拽效果
       event.dataTransfer.effectAllowed = 'move'
 
       // 存储宠物拖拽数据
-      const dataString = JSON.stringify(this.petDragData)
+      const dragData = {
+        type: 'pet',
+        action: 'send',
+        pet: this.gameStore.pet
+      }
+      const dataString = JSON.stringify(dragData)
       event.dataTransfer.setData('application/json', dataString)
       event.dataTransfer.setData('text/plain', dataString)
 
@@ -130,10 +156,6 @@ export default {
      */
     handlePetDragEnd(event) {
       console.log('宠物拖拽结束')
-      this.showVortex = false
-      this.isDragOver = false
-      this.dragEnterCounter = 0
-      this.showSynthesisHint = true
     },
 
     /**
@@ -235,171 +257,187 @@ export default {
 
 <style scoped>
 /**
- * 水晶球样式
+ * 水晶球样式 - 简化版完美圆形
+ * 参考合成界面设计风格
  */
 
-/* 水晶球容器 - 完美圆形 */
+/* 水晶球容器 */
 .crystal-ball {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  padding: 20px;
+}
+
+/* 水晶球主体 - 完美圆形 */
+.crystal-ball-body {
   position: relative;
+  width: 280px;
+  height: 280px;
   border-radius: 50%;
-  width: 320px;
-  height: 320px;
-  flex-shrink: 0;
-  flex-grow: 0;
-  cursor: pointer;
-  z-index: 1;
-  overflow: visible;
+  background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 50%, #e9d5ff 100%);
+  box-shadow:
+    0 0 0 4px rgba(139, 92, 246, 0.2),
+    0 0 40px rgba(139, 92, 246, 0.3),
+    inset 0 0 60px rgba(255, 255, 255, 0.5),
+    inset -10px -10px 30px rgba(139, 92, 246, 0.1);
+  overflow: hidden;
   transition: all 0.3s ease;
 }
 
 /* 拖拽经过时的高亮效果 */
-.crystal-ball.drag-over {
-  box-shadow: 0 0 50px rgba(197, 179, 224, 0.8);
+.crystal-ball.drag-over .crystal-ball-body {
+  box-shadow:
+    0 0 0 4px rgba(139, 92, 246, 0.4),
+    0 0 60px rgba(139, 92, 246, 0.5),
+    inset 0 0 60px rgba(255, 255, 255, 0.5);
   transform: scale(1.02);
 }
 
-/* 水晶球外壳 - 玻璃效果 - pastel 薰衣草色 */
-.crystal-ball-outer {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  border-radius: 50%;
-  box-shadow:
-    inset -10px -10px 20px rgba(0, 0, 0, 0.15),
-    inset 10px 10px 20px rgba(255, 255, 255, 0.4),
-    0 0 30px var(--glow-color),
-    0 0 60px rgba(197, 179, 224, 0.3),
-    0 20px 40px rgba(0, 0, 0, 0.15);
-  background: radial-gradient(
-    ellipse at 30% 30%,
-    rgba(230, 224, 245, 0.9) 0%,
-    rgba(197, 179, 224, 0.7) 30%,
-    rgba(155, 142, 199, 0.8) 70%,
-    rgba(120, 110, 160, 0.95) 100%
-  );
-  overflow: hidden;
-}
-
-/* 水晶球内部 - 宠物生活的空间 - pastel 天空蓝 */
+/* 内部空间 */
 .crystal-ball-inner {
   position: absolute;
-  top: 15px;
-  left: 15px;
-  right: 15px;
-  bottom: 15px;
+  top: 20px;
+  left: 20px;
+  right: 20px;
+  bottom: 20px;
   border-radius: 50%;
   background: radial-gradient(
-    circle at 40% 40%,
-    rgba(168, 216, 234, 0.4) 0%,
-    rgba(197, 179, 224, 0.3) 40%,
-    rgba(100, 90, 140, 0.5) 100%
+    circle at 50% 40%,
+    rgba(255, 255, 255, 0.9) 0%,
+    rgba(243, 232, 255, 0.7) 40%,
+    rgba(233, 213, 255, 0.5) 100%
   );
-}
-
-/* 宠物包装器 - 确保宠物正确显示在水晶球中央 */
-.pet-wrapper {
-  position: absolute;
-  top: 55%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 160px;
-  /* 高度自适应，容纳头像+名字+状态条 */
-  min-height: 200px;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  flex-direction: column;
-  pointer-events: none;
-  z-index: 10;
+  justify-content: center;
 }
 
-.pet-wrapper :deep(.pet-container) {
-  pointer-events: auto;
-  cursor: move;
-}
-
-/* 地毯 - 宠物站立的地方 - pastel 粉 */
-.carpet {
+/* 光泽效果 */
+.crystal-ball-shine {
   position: absolute;
-  bottom: 30px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 140px;
-  height: 70px;
+  top: 30px;
+  left: 50px;
+  width: 60px;
+  height: 40px;
   border-radius: 50%;
   background: radial-gradient(
     ellipse at center,
-    #f8c3cd 0%,
-    #e8a8b5 70%,
-    #d895a3 100%
+    rgba(255, 255, 255, 0.8) 0%,
+    transparent 70%
   );
-  box-shadow:
-    inset 0 -5px 10px rgba(0, 0, 0, 0.2),
-    0 5px 15px rgba(0, 0, 0, 0.15);
-  z-index: 5;
+  transform: rotate(-30deg);
+  pointer-events: none;
 }
 
-/* 水晶球底座 - pastel 紫灰木色 */
-.crystal-ball-base {
-  position: absolute;
-  bottom: -30px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 160px;
-  height: 50px;
-  border-radius: 50%;
-  background: linear-gradient(
-    to bottom,
-    #b8a9c9 0%,
-    #9b8ec7 40%,
-    #7a6fa3 100%
-  );
-  box-shadow:
-    0 10px 30px rgba(0, 0, 0, 0.2),
-    inset 0 -5px 10px rgba(0, 0, 0, 0.2);
+/* 宠物简单显示 - 在玻璃后方 */
+.pet-simple-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: grab;
+  user-select: none;
+  transition: transform 0.2s ease;
+  position: relative;
+  z-index: 3;  /* 在玻璃覆盖层之下（ObservatoryDome glass-cover 是 z-index: 5） */
+  /* 玻璃后方效果 */
+  filter: blur(0.5px);
+  opacity: 0.9;
 }
 
-/* 合成入口提示 */
-.synthesis-hint {
-  position: absolute;
-  bottom: -70px;
-  left: 50%;
-  transform: translateX(-50%);
+.pet-simple-display:active {
+  cursor: grabbing;
+}
+
+.pet-simple-display:hover {
+  transform: scale(1.05);
+}
+
+.simple-avatar {
+  width: 100px;
+  height: 90px;
+  border-radius: 50% 50% 45% 45%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    0 4px 15px rgba(107, 155, 122, 0.3),
+    inset -2px -2px 6px rgba(0, 0, 0, 0.1),
+    inset 2px 2px 6px rgba(255, 255, 255, 0.4);
+}
+
+.simple-emoji {
+  font-size: 48px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.simple-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #6b21a8;
+}
+
+.simple-hint {
+  font-size: 12px;
+  color: #8b5cf6;
+  background: rgba(139, 92, 246, 0.1);
+  padding: 4px 12px;
+  border-radius: 10px;
+}
+
+/* 空状态提示 */
+.empty-hint {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: #9ca3af;
+}
+
+.empty-icon {
+  font-size: 48px;
+  opacity: 0.5;
+}
+
+.empty-text {
+  font-size: 14px;
+}
+
+/* 合成按钮 */
+.synthesis-btn {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 10px 18px;
+  padding: 12px 24px;
   background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-  border-radius: 20px;
-  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+  border: none;
+  border-radius: 24px;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
   transition: all 0.3s ease;
-  animation: hint-float 2s ease-in-out infinite;
+  animation: btn-float 2s ease-in-out infinite;
 }
 
-.synthesis-hint:hover {
-  transform: translateX(-50%) translateY(-3px);
+.synthesis-btn:hover {
+  transform: translateY(-3px);
   box-shadow: 0 6px 20px rgba(139, 92, 246, 0.5);
 }
 
-@keyframes hint-float {
-  0%, 100% {
-    transform: translateX(-50%) translateY(0);
-  }
-  50% {
-    transform: translateX(-50%) translateY(-5px);
-  }
-}
-
-.hint-icon {
+.btn-icon {
   font-size: 18px;
 }
 
-.hint-text {
-  font-size: 14px;
-  font-weight: 600;
-  color: white;
+@keyframes btn-float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-3px);
+  }
 }
 </style>

@@ -33,10 +33,21 @@
     @dragstart="handleDragStart"
     @dragend="handleDragEnd"
   >
+    <!-- ==================== 宠物切换按钮（当有多只宠物且在家时） ==================== -->
+    <button
+      v-if="pet.isAtHome && hasMultiplePets"
+      class="switch-pet-btn"
+      @click.stop="openPetSwitcher"
+      title="切换宠物"
+    >
+      <span class="switch-icon">🔄</span>
+    </button>
+
     <!-- ==================== 宠物形象 ==================== -->
-    <div class="pet-avatar">
-      <span class="cat-ears">🐱</span>
-      <span class="pet-emoji">🐌</span>
+    <div class="pet-avatar" :style="avatarStyle">
+      <span v-if="petConfig?.passiveSkill" class="skill-icon">{{ petConfig.passiveSkill.icon }}</span>
+      <span class="cat-ears">{{ petEmojiSecondary }}</span>
+      <span class="pet-emoji">{{ petEmoji }}</span>
     </div>
 
     <!-- ==================== 宠物名字 ==================== -->
@@ -95,10 +106,47 @@
       <span class="status-emoji">{{ statusEmoji }}</span>
     </div>
 
+    <!-- ==================== 宠物选择弹窗 ==================== -->
+    <Teleport to="body">
+      <n-modal
+        v-model:show="showPetSwitcher"
+        preset="card"
+        class="pet-switcher-modal"
+        :title="$t('pet.switchBtn')"
+      >
+        <div class="owned-pets-list">
+          <div
+            v-for="ownedPet in ownedPets"
+            :key="ownedPet.instanceId"
+            class="owned-pet-item"
+            :class="{ 'active': ownedPet.instanceId === activePetId }"
+            @click="switchToPet(ownedPet.instanceId)"
+          >
+            <div class="pet-preview-avatar">{{ getPetEmoji(ownedPet.petType) }}</div>
+            <div class="pet-preview-info">
+              <div class="pet-preview-name">{{ ownedPet.name }}</div>
+              <div v-if="getPetPassiveSkill(ownedPet.petType)" class="pet-preview-skill">
+                {{ getPetPassiveSkill(ownedPet.petType).icon }} {{ getPetPassiveSkill(ownedPet.petType).name }}
+              </div>
+            </div>
+            <div v-if="ownedPet.instanceId === activePetId" class="active-badge">
+              ✓ {{ $t('synthesis.current') || '当前' }}
+            </div>
+          </div>
+        </div>
+      </n-modal>
+    </Teleport>
+
   </div>
 </template>
 
 <script>
+import { mapStores } from 'pinia'
+import { usePetCollectionStore } from '../stores/petCollection.js'
+import { useGameStore } from '../stores/game.js'
+import { useNotificationStore } from '../stores/notification.js'
+import { getPetType } from '../config/petTypes.js'
+
 export default {
   // 组件名称
   name: 'Pet',
@@ -147,7 +195,11 @@ export default {
       /**
        * isDragging: 是否正在拖拽
        */
-      isDragging: false
+      isDragging: false,
+      /**
+       * showPetSwitcher: 是否显示宠物切换弹窗
+       */
+      showPetSwitcher: false
     }
   },
 
@@ -156,6 +208,8 @@ export default {
    * 基于 props 和 data 计算出的值
    */
   computed: {
+    ...mapStores(usePetCollectionStore, useGameStore),
+
     /**
      * statusClass: 根据宠物状态返回 CSS 类名
      * 用于给宠物添加不同的动画效果
@@ -201,23 +255,70 @@ export default {
     },
 
     /**
-     * petEmoji: 宠物的主要形象
-     * 奇怪但可爱的生物：蛞蝓猫！
-     * @returns {string} 表情符号组合
+     * petConfig: 当前宠物配置
+     * @returns {Object|null}
      */
-    petEmoji() {
-      // 蛞蝓猫 - 一只长着猫耳朵的可爱蛞蝓
-      // 使用多个 emoji 组合创造独特形象
-      return '🐌'
+    petConfig() {
+      const petType = this.petCollectionStore.activePet?.petType || 'cat'
+      return getPetType(petType)
     },
 
     /**
-     * petDecoration: 宠物的装饰（猫耳朵）
-     * @returns {string} 装饰emoji
+     * petEmoji: 宠物的主要形象
+     * 根据宠物类型返回对应的emoji
+     * @returns {string} 表情符号
      */
-    petDecoration() {
-      // 猫耳朵装饰
-      return '🐱'
+    petEmoji() {
+      return this.petConfig?.emoji || '🐌'
+    },
+
+    /**
+     * petEmojiSecondary: 宠物的次要形象/装饰
+     * @returns {string} 表情符号
+     */
+    petEmojiSecondary() {
+      return this.petConfig?.emojiSecondary || '🐱'
+    },
+
+    /**
+     * avatarStyle: 宠物头像样式
+     * 根据宠物类型返回不同的背景色
+     * @returns {Object}
+     */
+    avatarStyle() {
+      const colors = {
+        cat: 'radial-gradient(ellipse at 40% 30%, #c8f0d8 0%, #a8e6cf 30%, #88d8b0 60%, #6b9b7a 100%)',
+        bird: 'radial-gradient(ellipse at 40% 30%, #a8e6f0 0%, #88d8e6 30%, #68c8d8 60%, #4a9ba8 100%)',
+        fox: 'radial-gradient(ellipse at 40% 30%, #ffd4a8 0%, #ffb888 30%, #e89868 60%, #b87848 100%)',
+        dragon: 'radial-gradient(ellipse at 40% 30%, #e8d8f0 0%, #d8c0e8 30%, #c8a8e0 60%, #9878b8 100%)'
+      }
+      return {
+        background: colors[this.petConfig?.type] || colors.cat
+      }
+    },
+
+    /**
+     * hasMultiplePets: 是否有多只宠物
+     * @returns {boolean}
+     */
+    hasMultiplePets() {
+      return this.petCollectionStore.hasMultiplePets
+    },
+
+    /**
+     * ownedPets: 已拥有的宠物列表
+     * @returns {Array}
+     */
+    ownedPets() {
+      return this.petCollectionStore.ownedPets
+    },
+
+    /**
+     * activePetId: 当前激活的宠物ID
+     * @returns {string|null}
+     */
+    activePetId() {
+      return this.petCollectionStore.activePetId
     },
 
     /**
@@ -286,6 +387,63 @@ export default {
 
       // 触发自定义事件
       this.$emit('dragend', event)
+    },
+
+    /**
+     * openPetSwitcher: 打开宠物切换弹窗
+     */
+    openPetSwitcher() {
+      this.showPetSwitcher = true
+    },
+
+    /**
+     * getPetEmoji: 获取宠物emoji
+     * @param {string} petType - 宠物类型
+     * @returns {string}
+     */
+    getPetEmoji(petType) {
+      const pet = getPetType(petType)
+      return pet?.emoji || '🐌'
+    },
+
+    /**
+     * getPetPassiveSkill: 获取宠物被动技能
+     * @param {string} petType - 宠物类型
+     * @returns {Object|null}
+     */
+    getPetPassiveSkill(petType) {
+      const pet = getPetType(petType)
+      return pet?.passiveSkill || null
+    },
+
+    /**
+     * switchToPet: 切换到指定宠物
+     * @param {string} instanceId - 宠物实例ID
+     */
+    switchToPet(instanceId) {
+      const notificationStore = useNotificationStore()
+
+      // 切换宠物
+      const success = this.petCollectionStore.setActivePet(instanceId)
+
+      if (success) {
+        // 同步新宠物的数据到 game store
+        const newPet = this.petCollectionStore.activePet
+        if (newPet) {
+          this.gameStore.pet.name = newPet.name
+          this.gameStore.pet.hunger = newPet.hunger
+          this.gameStore.pet.mood = newPet.mood
+          this.gameStore.pet.health = newPet.health
+          this.gameStore.pet.level = newPet.level
+          this.gameStore.pet.experience = newPet.experience
+          this.gameStore.pet.status = newPet.status
+          this.gameStore.pet.isAtHome = newPet.isAtHome
+          this.gameStore.pet.isDead = newPet.isDead
+        }
+
+        notificationStore.success(`已切换到 ${this.petCollectionStore.activePet?.name}`)
+        this.showPetSwitcher = false
+      }
     }
   }
 }
@@ -544,6 +702,118 @@ export default {
   color: var(--text-dark);
   /* 不换行 */
   white-space: nowrap;
+}
+
+/* ==================== 宠物切换按钮 ==================== */
+.switch-pet-btn {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+  border: 2px solid white;
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.4);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  transition: all 0.3s ease;
+}
+
+.switch-pet-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.5);
+}
+
+.switch-icon {
+  font-size: 16px;
+}
+
+/* 技能图标 */
+.skill-icon {
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  font-size: 18px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+}
+
+/* ==================== 宠物切换弹窗样式 ==================== */
+.owned-pets-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 8px;
+}
+
+.owned-pet-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.owned-pet-item:hover {
+  background: rgba(255, 255, 255, 1);
+  transform: translateX(4px);
+}
+
+.owned-pet-item.active {
+  background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%);
+  border-color: #8b5cf6;
+}
+
+.pet-preview-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.pet-preview-info {
+  flex: 1;
+}
+
+.pet-preview-name {
+  font-weight: 600;
+  color: #374151;
+  font-size: 14px;
+}
+
+.pet-preview-skill {
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: 2px;
+}
+
+.active-badge {
+  padding: 4px 10px;
+  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 12px;
 }
 
 /* ==================== 状态动画 ==================== */

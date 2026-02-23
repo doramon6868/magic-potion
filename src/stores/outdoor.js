@@ -99,6 +99,7 @@ export const useOutdoorStore = defineStore('outdoor', {
     sendToPlay(pet) {
       const gameStore = useGameStore()
       const notificationStore = useNotificationStore()
+      const petCollectionStore = usePetCollectionStore()
 
       // 检查宠物是否死亡
       if (gameStore.pet.isDead) {
@@ -113,13 +114,16 @@ export const useOutdoorStore = defineStore('outdoor', {
       // ====== 步骤 2: 记录开始时间 ======
       this.playStartTime = Date.now()
 
-      console.log('宠物开始玩耍了！')
+      // ====== 步骤 3: 应用被动技能 - 探险时间减少 ======
+      const playDuration = petCollectionStore.applyPassiveSkillEffect('explore_time_reduce', 3000)
 
-      // ====== 步骤 3: 3秒后自动结束玩耍 ======
-      // 实际游戏中可能需要更长时间，这里为了演示用3秒
+      console.log('宠物开始玩耍了！', playDuration < 3000 ? `(迅捷之风生效: ${playDuration}ms)` : '')
+
+      // ====== 步骤 4: 自动结束玩耍 ======
+      // 实际游戏中可能需要更长时间，这里为了演示用3秒（被动技能可能减少）
       setTimeout(() => {
         this.finishPlay()
-      }, 3000)
+      }, playDuration)
     },
 
     /**
@@ -228,8 +232,13 @@ export const useOutdoorStore = defineStore('outdoor', {
       const notificationStore = useNotificationStore()
 
       // ====== 步骤 1: 计算死亡概率 ======
-      // 基础死亡概率 10%，幸运护符可降低
+      // 基础死亡概率 10%，幸运护符和宠物被动技能可降低
       let deathChance = 0.1
+
+      // 应用宠物被动技能 - 死亡概率降低
+      const petCollectionStore = usePetCollectionStore()
+      deathChance = petCollectionStore.applyPassiveSkillEffect('death_chance_reduce', deathChance)
+
       const deathReduceBuff = gameStore.consumeBuff('death_chance_reduce')
       if (deathReduceBuff) {
         deathChance -= deathReduceBuff.value
@@ -263,6 +272,9 @@ export const useOutdoorStore = defineStore('outdoor', {
 
         // 计算基础奖励（随机 50-100 金币）
         let reward = Math.floor(Math.random() * 51) + 50
+
+        // 应用宠物被动技能 - 战斗奖励加成
+        reward = petCollectionStore.applyPassiveSkillEffect('hunt_reward_boost', reward)
 
         // 检查是否有战斗奖励加成buff
         const rewardBuff = gameStore.consumeBuff('hunt_reward_boost')
@@ -316,7 +328,6 @@ export const useOutdoorStore = defineStore('outdoor', {
 
       // ====== 步骤 3: 碎片掉落判定 ======
       const fragmentStore = useFragmentStore()
-      const petCollectionStore = usePetCollectionStore()
 
       const currentPetType = petCollectionStore.activePet?.petType || 'cat'
       const droppedFragment = fragmentStore.rollFragmentDrop('hunt', currentPetType)

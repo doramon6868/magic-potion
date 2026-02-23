@@ -38,7 +38,45 @@
       "sad": "很难过",
       "eating": "进食中",
       "unknown": "未知"
-    }
+    },
+    "types": {
+      "cat": {
+        "name": "小紫",
+        "description": "一只可爱的蛞蝓猫，有着蜗牛的壳和猫的灵活",
+        "lore": "小紫是你在魔法水晶球中发现的第一只宠物，它温柔而忠诚，是你冒险旅程的最佳伙伴"
+      },
+      "bird": {
+        "name": "青鸟",
+        "description": "一只拥有风之力量的神鸟，飞行速度极快",
+        "lore": "风羽鸟来自云端的魔法山脉，它们的羽毛能够切割空气，带来清爽的风"
+      },
+      "fox": {
+        "name": "赤狐",
+        "description": "尾巴燃烧着永恒火焰的妖狐，性格高傲但忠诚",
+        "lore": "焰尾狐生活在火山深处的魔法洞穴中，它们的火焰不会灼伤朋友，只会温暖他们"
+      },
+      "dragon": {
+        "name": "晶晶",
+        "description": "由纯净水晶构成的幼龙，拥有最强的防御力",
+        "lore": "晶石龙是远古龙族的后裔，它们的身体由魔法水晶构成，能够抵御大多数伤害"
+      }
+    },
+    "passiveSkills": {
+      "windSwiftness": {
+        "name": "迅捷之风",
+        "description": "探险时间减少20%"
+      },
+      "combatFrenzy": {
+        "name": "战斗狂热",
+        "description": "战斗奖励增加15%"
+      },
+      "crystalShield": {
+        "name": "晶石护盾",
+        "description": "游猎死亡概率降低5%"
+      }
+    },
+    "switchBtn": "切换宠物",
+    "collection": "宠物图鉴"
   },
   "areas": {
     "forest": {
@@ -67,7 +105,8 @@
       "mood": "心情道具",
       "combat": "战斗准备",
       "risk": "风险管控",
-      "special": "特殊道具"
+      "special": "特殊道具",
+      "synthesis": "合成药水"
     },
     "rarity": {
       "common": "普通",
@@ -150,6 +189,26 @@
         "name": "时间沙漏",
         "description": "重置今日所有属性衰减（满血复活效果）",
         "flavor": "据说其中流淌的不是沙子，而是凝固的时间碎片，翻转时能听到时光倒流的声音"
+      },
+      "common_potion": {
+        "name": "普通药水",
+        "description": "用于宠物合成的普通药水",
+        "flavor": "炼金术士的入门配方，散发着淡淡的魔法光芒"
+      },
+      "uncommon_potion": {
+        "name": "高级药水",
+        "description": "用于宠物合成的高级药水",
+        "flavor": "加入了稀有草药的强化配方，魔法能量更加浓郁"
+      },
+      "rare_potion": {
+        "name": "稀有药水",
+        "description": "用于宠物合成的稀有药水",
+        "flavor": "只有在满月之夜才能调配成功的珍贵药水"
+      },
+      "epic_potion": {
+        "name": "史诗药水",
+        "description": "用于宠物合成的史诗药水",
+        "flavor": "传说中的配方，据说含有远古魔神的精华"
       },
       "cat_fragment": {
         "name": "猫之碎片",
@@ -283,7 +342,30 @@
     "deathReduction": "死亡-{percent}%"
   },
   "synthesis": {
-    "clickToSynthesize": "点击合成"
+    "clickToSynthesize": "点击合成",
+    "title": "宠物合成",
+    "success": "合成成功！",
+    "failure": "合成失败",
+    "petListTitle": "可合成宠物",
+    "materialsTitle": "材料槽",
+    "fragmentLabel": "碎片",
+    "potionLabel": "药水",
+    "successRate": "成功率",
+    "pityActive": "保底激活 +10%",
+    "startBtn": "开始合成",
+    "autoFillBtn": "自动填充材料",
+    "materialsInsufficient": "材料不足",
+    "result": {
+      "newPet": "恭喜！成功召唤了 {name}！",
+      "passiveSkill": "被动技能: {name} - {description}",
+      "failureMessage": "合成失败，魔法能量不足...",
+      "pityProgress": "保底进度: {current}/{threshold}",
+      "pityActivated": "保底已激活，下次成功率提升！"
+    },
+    "hints": {
+      "dragFragment": "从背包拖拽碎片到右侧槽位，然后点击合成按钮",
+      "locked": "配方锁定: {condition}"
+    }
   },
   "saveManager": {
     "title": "💾 存档管理",
