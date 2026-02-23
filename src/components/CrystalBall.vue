@@ -25,10 +25,10 @@
     <div class="crystal-ball-body">
       <!-- 内部空间 -->
       <div class="crystal-ball-inner">
-        <!-- 液态魔法门特效 -->
-        <MagicDoor :is-open="showVortex || isDragOver" />
+        <!-- 天文台穹顶特效 - 包含玻璃覆盖层 -->
+        <ObservatoryDome :is-open="showVortex || isDragOver" />
 
-        <!-- 宠物显示（可拖拽） -->
+        <!-- 宠物显示（可拖拽） - 永远在玻璃层下方 -->
         <div
           v-if="gameStore.pet.isAtHome"
           class="pet-simple-display"
@@ -73,13 +73,13 @@ import { useGameStore } from '../stores/game.js'
 import { useNotificationStore } from '../stores/notification.js'
 import { usePetCollectionStore } from '../stores/petCollection.js'
 import { getPetType } from '../config/petTypes.js'
-import MagicDoor from './MagicDoor.vue'
+import ObservatoryDome from './ObservatoryDome.vue'
 
 export default {
   name: 'CrystalBall',
 
   components: {
-    MagicDoor
+    ObservatoryDome
   },
 
   data() {
@@ -331,7 +331,7 @@ export default {
   pointer-events: none;
 }
 
-/* 宠物简单显示 */
+/* 宠物简单显示 - 在玻璃后方 */
 .pet-simple-display {
   display: flex;
   flex-direction: column;
@@ -341,7 +341,10 @@ export default {
   user-select: none;
   transition: transform 0.2s ease;
   position: relative;
-  z-index: 10;
+  z-index: 3;  /* 在玻璃覆盖层之下（ObservatoryDome glass-cover 是 z-index: 5） */
+  /* 玻璃后方效果 */
+  filter: blur(0.5px);
+  opacity: 0.9;
 }
 
 .pet-simple-display:active {
