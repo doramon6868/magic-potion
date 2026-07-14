@@ -20,6 +20,7 @@
     v-model:show="showModel"
     :title="$t('shop.title')"
     preset="card"
+    class="shop-modal"
     :style="{ width: '500px', maxWidth: '90vw' }"
     :mask-closable="true"
   >
@@ -47,7 +48,13 @@
               ]"
             >
               <div class="rarity-badge" :class="item.rarity">{{ getRarityLabel(item.rarity) }}</div>
-              <div class="item-icon">{{ item.icon }}</div>
+              <component
+                :is="getIconComponent(item.key)"
+                v-if="getIconComponent(item.key)"
+                class="item-icon-svg"
+                :rarity="item.rarity"
+              />
+              <div v-else class="item-icon-fallback">{{ item.icon }}</div>
               <div class="item-name">{{ $t(`items.list.${item.key}.name`) }}</div>
               <div class="item-effect">
                 <span v-if="item.foodValue > 0">{{ $t('item.hungerValue', { value: item.foodValue }) }}</span>
@@ -55,7 +62,7 @@
               </div>
               <div class="item-flavor">{{ $t(`items.list.${item.key}.flavor`) }}</div>
               <div class="item-price">
-                <span class="price-icon">💰</span>
+                <CoinBagIcon class="price-icon" />
                 <span class="price-value">{{ item.price }}</span>
               </div>
               <button
@@ -76,25 +83,31 @@
             <div
               v-for="item in moodItems"
               :key="item.id"
-              class="shop-item mood-item"
+              class="shop-item"
               :class="[
                 item.rarity,
                 { 'cannot-afford': gameStore.money < item.price }
               ]"
             >
               <div class="rarity-badge" :class="item.rarity">{{ getRarityLabel(item.rarity) }}</div>
-              <div class="item-icon">{{ item.icon }}</div>
+              <component
+                :is="getIconComponent(item.key)"
+                v-if="getIconComponent(item.key)"
+                class="item-icon-svg"
+                :rarity="item.rarity"
+              />
+              <div v-else class="item-icon-fallback">{{ item.icon }}</div>
               <div class="item-name">{{ $t(`items.list.${item.key}.name`) }}</div>
               <div class="item-effect">
                 <span class="mood-effect">{{ $t('item.moodValue', { value: item.moodValue }) }}</span>
               </div>
               <div class="item-flavor">{{ $t(`items.list.${item.key}.flavor`) }}</div>
               <div class="item-price">
-                <span class="price-icon">💰</span>
+                <CoinBagIcon class="price-icon" />
                 <span class="price-value">{{ item.price }}</span>
               </div>
               <button
-                class="buy-btn mood-buy-btn"
+                class="buy-btn"
                 :disabled="gameStore.money < item.price"
                 @click="buyItem(item)"
               >
@@ -111,25 +124,31 @@
             <div
               v-for="item in combatItems"
               :key="item.id"
-              class="shop-item combat-item"
+              class="shop-item"
               :class="[
                 item.rarity,
                 { 'cannot-afford': gameStore.money < item.price }
               ]"
             >
               <div class="rarity-badge" :class="item.rarity">{{ getRarityLabel(item.rarity) }}</div>
-              <div class="item-icon">{{ item.icon }}</div>
+              <component
+                :is="getIconComponent(item.key)"
+                v-if="getIconComponent(item.key)"
+                class="item-icon-svg"
+                :rarity="item.rarity"
+              />
+              <div v-else class="item-icon-fallback">{{ item.icon }}</div>
               <div class="item-name">{{ $t(`items.list.${item.key}.name`) }}</div>
               <div class="item-effect special-effect">
                 {{ getBuffDescription(item) }}
               </div>
               <div class="item-flavor">{{ $t(`items.list.${item.key}.flavor`) }}</div>
               <div class="item-price">
-                <span class="price-icon">💰</span>
+                <CoinBagIcon class="price-icon" />
                 <span class="price-value">{{ item.price }}</span>
               </div>
               <button
-                class="buy-btn combat-buy-btn"
+                class="buy-btn"
                 :disabled="gameStore.money < item.price"
                 @click="buyItem(item)"
               >
@@ -146,25 +165,31 @@
             <div
               v-for="item in charmItems"
               :key="item.id"
-              class="shop-item charm-item"
+              class="shop-item"
               :class="[
                 item.rarity,
                 { 'cannot-afford': gameStore.money < item.price }
               ]"
             >
               <div class="rarity-badge" :class="item.rarity">{{ getRarityLabel(item.rarity) }}</div>
-              <div class="item-icon">{{ item.icon }}</div>
+              <component
+                :is="getIconComponent(item.key)"
+                v-if="getIconComponent(item.key)"
+                class="item-icon-svg"
+                :rarity="item.rarity"
+              />
+              <div v-else class="item-icon-fallback">{{ item.icon }}</div>
               <div class="item-name">{{ $t(`items.list.${item.key}.name`) }}</div>
               <div class="item-effect special-effect">
                 {{ getBuffDescription(item) }}
               </div>
               <div class="item-flavor">{{ $t(`items.list.${item.key}.flavor`) }}</div>
               <div class="item-price">
-                <span class="price-icon">💰</span>
+                <CoinBagIcon class="price-icon" />
                 <span class="price-value">{{ item.price }}</span>
               </div>
               <button
-                class="buy-btn charm-buy-btn"
+                class="buy-btn"
                 :disabled="gameStore.money < item.price"
                 @click="buyItem(item)"
               >
@@ -181,23 +206,29 @@
             <div
               v-for="item in specialItems"
               :key="item.id"
-              class="shop-item special-item"
+              class="shop-item"
               :class="[
                 item.rarity,
                 { 'cannot-afford': gameStore.money < item.price }
               ]"
             >
               <div class="rarity-badge" :class="item.rarity">{{ getRarityLabel(item.rarity) }}</div>
-              <div class="item-icon">{{ item.icon }}</div>
+              <component
+                :is="getIconComponent(item.key)"
+                v-if="getIconComponent(item.key)"
+                class="item-icon-svg"
+                :rarity="item.rarity"
+              />
+              <div v-else class="item-icon-fallback">{{ item.icon }}</div>
               <div class="item-name">{{ $t(`items.list.${item.key}.name`) }}</div>
               <div class="item-effect">{{ $t(`items.list.${item.key}.description`) }}</div>
               <div class="item-flavor">{{ $t(`items.list.${item.key}.flavor`) }}</div>
               <div class="item-price">
-                <span class="price-icon">💰</span>
+                <CoinBagIcon class="price-icon" />
                 <span class="price-value">{{ item.price }}</span>
               </div>
               <button
-                class="buy-btn special-buy-btn"
+                class="buy-btn"
                 :disabled="gameStore.money < item.price"
                 @click="buyItem(item)"
               >
@@ -214,23 +245,29 @@
             <div
               v-for="item in synthesisItems"
               :key="item.id"
-              class="shop-item synthesis-item"
+              class="shop-item"
               :class="[
                 item.rarity,
                 { 'cannot-afford': gameStore.money < item.price }
               ]"
             >
               <div class="rarity-badge" :class="item.rarity">{{ getRarityLabel(item.rarity) }}</div>
-              <div class="item-icon">{{ item.icon }}</div>
+              <component
+                :is="getIconComponent(item.key)"
+                v-if="getIconComponent(item.key)"
+                class="item-icon-svg"
+                :rarity="item.rarity"
+              />
+              <div v-else class="item-icon-fallback">{{ item.icon }}</div>
               <div class="item-name">{{ $t(`items.list.${item.key}.name`) }}</div>
               <div class="item-effect">{{ $t(`items.list.${item.key}.description`) }}</div>
               <div class="item-flavor">{{ $t(`items.list.${item.key}.flavor`) }}</div>
               <div class="item-price">
-                <span class="price-icon">💰</span>
+                <CoinBagIcon class="price-icon" />
                 <span class="price-value">{{ item.price }}</span>
               </div>
               <button
-                class="buy-btn synthesis-buy-btn"
+                class="buy-btn"
                 :disabled="gameStore.money < item.price"
                 @click="buyItem(item)"
               >
@@ -262,10 +299,16 @@ import { useGameStore } from '../stores/game.js'
 import { useShopStore } from '../stores/shop.js'
 import { useBackpackStore } from '../stores/backpack.js'
 import { useNotificationStore } from '../stores/notification.js'
+import { itemIconMap } from './icons/itemIconMap.js'
+import CoinBagIcon from './icons/ui/CoinBagIcon.vue'
 
 export default {
   // 组件名称
   name: 'Shop',
+
+  components: {
+    CoinBagIcon
+  },
 
   /**
    * props
@@ -345,13 +388,22 @@ export default {
    */
   methods: {
     /**
+     * getIconComponent: 获取物品对应的 SVG 图标组件
+     * @param {string} key - 物品 key
+     * @returns {Object|null} 图标组件或 null
+     */
+    getIconComponent(key) {
+      return itemIconMap[key] || null
+    },
+
+    /**
      * buyItem: 购买物品
      * @param {Object} item - 要购买的物品
      */
     buyItem(item) {
       // 检查金币是否足够
       if (this.gameStore.money < item.price) {
-        this.notificationStore.warning('💰 金币不足！')
+        this.notificationStore.warning(this.$t('ui.insufficientGold'))
         return
       }
 
@@ -407,22 +459,39 @@ export default {
 
 <style scoped>
 /**
- * 商店弹窗样式
+ * 商店弹窗样式 - 魔法书页风格
  */
 
-/* 商店内容区 - 浅色背景 */
+/* 弹窗外框 - 魔法书页风格 */
+.shop-modal :deep(.n-card) {
+  background: linear-gradient(135deg, var(--mp-purple-soft) 0%, var(--mp-bg) 100%);
+  border: 4px solid var(--mp-purple);
+  border-radius: var(--mp-radius-lg);
+  box-shadow: var(--mp-shadow-hover);
+}
+
+/* 商店内容区 */
 .shop-content {
   padding: 10px 0;
   max-height: 60vh;
   overflow-y: auto;
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 12px;
-  border: 2px solid rgba(197, 179, 224, 0.3);
 }
 
-/* 确保弹窗内所有文本颜色正确 */
-.shop-content :deep(*) {
-  color: rgba(74, 74, 106, 0.9);
+/* 商店描述 */
+.shop-description {
+  text-align: center;
+  color: var(--mp-ink);
+  font-size: 16px;
+  margin-bottom: 20px;
+  padding: 12px;
+  background: color-mix(in srgb, var(--mp-gold) 20%, transparent);
+  border-radius: var(--mp-radius-md);
+  border: 2px solid color-mix(in srgb, var(--mp-gold) 40%, transparent);
+}
+
+.shop-description strong {
+  color: var(--mp-gold);
+  font-size: 20px;
 }
 
 /* 商品分类区域 */
@@ -430,62 +499,16 @@ export default {
   margin-bottom: 24px;
 }
 
+/* 分类标题 - 胶囊标签 */
 .category-title {
-  font-size: 16px;
-  font-weight: bold;
-  color: rgba(74, 74, 106, 0.9);
+  display: inline-block;
+  padding: 8px 16px;
+  background: var(--mp-purple);
+  color: var(--mp-white);
+  border: 3px solid var(--mp-ink);
+  border-radius: var(--mp-radius-full);
+  font-weight: 700;
   margin-bottom: 12px;
-  padding: 8px 12px;
-  background: rgba(197, 179, 224, 0.3);
-  border-radius: 8px;
-  border-left: 4px solid #c5b3e0;
-}
-
-/* 心情分类标题 */
-.category-section:nth-child(2) .category-title {
-  background: rgba(248, 195, 205, 0.3);
-  border-left-color: #f8c3cd;
-}
-
-/* 战斗分类标题 */
-.category-section:nth-child(3) .category-title {
-  background: rgba(255, 179, 186, 0.3);
-  border-left-color: #ffb3ba;
-}
-
-/* 风险管控分类标题 */
-.category-section:nth-child(4) .category-title {
-  background: rgba(168, 216, 234, 0.3);
-  border-left-color: #a8d8ea;
-}
-
-/* 特殊道具分类标题 */
-.category-section:nth-child(5) .category-title {
-  background: rgba(255, 217, 61, 0.3);
-  border-left-color: #ffd93d;
-}
-
-/* 合成药水分类标题 */
-.category-section:nth-child(6) .category-title {
-  background: rgba(139, 92, 246, 0.3);
-  border-left-color: #8b5cf6;
-}
-
-/* 商店描述 */
-.shop-description {
-  text-align: center;
-  color: rgba(74, 74, 106, 0.9);
-  font-size: 16px;
-  margin-bottom: 20px;
-  padding: 12px;
-  background: rgba(255, 217, 61, 0.2);
-  border-radius: 8px;
-  border: 1px solid rgba(255, 217, 61, 0.4);
-}
-
-.shop-description strong {
-  color: #e6a700;
-  font-size: 20px;
 }
 
 /* 商品网格 */
@@ -498,22 +521,23 @@ export default {
   padding: 10px;
 }
 
-/* 单个商品 */
+/* 单个商品卡片 - 贴纸风格 */
 .shop-item {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 15px 10px;
-  background: rgba(255, 255, 255, 0.8);
-  border-radius: 12px;
-  border: 2px solid rgba(197, 179, 224, 0.4);
-  transition: all 0.3s ease;
+  background: var(--mp-white);
+  border: 3px solid var(--mp-ink);
+  border-radius: var(--mp-radius-md);
+  box-shadow: var(--mp-shadow);
+  transition: all var(--mp-duration-fast) ease;
 }
 
 .shop-item:hover {
-  border-color: rgba(197, 179, 224, 0.8);
   transform: translateY(-3px);
-  box-shadow: 0 5px 15px rgba(197, 179, 224, 0.3);
+  box-shadow: var(--mp-shadow-hover);
 }
 
 /* 买不起的样式 */
@@ -521,59 +545,16 @@ export default {
   opacity: 0.6;
 }
 
-/* 心情道具样式 */
-.mood-item {
-  border-color: rgba(248, 195, 205, 0.5);
+/* 商品 SVG 图标 */
+.item-icon-svg {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 8px;
 }
 
-.mood-item:hover {
-  border-color: rgba(248, 195, 205, 0.9);
-}
-
-/* 战斗道具样式 */
-.combat-item {
-  border-color: rgba(255, 179, 186, 0.5);
-}
-
-.combat-item:hover {
-  border-color: rgba(255, 179, 186, 0.9);
-}
-
-/* 风险管控道具样式 */
-.charm-item {
-  border-color: rgba(168, 216, 234, 0.5);
-}
-
-.charm-item:hover {
-  border-color: rgba(168, 216, 234, 0.9);
-}
-
-/* 特殊道具样式 */
-.special-item {
-  border-color: rgba(255, 217, 61, 0.5);
-}
-
-.special-item:hover {
-  border-color: rgba(255, 217, 61, 0.9);
-}
-
-/* 心情效果文字 */
-.mood-effect {
-  color: #e88a9a;
-  font-weight: bold;
-}
-
-/* 特殊效果文字 */
-.special-effect {
-  color: #d4a300;
-  font-size: 11px;
-  text-align: center;
-  line-height: 1.3;
-}
-
-/* 商品图标 */
-.item-icon {
-  font-size: 40px;
+/* 商品图标回退（emoji） */
+.item-icon-fallback {
+  font-size: 36px;
   margin-bottom: 8px;
 }
 
@@ -581,239 +562,37 @@ export default {
 .item-name {
   font-size: 14px;
   font-weight: bold;
-  color: var(--text-dark);
+  color: var(--mp-ink);
   margin-bottom: 4px;
+  text-align: center;
 }
 
 /* 商品效果 */
 .item-effect {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--mp-text-muted);
   margin-bottom: 8px;
+  text-align: center;
 }
 
-/* 商品价格 */
-.item-price {
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
-}
-
-.price-icon {
-  font-size: 14px;
-  margin-right: 4px;
-}
-
-.price-value {
-  font-size: 16px;
+/* 心情效果文字 */
+.mood-effect {
+  color: var(--mp-pink);
   font-weight: bold;
-  color: #e6a700;
 }
 
-/* 购买按钮 */
-.buy-btn {
-  width: 100%;
-  padding: 8px 16px;
-  border: none;
-  border-radius: 8px;
-  background: linear-gradient(135deg, #27ae60, #2ecc71);
-  color: white;
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.buy-btn:hover:not(:disabled) {
-  transform: scale(1.05);
-  box-shadow: 0 5px 15px rgba(39, 174, 96, 0.4);
-}
-
-.buy-btn:disabled {
-  background: linear-gradient(135deg, #7f8c8d, #95a5a6);
-  cursor: not-allowed;
-}
-
-/* 心情道具购买按钮 */
-.mood-buy-btn {
-  background: linear-gradient(135deg, #ff69b4, #ff1493);
-}
-
-.mood-buy-btn:hover:not(:disabled) {
-  box-shadow: 0 5px 15px rgba(255, 105, 180, 0.4);
-}
-
-/* 战斗道具购买按钮 */
-.combat-buy-btn {
-  background: linear-gradient(135deg, #e74c3c, #c0392b);
-}
-
-.combat-buy-btn:hover:not(:disabled) {
-  box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
-}
-
-/* 风险管控道具购买按钮 */
-.charm-buy-btn {
-  background: linear-gradient(135deg, #3498db, #2980b9);
-}
-
-.charm-buy-btn:hover:not(:disabled) {
-  box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
-}
-
-/* 特殊道具购买按钮 */
-.special-buy-btn {
-  background: linear-gradient(135deg, #f1c40f, #f39c12);
-  color: #333;
-}
-
-.special-buy-btn:hover:not(:disabled) {
-  box-shadow: 0 5px 15px rgba(241, 196, 15, 0.4);
-}
-
-/* 合成药水样式 */
-.synthesis-item {
-  border-color: rgba(139, 92, 246, 0.5);
-}
-
-.synthesis-item:hover {
-  border-color: rgba(139, 92, 246, 0.9);
-}
-
-/* 合成药水购买按钮 */
-.synthesis-buy-btn {
-  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
-}
-
-.synthesis-buy-btn:hover:not(:disabled) {
-  box-shadow: 0 5px 15px rgba(139, 92, 246, 0.4);
-}
-
-/* 弹窗底部 */
-.modal-footer {
-  display: flex;
-  justify-content: flex-end;
-}
-
-/* 关闭按钮 */
-.close-btn {
-  padding: 8px 20px;
-  border: none;
-  border-radius: 8px;
-  background: linear-gradient(135deg, #c5b3e0, #a8d8ea);
-  color: var(--text-dark);
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.close-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(197, 179, 224, 0.4);
-}
-
-/* ==================== 稀有度样式 ==================== */
-
-/* 稀有度徽章 */
-.rarity-badge {
-  position: absolute;
-  top: -8px;
-  left: -8px;
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-size: 10px;
-  font-weight: bold;
-  text-transform: uppercase;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-  z-index: 10;
-}
-
-/* 普通 - 白色/灰色 */
-.rarity-badge.common {
-  background: linear-gradient(135deg, #9e9e9e, #757575);
-  color: white;
-}
-
-.shop-item.common {
-  border-color: rgba(158, 158, 158, 0.5);
-}
-
-.shop-item.common:hover {
-  border-color: rgba(158, 158, 158, 0.8);
-  box-shadow: 0 5px 15px rgba(158, 158, 158, 0.2);
-}
-
-/* 优秀 - 绿色 */
-.rarity-badge.uncommon {
-  background: linear-gradient(135deg, #4caf50, #2e7d32);
-  color: white;
-}
-
-.shop-item.uncommon {
-  border-color: rgba(76, 175, 80, 0.5);
-}
-
-.shop-item.uncommon:hover {
-  border-color: rgba(76, 175, 80, 0.8);
-  box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
-}
-
-/* 稀有 - 蓝色 */
-.rarity-badge.rare {
-  background: linear-gradient(135deg, #2196f3, #1565c0);
-  color: white;
-}
-
-.shop-item.rare {
-  border-color: rgba(33, 150, 243, 0.6);
-  box-shadow: 0 0 10px rgba(33, 150, 243, 0.2);
-}
-
-.shop-item.rare:hover {
-  border-color: rgba(33, 150, 243, 0.9);
-  box-shadow: 0 5px 20px rgba(33, 150, 243, 0.4);
-}
-
-/* 史诗 - 紫色 */
-.rarity-badge.epic {
-  background: linear-gradient(135deg, #9c27b0, #6a1b9a);
-  color: white;
-  animation: epicGlow 2s ease-in-out infinite;
-}
-
-.shop-item.epic {
-  border-color: rgba(156, 39, 176, 0.7);
-  box-shadow: 0 0 15px rgba(156, 39, 176, 0.3);
-  animation: epicBorderGlow 2s ease-in-out infinite;
-}
-
-.shop-item.epic:hover {
-  border-color: rgba(156, 39, 176, 1);
-  box-shadow: 0 5px 25px rgba(156, 39, 176, 0.5);
-}
-
-/* 史诗稀有度动画 */
-@keyframes epicGlow {
-  0%, 100% {
-    box-shadow: 0 2px 5px rgba(156, 39, 176, 0.5);
-  }
-  50% {
-    box-shadow: 0 2px 15px rgba(156, 39, 176, 0.8);
-  }
-}
-
-@keyframes epicBorderGlow {
-  0%, 100% {
-    box-shadow: 0 0 10px rgba(156, 39, 176, 0.2);
-  }
-  50% {
-    box-shadow: 0 0 20px rgba(156, 39, 176, 0.4);
-  }
+/* 特殊效果文字 */
+.special-effect {
+  color: var(--mp-gold);
+  font-size: 11px;
+  text-align: center;
+  line-height: 1.3;
 }
 
 /* 风味文本 */
 .item-flavor {
   font-size: 10px;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--mp-text-muted);
   font-style: italic;
   text-align: center;
   line-height: 1.3;
@@ -825,8 +604,115 @@ export default {
   -webkit-box-orient: vertical;
 }
 
-/* 单个商品需要相对定位来容纳徽章 */
-.shop-item {
-  position: relative;
+/* 商品价格 */
+.item-price {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
 }
+
+.price-icon {
+  width: 16px;
+  height: 16px;
+  margin-right: 4px;
+}
+
+.price-value {
+  font-size: 16px;
+  font-weight: bold;
+  color: var(--mp-gold);
+}
+
+/* 购买按钮 - 胶囊贴纸风格 */
+.buy-btn {
+  width: 100%;
+  padding: 8px 16px;
+  border: 2px solid var(--mp-ink);
+  border-radius: var(--mp-radius-full);
+  background: linear-gradient(135deg, var(--mp-mint), var(--mp-mint-light));
+  color: var(--mp-ink);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: var(--mp-shadow);
+  transition: all var(--mp-duration-fast) ease;
+}
+
+.buy-btn:hover:not(:disabled) {
+  transform: scale(1.05);
+  box-shadow: var(--mp-shadow-hover);
+}
+
+.buy-btn:disabled {
+  background: color-mix(in srgb, var(--mp-ink) 30%, transparent);
+  color: var(--mp-white);
+  cursor: not-allowed;
+}
+
+/* 弹窗底部 */
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* 关闭按钮 - 胶囊贴纸风格 */
+.close-btn {
+  padding: 8px 20px;
+  border: 3px solid var(--mp-ink);
+  border-radius: var(--mp-radius-full);
+  background: var(--mp-white);
+  color: var(--mp-ink);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: var(--mp-shadow);
+  transition: all var(--mp-duration-fast) ease;
+}
+
+.close-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--mp-shadow-hover);
+}
+
+/* 稀有度徽章 */
+.rarity-badge {
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: bold;
+  text-transform: uppercase;
+  box-shadow: var(--mp-shadow);
+  z-index: 10;
+}
+
+.rarity-badge.common {
+  background: color-mix(in srgb, var(--mp-ink) 60%, transparent);
+  color: var(--mp-white);
+}
+
+.shop-item.common { border-color: color-mix(in srgb, var(--mp-ink) 40%, transparent); }
+
+.rarity-badge.uncommon {
+  background: var(--mp-mint);
+  color: var(--mp-ink);
+}
+
+.shop-item.uncommon { border-color: var(--mp-mint); }
+
+.rarity-badge.rare {
+  background: var(--mp-blue);
+  color: var(--mp-white);
+}
+
+.shop-item.rare { border-color: var(--mp-blue); }
+
+.rarity-badge.epic {
+  background: var(--mp-purple);
+  color: var(--mp-white);
+}
+
+.shop-item.epic { border-color: var(--mp-purple); }
 </style>
