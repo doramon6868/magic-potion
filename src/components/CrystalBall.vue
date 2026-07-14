@@ -272,17 +272,17 @@ export default {
   border-radius: 50%;
   background: radial-gradient(
     circle at 35% 30%,
-    rgba(255, 255, 255, 0.95) 0%,
-    rgba(243, 232, 255, 0.8) 40%,
-    rgba(232, 213, 255, 0.6) 100%
+    color-mix(in srgb, var(--mp-white) 95%, transparent) 0%,
+    color-mix(in srgb, color-mix(in srgb, var(--mp-purple) 10%, var(--mp-white)) 80%, transparent) 40%,
+    color-mix(in srgb, color-mix(in srgb, var(--mp-purple) 20%, var(--mp-white)) 60%, transparent) 100%
   );
   border: 5px solid var(--mp-purple);
   box-shadow:
-    0 0 0 4px rgba(139, 92, 246, 0.2),
-    0 0 50px rgba(139, 92, 246, 0.4),
+    0 0 0 4px var(--mp-crystal-ring),
+    0 0 50px var(--mp-crystal-glow),
     8px 8px 0 var(--mp-shadow-color),
-    inset 0 0 60px rgba(255, 255, 255, 0.6),
-    inset -10px -10px 30px rgba(139, 92, 246, 0.1);
+    inset 0 0 60px color-mix(in srgb, var(--mp-white) 60%, transparent),
+    inset -10px -10px 30px var(--mp-crystal-ring);
   overflow: hidden;
   transition: all 0.3s ease;
   animation: crystal-breathe 3s ease-in-out infinite;
@@ -292,18 +292,18 @@ export default {
   0%, 100% {
     transform: scale(1);
     box-shadow:
-      0 0 0 4px rgba(139, 92, 246, 0.2),
-      0 0 50px rgba(139, 92, 246, 0.4),
+      0 0 0 4px var(--mp-crystal-ring),
+      0 0 50px var(--mp-crystal-glow),
       8px 8px 0 var(--mp-shadow-color),
-      inset 0 0 60px rgba(255, 255, 255, 0.6);
+      inset 0 0 60px color-mix(in srgb, var(--mp-white) 60%, transparent);
   }
   50% {
     transform: scale(1.02);
     box-shadow:
-      0 0 0 6px rgba(139, 92, 246, 0.3),
-      0 0 70px rgba(139, 92, 246, 0.55),
+      0 0 0 6px var(--mp-crystal-ring-strong),
+      0 0 70px var(--mp-crystal-glow-strong),
       8px 8px 0 var(--mp-shadow-color),
-      inset 0 0 70px rgba(255, 255, 255, 0.7);
+      inset 0 0 70px color-mix(in srgb, var(--mp-white) 70%, transparent);
   }
 }
 
@@ -311,8 +311,8 @@ export default {
 .crystal-ball.drag-over .crystal-ball-body {
   border-color: var(--mp-gold);
   box-shadow:
-    0 0 0 6px rgba(251, 191, 36, 0.3),
-    0 0 80px rgba(251, 191, 36, 0.5),
+    0 0 0 6px var(--mp-crystal-gold-ring),
+    0 0 80px var(--mp-crystal-gold-glow),
     8px 8px 0 var(--mp-shadow-color);
   animation: crystal-absorb 0.8s ease-in-out infinite;
 }
@@ -332,9 +332,9 @@ export default {
   border-radius: 50%;
   background: radial-gradient(
     circle at 50% 40%,
-    rgba(255, 255, 255, 0.9) 0%,
-    rgba(243, 232, 255, 0.7) 40%,
-    rgba(233, 213, 255, 0.5) 100%
+    color-mix(in srgb, var(--mp-white) 90%, transparent) 0%,
+    color-mix(in srgb, color-mix(in srgb, var(--mp-purple) 10%, var(--mp-white)) 70%, transparent) 40%,
+    color-mix(in srgb, color-mix(in srgb, var(--mp-purple) 20%, var(--mp-white)) 50%, transparent) 100%
   );
   display: flex;
   align-items: center;
@@ -351,7 +351,7 @@ export default {
   border-radius: 50%;
   background: radial-gradient(
     ellipse at center,
-    rgba(255, 255, 255, 0.8) 0%,
+    color-mix(in srgb, var(--mp-white) 80%, transparent) 0%,
     transparent 70%
   );
   transform: rotate(-30deg);
@@ -390,21 +390,21 @@ export default {
   align-items: center;
   justify-content: center;
   box-shadow:
-    0 4px 15px rgba(107, 155, 122, 0.3),
-    inset -2px -2px 6px rgba(0, 0, 0, 0.1),
-    inset 2px 2px 6px rgba(255, 255, 255, 0.4);
+    0 4px 15px var(--mp-shadow-color),
+    inset -2px -2px 6px color-mix(in srgb, var(--mp-ink) 10%, transparent),
+    inset 2px 2px 6px color-mix(in srgb, var(--mp-white) 40%, transparent);
 }
 
 .simple-name {
   font-size: 16px;
   font-weight: 600;
-  color: #6b21a8;
+  color: var(--mp-purple-dark);
 }
 
 .simple-hint {
   font-size: 12px;
-  color: #8b5cf6;
-  background: rgba(139, 92, 246, 0.1);
+  color: var(--mp-purple);
+  background: color-mix(in srgb, var(--mp-purple) 10%, transparent);
   padding: 4px 12px;
   border-radius: 10px;
 }
@@ -415,7 +415,7 @@ export default {
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  color: #9ca3af;
+  color: var(--mp-text-muted);
 }
 
 .empty-text {
@@ -428,21 +428,21 @@ export default {
   align-items: center;
   gap: 8px;
   padding: 12px 24px;
-  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+  background: linear-gradient(135deg, var(--mp-purple) 0%, var(--mp-purple-dark) 100%);
   border: none;
   border-radius: 24px;
-  color: white;
+  color: var(--mp-white);
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+  box-shadow: 0 4px 15px var(--mp-crystal-glow);
   transition: all 0.3s ease;
   animation: btn-float 2s ease-in-out infinite;
 }
 
 .synthesis-btn:hover {
   transform: translateY(-3px);
-  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.5);
+  box-shadow: 0 6px 20px var(--mp-crystal-glow-strong);
 }
 
 .btn-icon {

@@ -20,6 +20,14 @@
   --mp-red: #F87171;
   --mp-blue: #60A5FA;
 
+  /* 水晶球发光 */
+  --mp-crystal-ring: rgba(139, 92, 246, 0.2);
+  --mp-crystal-ring-strong: rgba(139, 92, 246, 0.3);
+  --mp-crystal-glow: rgba(139, 92, 246, 0.4);
+  --mp-crystal-glow-strong: rgba(139, 92, 246, 0.55);
+  --mp-crystal-gold-ring: rgba(251, 191, 36, 0.3);
+  --mp-crystal-gold-glow: rgba(251, 191, 36, 0.5);
+
   /* 宠物配色 */
   --mp-pet-cat: #c8f0d8;
   --mp-pet-bird: #a8e6f0;
