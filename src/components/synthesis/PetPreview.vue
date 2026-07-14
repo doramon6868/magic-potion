@@ -22,10 +22,7 @@
   >
     <!-- 宠物图标 -->
     <div class="pet-avatar">
-      <span class="pet-emoji">{{ pet.emoji }}</span>
-      <span v-if="pet.emojiSecondary" class="pet-emoji-secondary">
-        {{ pet.emojiSecondary }}
-      </span>
+      <SlugcatAvatar :status="petStatus" :pet-type="pet.type || 'cat'" :size="56" />
     </div>
 
     <!-- 宠物名称 -->
@@ -34,8 +31,8 @@
     <!-- 状态标签 -->
     <div class="pet-status-badge" :class="statusClass">
       <span v-if="isOwned" class="status-icon">✓</span>
-      <span v-else-if="isLocked" class="status-icon">🔒</span>
-      <span v-else class="status-icon">✨</span>
+      <span v-else-if="isLocked" class="status-icon">!</span>
+      <span v-else class="status-icon">✦</span>
       {{ statusText }}
     </div>
 
@@ -51,9 +48,14 @@ import { mapStores } from 'pinia'
 import { useSynthesisStore } from '../../stores/synthesis.js'
 import { usePetCollectionStore } from '../../stores/petCollection.js'
 import { getRarityText, getRarityColor } from '../../config/petTypes.js'
+import SlugcatAvatar from '../icons/SlugcatAvatar.vue'
 
 export default {
   name: 'PetPreview',
+
+  components: {
+    SlugcatAvatar
+  },
 
   props: {
     /**
@@ -92,6 +94,13 @@ export default {
       const recipe = this.synthesisStore.selectedRecipe
       if (!recipe) return false
       return recipe.targetPetType === this.pet.type
+    },
+
+    /**
+     * 宠物状态（用于 SlugcatAvatar 表情）
+     */
+    petStatus() {
+      return this.isOwned ? 'happy' : (this.isLocked ? 'sad' : 'idle')
     },
 
     /**
@@ -155,12 +164,12 @@ export default {
 .pet-preview-card {
   width: 110px;
   padding: 14px 10px;
-  border-radius: 16px;
-  background: linear-gradient(135deg, #f5f3ff 0%, #e9d5ff 100%);
+  border-radius: var(--mp-radius-md);
+  background: linear-gradient(135deg, var(--mp-purple-soft) 0%, var(--mp-bg) 100%);
   border: 3px solid transparent;
   cursor: pointer;
   position: relative;
-  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  transition: all var(--mp-duration-normal) ease;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -170,29 +179,29 @@ export default {
 /* 悬停效果 */
 .pet-preview-card:hover:not(.locked) {
   transform: scale(1.05);
-  box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3);
+  box-shadow: var(--mp-shadow-hover);
 }
 
 /* 选中状态 */
 .pet-preview-card.selected {
-  border-color: #8b5cf6;
-  box-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
-  background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%);
+  border-color: var(--mp-purple);
+  box-shadow: 0 0 20px color-mix(in srgb, var(--mp-purple) 50%, transparent);
+  background: linear-gradient(135deg, var(--mp-purple-soft) 0%, var(--mp-bg) 100%);
 }
 
 /* 已拥有状态 */
 .pet-preview-card.owned {
-  background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+  background: color-mix(in srgb, var(--mp-mint) 30%, var(--mp-white));
 }
 
 .pet-preview-card.owned.selected {
-  border-color: #22c55e;
-  box-shadow: 0 0 20px rgba(34, 197, 94, 0.5);
+  border-color: var(--mp-mint);
+  box-shadow: 0 0 20px color-mix(in srgb, var(--mp-mint) 50%, transparent);
 }
 
 /* 锁定状态 */
 .pet-preview-card.locked {
-  background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+  background: color-mix(in srgb, var(--mp-ink) 10%, var(--mp-white));
   cursor: not-allowed;
   opacity: 0.7;
 }
@@ -207,41 +216,18 @@ export default {
   justify-content: center;
 }
 
-/* 宠物主表情 */
-.pet-emoji {
-  font-size: 42px;
-  line-height: 1;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
-}
-
-/* 宠物副表情 */
-.pet-emoji-secondary {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  font-size: 20px;
-  background: white;
-  border-radius: 50%;
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-}
-
 /* 宠物名称 */
 .pet-name {
   font-size: 15px;
   font-weight: 600;
-  color: #1f2937;
+  color: var(--mp-ink);
   text-align: center;
 }
 
 /* 状态标签 */
 .pet-status-badge {
   padding: 4px 10px;
-  border-radius: 12px;
+  border-radius: var(--mp-radius-full);
   font-size: 11px;
   font-weight: 600;
   display: flex;
@@ -254,18 +240,18 @@ export default {
 }
 
 .status-owned {
-  background: #86efac;
-  color: #166534;
+  background: var(--mp-mint);
+  color: var(--mp-ink);
 }
 
 .status-available {
-  background: #93c5fd;
-  color: #1e40af;
+  background: var(--mp-blue);
+  color: var(--mp-white);
 }
 
 .status-locked {
-  background: #d1d5db;
-  color: #4b5563;
+  background: color-mix(in srgb, var(--mp-ink) 20%, transparent);
+  color: var(--mp-ink);
 }
 
 /* 稀有度标识 */
@@ -277,7 +263,7 @@ export default {
   border-radius: 10px;
   font-size: 10px;
   font-weight: 700;
-  color: white;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  color: var(--mp-white);
+  box-shadow: var(--mp-shadow);
 }
 </style>

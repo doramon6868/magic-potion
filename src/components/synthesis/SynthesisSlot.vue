@@ -26,7 +26,16 @@
     <!-- 空槽显示 -->
     <template v-if="!hasItem">
       <div class="slot-placeholder">
-        <span class="slot-icon">{{ placeholderIcon }}</span>
+        <PotionIcon
+          v-if="type === 'potion'"
+          class="slot-placeholder-icon"
+          rarity="common"
+        />
+        <FragmentIcon
+          v-else
+          class="slot-placeholder-icon"
+          :type="requiredFragmentType || 'cat'"
+        />
         <span class="slot-label">{{ placeholderLabel }}</span>
         <span v-if="requiredCount > 1" class="slot-requirement">
           需要 {{ requiredCount }} 个
@@ -36,7 +45,16 @@
 
     <!-- 已放置物品 -->
     <template v-else>
-      <span class="item-icon">{{ itemIcon }}</span>
+      <PotionIcon
+        v-if="type === 'potion'"
+        class="slot-item-icon"
+        :rarity="item.rarity || 'common'"
+      />
+      <FragmentIcon
+        v-else
+        class="slot-item-icon"
+        :type="getFragmentType(item.type || item.fragmentType)"
+      />
       <span v-if="itemCount > 1" class="item-count">×{{ itemCount }}</span>
       <button
         v-if="!isSynthesizing"
@@ -44,7 +62,7 @@
         @click.stop="removeItem"
         title="移除"
       >
-        ×
+        X
       </button>
     </template>
 
@@ -58,9 +76,16 @@ import { mapStores } from 'pinia'
 import { useSynthesisStore } from '../../stores/synthesis.js'
 import { getFragmentType } from '../../config/fragmentTypes.js'
 import { getPotionIconByRarity } from '../../config/synthesisRecipes.js'
+import PotionIcon from '../icons/items/PotionIcon.vue'
+import FragmentIcon from '../icons/items/FragmentIcon.vue'
 
 export default {
   name: 'SynthesisSlot',
+
+  components: {
+    PotionIcon,
+    FragmentIcon
+  },
 
   props: {
     type: {
@@ -117,23 +142,12 @@ export default {
       }
 
       const fragmentConfig = getFragmentType(this.item.type)
-      return fragmentConfig?.icon || '🐱'
+      return fragmentConfig?.icon || ''
     },
 
     itemCount() {
       if (!this.item) return 0
       return this.item.quantity || 1
-    },
-
-    placeholderIcon() {
-      if (this.type === 'potion') {
-        return '🧪'
-      }
-      if (this.requiredFragmentType) {
-        const fragmentConfig = getFragmentType(this.requiredFragmentType)
-        return fragmentConfig?.icon || '🐱'
-      }
-      return '🐱'
     },
 
     placeholderLabel() {
@@ -198,6 +212,25 @@ export default {
       } else {
         this.synthesisStore.removeFragmentFromSlot(this.index)
       }
+    },
+
+    /**
+     * getFragmentType: 根据碎片类型获取对应的宠物类型
+     * @param {string} keyOrType - 碎片 key 或类型
+     * @returns {string} 宠物类型
+     */
+    getFragmentType(keyOrType) {
+      const map = {
+        cat: 'cat',
+        bird: 'bird',
+        fox: 'fox',
+        dragon: 'dragon',
+        cat_fragment: 'cat',
+        bird_fragment: 'bird',
+        fox_fragment: 'fox',
+        dragon_fragment: 'dragon'
+      }
+      return map[keyOrType] || 'cat'
     }
   }
 }
@@ -205,40 +238,40 @@ export default {
 
 <style scoped>
 .synthesis-slot {
-  width: 72px;
-  height: 72px;
-  border-radius: 16px;
-  border: 3px dashed #c4b5fd;
-  background: rgba(255, 255, 255, 0.5);
+  width: 80px;
+  height: 80px;
+  border-radius: var(--mp-radius-md);
+  border: 3px dashed color-mix(in srgb, var(--mp-purple) 50%, transparent);
+  background: color-mix(in srgb, var(--mp-white) 50%, transparent);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   position: relative;
-  transition: all 0.3s ease;
+  transition: all var(--mp-duration-fast) ease;
 }
 
 .synthesis-slot.highlight {
-  border-color: #8b5cf6;
-  background: rgba(139, 92, 246, 0.15);
+  border-color: var(--mp-purple);
+  background: color-mix(in srgb, var(--mp-purple) 15%, transparent);
   animation: pulse 1.2s ease-in-out infinite;
 }
 
 @keyframes pulse {
   0%, 100% {
     transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.4);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--mp-purple) 40%, transparent);
   }
   50% {
     transform: scale(1.03);
-    box-shadow: 0 0 15px rgba(139, 92, 246, 0.3);
+    box-shadow: 0 0 15px color-mix(in srgb, var(--mp-purple) 30%, transparent);
   }
 }
 
 .synthesis-slot.filled {
   border-style: solid;
-  border-color: #8b5cf6;
-  background: linear-gradient(135deg, #f5f3ff 0%, #e9d5ff 100%);
+  border-color: var(--mp-purple);
+  background: var(--mp-purple-soft);
 }
 
 .slot-placeholder {
@@ -248,25 +281,21 @@ export default {
   gap: 2px;
 }
 
-.slot-icon {
-  font-size: 28px;
-  opacity: 0.5;
+.slot-placeholder-icon,
+.slot-item-icon {
+  width: 36px;
+  height: 36px;
 }
 
 .slot-label {
   font-size: 11px;
-  color: #8b5cf6;
-  font-weight: 500;
+  color: var(--mp-purple);
+  font-weight: 600;
 }
 
 .slot-requirement {
   font-size: 9px;
-  color: #a78bfa;
-}
-
-.item-icon {
-  font-size: 36px;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+  color: var(--mp-text-muted);
 }
 
 .item-count {
@@ -275,8 +304,8 @@ export default {
   right: 6px;
   font-size: 12px;
   font-weight: 700;
-  color: #7c3aed;
-  background: rgba(255, 255, 255, 0.9);
+  color: var(--mp-purple-dark);
+  background: color-mix(in srgb, var(--mp-white) 90%, transparent);
   padding: 1px 6px;
   border-radius: 8px;
 }
@@ -288,29 +317,29 @@ export default {
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background: #ef4444;
-  color: white;
-  border: 2px solid white;
+  background: var(--mp-red);
+  color: var(--mp-white);
+  border: 2px solid var(--mp-white);
   cursor: pointer;
   font-size: 14px;
   line-height: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-  transition: all 0.2s ease;
+  box-shadow: var(--mp-shadow);
+  transition: all var(--mp-duration-fast) ease;
 }
 
 .remove-btn:hover {
-  background: #dc2626;
+  filter: brightness(0.9);
   transform: scale(1.1);
 }
 
 .drop-highlight {
   position: absolute;
   inset: 0;
-  border-radius: 13px;
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%);
+  border-radius: var(--mp-radius-md);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--mp-purple) 10%, transparent) 0%, color-mix(in srgb, var(--mp-purple-light) 10%, transparent) 100%);
   pointer-events: none;
 }
 </style>

@@ -16,7 +16,7 @@
   >
     <template #header>
       <div class="modal-header">
-        <span class="header-icon">🔮</span>
+        <PotionIcon class="header-icon" rarity="epic" />
         <span class="header-title">{{ $t('synthesis.title') || '宠物合成' }}</span>
       </div>
     </template>
@@ -24,7 +24,10 @@
     <div class="synthesis-container">
       <!-- 左侧：宠物列表 -->
       <div class="pet-list-section">
-        <h3 class="section-title">🐾 可合成宠物</h3>
+        <h3 class="section-title">
+          <SlugcatAvatar class="section-icon" :size="24" />
+          可合成宠物
+        </h3>
         <div class="pet-list">
           <PetPreview
             v-for="pet in allPets"
@@ -63,14 +66,18 @@
           :disabled="!canSynthesize"
           @click="startSynthesis"
         >
-          <span v-if="canSynthesize">✨ 开始合成</span>
+          <PotionIcon v-if="canSynthesize" class="btn-icon" rarity="epic" />
+          <span v-if="canSynthesize">开始合成</span>
           <span v-else>材料不足</span>
         </button>
       </div>
 
       <!-- 右侧：材料槽和背包 -->
       <div class="materials-section">
-        <h3 class="section-title">🎒 材料槽</h3>
+        <h3 class="section-title">
+          <FragmentIcon class="section-icon" :type="requiredFragmentType" />
+          材料槽
+        </h3>
 
         <!-- 碎片槽 -->
         <div class="fragment-slots">
@@ -103,7 +110,8 @@
           class="auto-fill-btn"
           @click="autoFill"
         >
-          🔄 自动填充材料
+          <PotionIcon class="btn-icon" rarity="epic" />
+          自动填充材料
         </button>
 
         <!-- 配方信息 -->
@@ -123,7 +131,10 @@
 
         <!-- 碎片背包 - 可以拖拽到槽位 -->
         <div class="fragment-inventory">
-          <h4 class="inventory-title">📦 碎片背包</h4>
+          <h4 class="inventory-title">
+            <FragmentIcon class="inventory-icon" :type="requiredFragmentType" />
+            碎片背包
+          </h4>
           <div class="inventory-items">
             <Item
               v-for="item in fragmentItems"
@@ -134,7 +145,7 @@
               :class="item.rarity || 'common'"
             />
             <div v-if="fragmentItems.length === 0" class="empty-inventory">
-              <span class="empty-icon">📭</span>
+              <FragmentIcon class="empty-icon" :type="requiredFragmentType" />
               <span class="empty-text">暂无碎片</span>
               <span class="empty-hint">去商店购买或探索获得</span>
             </div>
@@ -145,7 +156,8 @@
 
     <!-- 底部提示 -->
     <div class="synthesis-hint">
-      💡 提示：从右下角碎片背包拖拽碎片到上方槽位，或点击"自动填充材料"
+      <StarDecoration class="hint-icon" />
+      <span>提示：从右下角碎片背包拖拽碎片到上方槽位，或点击“自动填充材料”</span>
     </div>
 
     <!-- 结果弹窗 -->
@@ -157,6 +169,15 @@
       @retry="retrySynthesis"
       @viewCollection="viewCollection"
     />
+
+    <!-- 弹窗底部关闭按钮 -->
+    <template #footer>
+      <div class="modal-footer">
+        <button class="close-btn" @click="showModal = false">
+          {{ $t('ui.close') || '关闭' }}
+        </button>
+      </div>
+    </template>
   </n-modal>
 </template>
 
@@ -168,6 +189,12 @@ import { useBackpackStore } from '../../stores/backpack.js'
 import { getAllPetTypes } from '../../config/petTypes.js'
 import { getFragmentType } from '../../config/fragmentTypes.js'
 import { getPotionNameByRarity } from '../../config/synthesisRecipes.js'
+import { itemIconMap } from '../icons/itemIconMap.js'
+import SlugcatAvatar from '../icons/SlugcatAvatar.vue'
+import PotionIcon from '../icons/items/PotionIcon.vue'
+import FragmentIcon from '../icons/items/FragmentIcon.vue'
+import CoinBagIcon from '../icons/ui/CoinBagIcon.vue'
+import StarDecoration from '../icons/decorations/StarDecoration.vue'
 import PetPreview from './PetPreview.vue'
 import SynthesisSlot from './SynthesisSlot.vue'
 import SynthesisAnimation from './SynthesisAnimation.vue'
@@ -178,6 +205,11 @@ export default {
   name: 'SynthesisUI',
 
   components: {
+    SlugcatAvatar,
+    PotionIcon,
+    FragmentIcon,
+    CoinBagIcon,
+    StarDecoration,
     PetPreview,
     SynthesisSlot,
     SynthesisAnimation,
@@ -339,6 +371,30 @@ export default {
 
     viewCollection() {
       this.$emit('viewCollection')
+    },
+
+    /**
+     * getIconComponent: 根据物品 key 获取对应的 SVG 图标组件
+     * @param {string} key - 物品 key
+     * @returns {Object|null} 图标组件或 null
+     */
+    getIconComponent(key) {
+      return itemIconMap[key] || null
+    },
+
+    /**
+     * getFragmentType: 根据碎片 key 获取宠物类型
+     * @param {string} key - 碎片 key
+     * @returns {string} 宠物类型
+     */
+    getFragmentType(key) {
+      const map = {
+        cat_fragment: 'cat',
+        bird_fragment: 'bird',
+        fox_fragment: 'fox',
+        dragon_fragment: 'dragon'
+      }
+      return map[key] || 'cat'
     }
   }
 }
@@ -352,12 +408,14 @@ export default {
 }
 
 .synthesis-modal :deep(.n-card) {
-  background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
-  border-radius: 24px;
+  background: linear-gradient(135deg, var(--mp-purple-soft) 0%, var(--mp-bg) 100%);
+  border: 4px solid var(--mp-purple);
+  border-radius: var(--mp-radius-lg);
+  box-shadow: var(--mp-shadow-hover);
 }
 
 .synthesis-modal :deep(.n-card-header) {
-  border-bottom: 2px solid #e9d5ff;
+  border-bottom: 2px solid color-mix(in srgb, var(--mp-purple) 30%, transparent);
   padding: 20px 24px;
 }
 
@@ -369,13 +427,14 @@ export default {
 }
 
 .header-icon {
-  font-size: 28px;
+  width: 32px;
+  height: 32px;
 }
 
 .header-title {
   font-size: 22px;
   font-weight: 700;
-  color: #6b21a8;
+  color: var(--mp-purple-dark);
 }
 
 /* 主容器 */
@@ -389,17 +448,30 @@ export default {
 
 /* 区域标题 */
 .section-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: var(--mp-white);
+  border: 3px solid var(--mp-ink);
+  border-radius: var(--mp-radius-full);
+  color: var(--mp-ink);
+  font-weight: 700;
   font-size: 15px;
-  font-weight: 600;
-  color: #7c3aed;
   margin-bottom: 16px;
   text-align: center;
+}
+
+.section-icon {
+  width: 24px;
+  height: 24px;
 }
 
 /* 左侧宠物列表 */
 .pet-list-section {
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
 
 .pet-list {
@@ -422,14 +494,14 @@ export default {
 .success-rate {
   text-align: center;
   padding: 16px 32px;
-  background: rgba(255, 255, 255, 0.8);
-  border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  background: color-mix(in srgb, var(--mp-white) 80%, transparent);
+  border-radius: var(--mp-radius-md);
+  box-shadow: var(--mp-shadow);
 }
 
 .rate-label {
   font-size: 13px;
-  color: #6b7280;
+  color: var(--mp-text-muted);
   margin-bottom: 4px;
 }
 
@@ -439,25 +511,25 @@ export default {
 }
 
 .rate-value.high {
-  color: #16a34a;
+  color: var(--mp-mint);
 }
 
 .rate-value.medium {
-  color: #d97706;
+  color: var(--mp-gold);
 }
 
 .rate-value.low {
-  color: #dc2626;
+  color: var(--mp-red);
 }
 
 .pity-badge {
   margin-top: 8px;
   padding: 4px 12px;
-  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-  color: white;
+  background: linear-gradient(135deg, var(--mp-gold) 0%, var(--mp-gold-light) 100%);
+  color: var(--mp-ink);
   font-size: 12px;
   font-weight: 600;
-  border-radius: 12px;
+  border-radius: var(--mp-radius-full);
   animation: pulse-badge 2s ease-in-out infinite;
 }
 
@@ -468,30 +540,36 @@ export default {
 
 /* 合成按钮 */
 .synthesis-btn {
-  padding: 16px 48px;
-  border-radius: 16px;
-  font-size: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 28px;
+  border: 3px solid var(--mp-ink);
+  border-radius: var(--mp-radius-full);
+  background: linear-gradient(135deg, var(--mp-purple), var(--mp-purple-dark));
+  color: var(--mp-white);
+  font-size: 16px;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.3s ease;
-  border: none;
+  box-shadow: var(--mp-shadow);
+  transition: all var(--mp-duration-fast) ease;
 }
 
-.synthesis-btn.can-synthesize {
-  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-  color: white;
-  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
+.synthesis-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: var(--mp-shadow-hover);
 }
 
-.synthesis-btn.can-synthesize:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 30px rgba(139, 92, 246, 0.5);
-}
-
-.synthesis-btn.disabled {
-  background: #e5e7eb;
-  color: #9ca3af;
+.synthesis-btn:disabled {
+  background: color-mix(in srgb, var(--mp-ink) 30%, transparent);
+  color: var(--mp-white);
   cursor: not-allowed;
+}
+
+.btn-icon {
+  width: 20px;
+  height: 20px;
 }
 
 /* 右侧材料区 */
@@ -503,7 +581,7 @@ export default {
 
 .slots-label {
   font-size: 12px;
-  color: #6b7280;
+  color: var(--mp-text-muted);
   margin-bottom: 8px;
 }
 
@@ -525,26 +603,33 @@ export default {
 
 /* 自动填充按钮 */
 .auto-fill-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
   padding: 10px 16px;
-  background: #e0e7ff;
-  color: #4f46e5;
-  border: none;
-  border-radius: 10px;
+  background: var(--mp-white);
+  color: var(--mp-purple-dark);
+  border: 3px solid var(--mp-ink);
+  border-radius: var(--mp-radius-full);
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  box-shadow: var(--mp-shadow);
+  transition: all var(--mp-duration-fast) ease;
 }
 
 .auto-fill-btn:hover {
-  background: #c7d2fe;
+  background: var(--mp-purple-soft);
   transform: translateY(-1px);
+  box-shadow: var(--mp-shadow-hover);
 }
 
 /* 配方信息 */
 .recipe-info {
-  background: rgba(255, 255, 255, 0.6);
-  border-radius: 12px;
+  background: color-mix(in srgb, var(--mp-white) 60%, transparent);
+  border-radius: var(--mp-radius-md);
+  border: 2px solid color-mix(in srgb, var(--mp-purple) 30%, transparent);
   padding: 12px;
   font-size: 12px;
 }
@@ -560,23 +645,34 @@ export default {
 }
 
 .info-label {
-  color: #6b7280;
+  color: var(--mp-text-muted);
 }
 
 .info-value {
-  color: #374151;
+  color: var(--mp-ink);
   font-weight: 500;
 }
 
 /* 底部提示 */
 .synthesis-hint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   text-align: center;
   padding: 16px;
-  background: #fef3c7;
-  border-radius: 12px;
+  background: color-mix(in srgb, var(--mp-gold) 15%, transparent);
+  border: 2px solid color-mix(in srgb, var(--mp-gold) 40%, transparent);
+  border-radius: var(--mp-radius-md);
   font-size: 13px;
-  color: #92400e;
+  color: var(--mp-ink);
   margin-top: 16px;
+}
+
+.hint-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
 }
 
 /* 响应式 */
@@ -597,17 +693,26 @@ export default {
 .fragment-inventory {
   margin-top: 16px;
   padding: 12px;
-  background: rgba(255, 255, 255, 0.6);
-  border-radius: 12px;
-  border: 2px dashed #c4b5fd;
+  background: color-mix(in srgb, var(--mp-white) 60%, transparent);
+  border-radius: var(--mp-radius-md);
+  border: 2px dashed color-mix(in srgb, var(--mp-purple) 40%, transparent);
 }
 
 .inventory-title {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
   font-size: 13px;
   font-weight: 600;
-  color: #7c3aed;
+  color: var(--mp-ink);
   margin-bottom: 10px;
   text-align: center;
+}
+
+.inventory-icon {
+  width: 18px;
+  height: 18px;
 }
 
 .inventory-items {
@@ -622,8 +727,9 @@ export default {
   padding: 8px;
 }
 
-.inventory-items :deep(.item-icon) {
-  font-size: 28px;
+.inventory-items :deep(.item-icon-svg) {
+  width: 28px;
+  height: 28px;
 }
 
 .inventory-items :deep(.item-name) {
@@ -636,12 +742,14 @@ export default {
   flex-direction: column;
   align-items: center;
   padding: 20px 10px;
-  color: rgba(107, 33, 168, 0.5);
+  color: var(--mp-text-muted);
 }
 
 .empty-icon {
-  font-size: 28px;
+  width: 32px;
+  height: 32px;
   margin-bottom: 6px;
+  opacity: 0.6;
 }
 
 .empty-text {
@@ -651,5 +759,30 @@ export default {
 
 .empty-hint {
   font-size: 10px;
+}
+
+/* 弹窗底部 */
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* 关闭按钮 - 胶囊贴纸风格 */
+.close-btn {
+  padding: 8px 20px;
+  border: 3px solid var(--mp-ink);
+  border-radius: var(--mp-radius-full);
+  background: var(--mp-white);
+  color: var(--mp-ink);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: var(--mp-shadow);
+  transition: all var(--mp-duration-fast) ease;
+}
+
+.close-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--mp-shadow-hover);
 }
 </style>
