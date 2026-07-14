@@ -14,6 +14,7 @@
     使用 Naive UI 的 Modal 组件
   -->
   <n-modal
+    class="save-manager-modal"
     v-model:show="showModal"
     :title="$t('saveManager.title')"
     preset="card"
@@ -24,7 +25,7 @@
       <!-- ==================== 自动存档区域 ==================== -->
       <div class="save-section">
         <h3 class="section-title">
-          <span class="title-icon">🔄</span>
+          <span class="title-icon">⟳</span>
           {{ $t('saveManager.autoSave.title') }}
         </h3>
         <div
@@ -65,7 +66,7 @@
       <!-- ==================== 手动存档槽位 ==================== -->
       <div class="save-section">
         <h3 class="section-title">
-          <span class="title-icon">💾</span>
+          <span class="title-icon">🖫</span>
           {{ $t('saveManager.manualSave.title') }}
         </h3>
         <div
@@ -122,7 +123,7 @@
       <!-- ==================== 导入存档 ==================== -->
       <div class="save-section">
         <h3 class="section-title">
-          <span class="title-icon">📥</span>
+          <span class="title-icon">↓</span>
           {{ $t('saveManager.import.title') }}
         </h3>
         <div class="import-area">
@@ -134,7 +135,7 @@
           >
             <n-button>
               <template #icon>
-                <span>📂</span>
+                <span>↓</span>
               </template>
               {{ $t('saveManager.import.button') }}
             </n-button>
@@ -374,7 +375,7 @@ export default {
 
       try {
         await this.saveToSlot(index, `存档 ${index + 1}`)
-        notificationStore.success(`💾 已保存到槽位 ${index + 1}`)
+        notificationStore.success(`已保存到槽位 ${index + 1}`)
       } catch (error) {
         notificationStore.error('保存失败: ' + error.message)
       }
@@ -388,7 +389,7 @@ export default {
 
       try {
         await this.loadFromSlot(-1)
-        notificationStore.success('📂 已加载自动存档')
+        notificationStore.success('已加载自动存档')
         this.close()
       } catch (error) {
         notificationStore.error('加载失败: ' + error.message)
@@ -406,7 +407,7 @@ export default {
       try {
         // 调用 store 的 loadFromSlot 方法（通过 mapActions 映射）
         await this.loadFromSlot(index)
-        notificationStore.success(`📂 已加载存档: ${this.getSlotInfo(index)?.meta?.name || `槽位 ${index + 1}`}`)
+        notificationStore.success(`已加载存档: ${this.getSlotInfo(index)?.meta?.name || `槽位 ${index + 1}`}`)
         this.close()
       } catch (error) {
         notificationStore.error('加载失败: ' + error.message)
@@ -421,7 +422,7 @@ export default {
 
       try {
         this.exportSave(-1)
-        notificationStore.success('📤 已导出自动存档')
+        notificationStore.success('已导出自动存档')
       } catch (error) {
         notificationStore.error('导出失败: ' + error.message)
       }
@@ -437,7 +438,7 @@ export default {
 
       try {
         this.exportSave(index)
-        notificationStore.success(`📤 已导出存档: ${this.getSlotInfo(index)?.meta?.name || `槽位 ${index + 1}`}`)
+        notificationStore.success(`已导出存档: ${this.getSlotInfo(index)?.meta?.name || `槽位 ${index + 1}`}`)
       } catch (error) {
         notificationStore.error('导出失败: ' + error.message)
       }
@@ -462,7 +463,7 @@ export default {
       if (this.deleteTargetIndex >= 0) {
         try {
           this.deleteSlot(this.deleteTargetIndex)
-          notificationStore.success('🗑️ 存档已删除')
+          notificationStore.success('存档已删除')
         } catch (error) {
           notificationStore.error('删除失败: ' + error.message)
         }
@@ -504,7 +505,7 @@ export default {
 
       try {
         await this.importSave(file, targetSlot)
-        notificationStore.success(`📥 存档已导入到槽位 ${targetSlot + 1}`)
+        notificationStore.success(`存档已导入到槽位 ${targetSlot + 1}`)
         this.refreshSaveList()
       } catch (error) {
         notificationStore.error('导入失败: ' + error.message)
@@ -517,7 +518,20 @@ export default {
 <style scoped>
 /**
  * 存档管理器样式
+ * 书架/魔法书风格，使用设计 token
  */
+
+/* 弹窗卡片：卷轴/书架风格 */
+.save-manager-modal :deep(.n-card) {
+  background: linear-gradient(135deg, var(--mp-purple-soft) 0%, var(--mp-bg) 100%);
+  border: 4px solid var(--mp-purple);
+  border-radius: var(--mp-radius-lg);
+  box-shadow: var(--mp-shadow-hover);
+}
+
+.save-manager-modal :deep(.n-card-header) {
+  border-bottom: 2px solid color-mix(in srgb, var(--mp-purple) 30%, transparent);
+}
 
 /* 存档管理容器 */
 .save-manager {
@@ -528,23 +542,26 @@ export default {
 
 /* 存档区域 */
 .save-section {
-  background: rgba(197, 179, 224, 0.1);
-  border-radius: 12px;
+  background: color-mix(in srgb, var(--mp-purple) 8%, transparent);
+  border-radius: var(--mp-radius-md);
   padding: 15px;
+  border: 2px solid color-mix(in srgb, var(--mp-purple) 20%, transparent);
 }
 
 /* 区域标题 */
 .section-title {
   margin: 0 0 12px 0;
   font-size: 16px;
-  color: var(--text-dark);
+  color: var(--mp-ink);
   display: flex;
   align-items: center;
   gap: 8px;
+  font-weight: 700;
 }
 
 .title-icon {
   font-size: 18px;
+  color: var(--mp-purple);
 }
 
 /* 存档项目 */
@@ -553,11 +570,12 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 12px 15px;
-  background: white;
-  border-radius: 10px;
+  background: var(--mp-white);
+  border-radius: var(--mp-radius-md);
   margin-bottom: 10px;
-  border: 2px solid transparent;
-  transition: all 0.3s ease;
+  border: 3px solid transparent;
+  box-shadow: var(--mp-shadow);
+  transition: all var(--mp-duration-normal) ease;
 }
 
 .save-item:last-child {
@@ -565,8 +583,8 @@ export default {
 }
 
 .save-item.active {
-  border-color: var(--primary-color);
-  background: rgba(197, 179, 224, 0.15);
+  border-color: var(--mp-purple);
+  background: var(--mp-purple-soft);
 }
 
 /* 存档信息 */
@@ -578,26 +596,28 @@ export default {
 }
 
 .save-name {
-  font-weight: 600;
-  color: var(--text-dark);
+  font-weight: 700;
+  color: var(--mp-ink);
   font-size: 15px;
 }
 
 .save-time {
   font-size: 13px;
-  color: #666;
+  color: var(--mp-text-muted);
 }
 
 .play-time {
   font-size: 12px;
-  color: var(--primary-color);
-  font-weight: 500;
+  color: var(--mp-purple);
+  font-weight: 600;
 }
 
 /* 存档操作按钮 */
 .save-actions {
   display: flex;
   gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 
 /* 导入区域 */
@@ -605,11 +625,12 @@ export default {
   display: flex;
   align-items: center;
   gap: 15px;
+  flex-wrap: wrap;
 }
 
 .import-hint {
   font-size: 13px;
-  color: #888;
+  color: var(--mp-text-muted);
 }
 
 /* 底部信息 */
@@ -617,12 +638,12 @@ export default {
   display: flex;
   justify-content: center;
   padding-top: 10px;
-  border-top: 1px solid rgba(197, 179, 224, 0.3);
+  border-top: 2px solid color-mix(in srgb, var(--mp-purple) 20%, transparent);
 }
 
 .last-save-info {
   font-size: 13px;
-  color: #888;
+  color: var(--mp-text-muted);
 }
 
 /* 删除/覆盖提示 */
@@ -630,10 +651,11 @@ export default {
 .overwrite-target {
   margin-top: 10px;
   padding: 10px;
-  background: rgba(255, 193, 7, 0.1);
-  border-radius: 8px;
-  font-weight: 500;
-  color: #e6a700;
+  background: color-mix(in srgb, var(--mp-gold) 20%, transparent);
+  border-radius: var(--mp-radius-md);
+  font-weight: 600;
+  color: var(--mp-ink);
+  border: 2px solid color-mix(in srgb, var(--mp-gold) 40%, transparent);
 }
 
 /* 响应式调整 */
