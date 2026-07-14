@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Magic Potion UI 改造方案对比</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif;
+      background: linear-gradient(135deg, #f0e6ff 0%, #e6d9ff 100%);
+      min-height: 100vh;
+      padding: 40px;
+      color: #4a4a6a;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 40px;
+      font-size: 28px;
+      color: #6b21a8;
+    }
+    .intro {
+      max-width: 900px;
+      margin: 0 auto 40px;
+      text-align: center;
+      line-height: 1.6;
+      font-size: 15px;
+    }
+    .approaches {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .approach {
+      background: rgba(255,255,255,0.85);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: 0 8px 30px rgba(139,92,246,0.15);
+      border: 3px solid rgba(197,179,224,0.4);
+      transition: transform 0.3s ease;
+    }
+    .approach:hover { transform: translateY(-5px); }
+    .approach.recommended {
+      border-color: #fbbf24;
+      box-shadow: 0 8px 30px rgba(251,191,36,0.25);
+      position: relative;
+    }
+    .recommended-badge {
+      position: absolute;
+      top: -12px;
+      right: 20px;
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      color: white;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+      box-shadow: 0 4px 10px rgba(251,191,36,0.4);
+    }
+    .approach h2 {
+      font-size: 18px;
+      margin-bottom: 8px;
+      color: #7c3aed;
+    }
+    .approach .subtitle {
+      font-size: 13px;
+      color: #6b7280;
+      margin-bottom: 16px;
+    }
+
+    /* ===== Mockup canvas ===== */
+    .mockup {
+      width: 100%;
+      aspect-ratio: 4/3;
+      border-radius: 16px;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 16px;
+      border: 2px dashed rgba(139,92,246,0.3);
+    }
+
+    /* Common hand-drawn style */
+    .panel {
+      border-radius: 16px;
+      border: 3px solid #6b21a8;
+      background: #fff;
+      box-shadow: 4px 4px 0 rgba(107,33,168,0.15);
+    }
+    .blob-pet {
+      width: 60px;
+      height: 52px;
+      background: radial-gradient(ellipse at 40% 30%, #c8f0d8, #88d8b0);
+      border-radius: 50% 50% 45% 45%;
+      border: 3px solid #4a4a6a;
+      position: relative;
+    }
+    .blob-pet::before, .blob-pet::after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 10px;
+      background: #4a4a6a;
+      border-radius: 50%;
+      top: 14px;
+    }
+    .blob-pet::before { left: 14px; }
+    .blob-pet::after { right: 14px; }
+    .blob-pet .mouth {
+      position: absolute;
+      width: 16px;
+      height: 8px;
+      border-bottom: 3px solid #4a4a6a;
+      border-radius: 0 0 16px 16px;
+      bottom: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    .bar {
+      height: 8px;
+      border-radius: 4px;
+      background: rgba(0,0,0,0.08);
+      overflow: hidden;
+      margin: 4px 0;
+    }
+    .bar-fill { height: 100%; border-radius: 4px; }
+
+    /* ===== Approach A: Immersive World ===== */
+    .mockup-a {
+      background: linear-gradient(180deg, #e0d4ff 0%, #f0e6ff 60%, #c8f0d8 100%);
+    }
+    .mockup-a .cloud {
+      position: absolute;
+      background: #fff;
+      border-radius: 30px;
+      opacity: 0.8;
+      animation: floatCloud 4s ease-in-out infinite;
+    }
+    .mockup-a .cloud-1 { width: 50px; height: 24px; top: 20px; left: 20px; }
+    .mockup-a .cloud-2 { width: 40px; height: 20px; top: 40px; right: 30px; animation-delay: -2s; }
+    .mockup-a .star {
+      position: absolute;
+      color: #fbbf24;
+      font-size: 14px;
+      animation: twinkle 2s ease-in-out infinite;
+    }
+    .mockup-a .floating-island {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 24px;
+      background: #a8e6cf;
+      border-radius: 50%;
+      border: 3px solid #4a4a6a;
+    }
+    .mockup-a .pet-display {
+      position: absolute;
+      left: 12px;
+      top: 50px;
+      width: 90px;
+      height: 130px;
+      padding: 10px;
+    }
+    .mockup-a .crystal-ball {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, rgba(255,255,255,0.9), rgba(220,200,255,0.6));
+      border: 4px solid #7c3aed;
+      box-shadow: 0 0 30px rgba(139,92,246,0.4), inset 0 0 20px rgba(255,255,255,0.5);
+    }
+    .mockup-a .crystal-ball .blob-pet {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      animation: bounce 1.5s ease-in-out infinite;
+    }
+    .mockup-a .outdoor-zone {
+      position: absolute;
+      right: 12px;
+      width: 90px;
+      height: 55px;
+      padding: 8px;
+      font-size: 10px;
+      text-align: center;
+    }
+    .mockup-a .outdoor-zone.forest { top: 50px; background: #e0f7e9; }
+    .mockup-a .outdoor-zone.hunt { top: 115px; background: #ffe0e6; }
+
+    /* ===== Approach B: Polished Card Panels ===== */
+    .mockup-b {
+      background: linear-gradient(135deg, #f5f0ff 0%, #ede6ff 100%);
+    }
+    .mockup-b .pet-display {
+      position: absolute;
+      left: 16px;
+      top: 40px;
+      width: 95px;
+      height: 140px;
+      padding: 12px;
+      background: linear-gradient(135deg, #fff 0%, #f3e8ff 100%);
+    }
+    .mockup-b .crystal-ball {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #fff, #e9d5ff);
+      border: 3px solid #8b5cf6;
+      box-shadow: 0 8px 25px rgba(139,92,246,0.25);
+    }
+    .mockup-b .outdoor-zone {
+      position: absolute;
+      right: 16px;
+      width: 95px;
+      height: 60px;
+      padding: 10px;
+      text-align: center;
+      font-size: 10px;
+    }
+    .mockup-b .outdoor-zone.forest { top: 40px; background: #f0fdf4; border-color: #86efac; }
+    .mockup-b .outdoor-zone.hunt { top: 110px; background: #fff1f2; border-color: #fda4af; }
+
+    /* ===== Approach C: Core-first Phased ===== */
+    .mockup-c {
+      background: #f8f5ff;
+    }
+    .mockup-c .pet-display {
+      position: absolute;
+      left: 16px;
+      top: 40px;
+      width: 95px;
+      height: 140px;
+      padding: 12px;
+      border: 2px solid #c4b5fd;
+      box-shadow: 2px 2px 0 rgba(139,92,246,0.1);
+    }
+    .mockup-c .crystal-ball {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #fff, #f3e8ff);
+      border: 3px solid #8b5cf6;
+    }
+    .mockup-c .outdoor-zone {
+      position: absolute;
+      right: 16px;
+      width: 95px;
+      height: 60px;
+      padding: 10px;
+      text-align: center;
+      font-size: 10px;
+      border-width: 2px;
+    }
+
+    .features {
+      list-style: none;
+      font-size: 13px;
+      line-height: 1.8;
+    }
+    .features li::before {
+      content: '✦';
+      margin-right: 8px;
+      color: #8b5cf6;
+    }
+    .tradeoffs {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px dashed rgba(139,92,246,0.3);
+      font-size: 12px;
+      color: #6b7280;
+      line-height: 1.6;
+    }
+
+    @keyframes floatCloud {
+      0%, 100% { transform: translateX(0); }
+      50% { transform: translateX(10px); }
+    }
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.4; transform: scale(0.8); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translate(-50%, -50%) translateY(0); }
+      50% { transform: translate(-50%, -50%) translateY(-6px); }
+    }
+  </style>
+</head>
+<body>
+  <h1>🎨 Magic Potion UI 改造方案对比</h1>
+  <p class="intro">
+    基于你的需求：Q版手绘风、全 CSS/SVG 替代 emoji、保留三栏布局、全面加强动画与动态背景。<br>
+    下面是三个不同侧重点的改造方案。
+  </p>
+
+  <div class="approaches">
+    <!-- Approach A -->
+    <div class="approach recommended">
+      <div class="recommended-badge">推荐方案</div>
+      <h2>方案 A：沉浸式手绘魔法世界</h2>
+      <div class="subtitle">最符合「更卡通、更生动」的目标</div>
+      <div class="mockup mockup-a">
+        <div class="cloud cloud-1"></div>
+        <div class="cloud cloud-2"></div>
+        <span class="star" style="top:15px;left:45%">✦</span>
+        <span class="star" style="top:60px;left:30%;animation-delay:.5s">✦</span>
+        <span class="star" style="top:30px;left:75%;animation-delay:1s">✦</span>
+        <div class="floating-island"></div>
+        <div class="panel pet-display">
+          <div style="display:flex;justify-content:center;margin-bottom:8px">
+            <div class="blob-pet"><div class="mouth"></div></div>
+          </div>
+          <div class="bar"><div class="bar-fill" style="width:80%;background:#f59e0b"></div></div>
+          <div class="bar"><div class="bar-fill" style="width:70%;background:#ec4899"></div></div>
+        </div>
+        <div class="crystal-ball">
+          <div class="blob-pet"><div class="mouth"></div></div>
+        </div>
+        <div class="panel outdoor-zone forest">🌲 森林<br>安全玩耍</div>
+        <div class="panel outdoor-zone hunt">⚔️ 游猎<br>危险战斗</div>
+      </div>
+      <ul class="features">
+        <li>动态背景：飘浮岛屿、流动云朵、闪烁星星</li>
+        <li>所有 emoji 改为手绘 SVG 图形</li>
+        <li>宠物多状态动画 + 拖拽粒子轨迹</li>
+        <li>水晶球呼吸光晕 + 穹顶开合</li>
+        <li>统一手绘描边与阴影系统</li>
+      </ul>
+      <div class="tradeoffs">
+        <strong>投入：</strong>最高｜<strong>风险：</strong>中｜<strong>效果：</strong>最完整统一
+      </div>
+    </div>
+
+    <!-- Approach B -->
+    <div class="approach">
+      <h2>方案 B：精致面板风</h2>
+      <div class="subtitle">弱化环境叙事，强化单组件精致度</div>
+      <div class="mockup mockup-b">
+        <div class="panel pet-display">
+          <div style="display:flex;justify-content:center;margin-bottom:10px">
+            <div class="blob-pet"><div class="mouth"></div></div>
+          </div>
+          <div style="font-size:10px;text-align:center;margin-bottom:6px">小紫 Lv.3</div>
+          <div class="bar"><div class="bar-fill" style="width:80%;background:#f59e0b"></div></div>
+          <div class="bar"><div class="bar-fill" style="width:70%;background:#ec4899"></div></div>
+          <div class="bar"><div class="bar-fill" style="width:90%;background:#10b981"></div></div>
+        </div>
+        <div class="crystal-ball">
+          <div class="blob-pet"><div class="mouth"></div></div>
+        </div>
+        <div class="panel outdoor-zone forest">🌲 森林</div>
+        <div class="panel outdoor-zone hunt">⚔️ 游猎</div>
+      </div>
+      <ul class="features">
+        <li>每个面板都是独立手绘卡片</li>
+        <li>细腻的渐变、内阴影、描边</li>
+        <li>水晶球和宠物动画精致</li>
+        <li>背景保持简洁（静态渐变）</li>
+        <li>弹窗/商店同步卡片化</li>
+      </ul>
+      <div class="tradeoffs">
+        <strong>投入：</strong>中高｜<strong>风险：</strong>低｜<strong>效果：</strong>精致但缺少大场景感
+      </div>
+    </div>
+
+    <!-- Approach C -->
+    <div class="approach">
+      <h2>方案 C：核心优先 + 分阶段</h2>
+      <div class="subtitle">先做主界面，再做弹窗与背景</div>
+      <div class="mockup mockup-c">
+        <div class="panel pet-display">
+          <div style="display:flex;justify-content:center;margin-bottom:10px">
+            <div class="blob-pet"><div class="mouth"></div></div>
+          </div>
+          <div class="bar"><div class="bar-fill" style="width:80%;background:#f59e0b"></div></div>
+          <div class="bar"><div class="bar-fill" style="width:70%;background:#ec4899"></div></div>
+        </div>
+        <div class="crystal-ball">
+          <div class="blob-pet"><div class="mouth"></div></div>
+        </div>
+        <div class="panel outdoor-zone forest">🌲 森林</div>
+        <div class="panel outdoor-zone hunt">⚔️ 游猎</div>
+      </div>
+      <ul class="features">
+        <li>第一阶段：主界面卡通化</li>
+        <li>第二阶段：商店/合成弹窗</li>
+        <li>第三阶段：动态背景</li>
+        <li>每阶段都可独立验收</li>
+        <li>适合边玩边验证效果</li>
+      </ul>
+      <div class="tradeoffs">
+        <strong>投入：</strong>分阶段可控｜<strong>风险：</strong>最低｜<strong>效果：</strong>渐进式升级
+      </div>
+    </div>
+  </div>
+</body>
+</html>
