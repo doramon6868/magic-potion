@@ -19,6 +19,9 @@
     使用 flex 布局让整个游戏界面垂直排列
     min-height: 100vh 确保背景填满整个屏幕
   -->
+  <!-- ==================== 动态魔法背景 ==================== -->
+  <MagicBackground />
+
   <div class="game-container">
 
     <!-- ==================== 顶部功能栏 ==================== -->
@@ -95,6 +98,7 @@ import NotificationBar from './components/NotificationBar.vue'
 import SaveManager from './components/SaveManager.vue'
 import SynthesisUI from './components/synthesis/SynthesisUI.vue'
 import PetCollection from './components/synthesis/PetCollection.vue'
+import MagicBackground from './components/MagicBackground.vue'
 
 // ==================== 导入 Store ====================
 import { useGameStore } from './stores/game.js'
@@ -122,7 +126,8 @@ export default {
     NotificationBar,
     SaveManager,
     SynthesisUI,
-    PetCollection
+    PetCollection,
+    MagicBackground
   },
 
   /**
