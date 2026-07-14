@@ -54,7 +54,8 @@ export default {
   data() {
     return {
       showShootingStar: false,
-      shootingStarTimer: null
+      shootingStarTimer: null,
+      shootingStarHideTimer: null
     }
   },
 
@@ -65,6 +66,9 @@ export default {
   beforeUnmount() {
     if (this.shootingStarTimer) {
       clearTimeout(this.shootingStarTimer)
+    }
+    if (this.shootingStarHideTimer) {
+      clearTimeout(this.shootingStarHideTimer)
     }
   },
 
@@ -118,7 +122,7 @@ export default {
       const nextTime = 5000 + Math.random() * 10000
       this.shootingStarTimer = setTimeout(() => {
         this.showShootingStar = true
-        setTimeout(() => {
+        this.shootingStarHideTimer = setTimeout(() => {
           this.showShootingStar = false
           this.scheduleShootingStar()
         }, 1500)
