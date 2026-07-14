@@ -350,4 +350,47 @@ export default {
   /* 高度 */
   height: 200px;
 }
+
+/* ==================== 响应式布局 ==================== */
+
+@media (max-width: 1024px) {
+  .game-area {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .pet-display-wrapper,
+  .right-panel {
+    width: 100%;
+    max-width: 500px;
+  }
+
+  .right-panel {
+    flex-direction: row;
+  }
+
+  .outdoor-zone {
+    flex: 1;
+    height: 180px;
+  }
+}
+
+@media (max-width: 768px) {
+  .game-container {
+    padding: 12px;
+  }
+
+  .game-area {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .right-panel {
+    flex-direction: column;
+  }
+
+  .crystal-ball-wrapper {
+    min-height: 320px;
+  }
+}
 </style>
