@@ -365,7 +365,7 @@ export default {
 
 /* 安全 - pastel 薄荷绿 */
 .zone-safety.safe {
-  background: rgba(125, 211, 192, 0.5);
+  background: color-mix(in srgb, var(--mp-mint) 50%, transparent);
   color: var(--mp-ink);
   border: 1px solid var(--mp-mint);
 }
@@ -428,7 +428,7 @@ export default {
   /* 内边距 */
   padding: 10px;
   /* 背景 */
-  background: rgba(255, 255, 255, 0.4);
+  background: color-mix(in srgb, var(--mp-white) 40%, transparent);
   /* 圆角 */
   border-radius: var(--mp-radius-md);
 }
