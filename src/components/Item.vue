@@ -33,8 +33,16 @@
   >
     <!-- 物品图标 -->
     <div class="item-icon-wrapper">
-      <!-- 图标 -->
-      <span class="item-icon">{{ item.icon }}</span>
+      <!-- SVG 图标：根据 item.key 动态渲染 -->
+      <component
+        :is="iconComponent"
+        v-if="iconComponent"
+        class="item-icon-svg"
+        :rarity="item.rarity"
+        :type="fragmentType"
+      />
+      <!-- 没有对应 SVG 时回退到 emoji -->
+      <span v-else class="item-icon">{{ item.icon }}</span>
 
       <!-- 数量徽章（当 showQuantity 为 true 且数量大于1时显示） -->
       <span
@@ -74,6 +82,8 @@
 </template>
 
 <script>
+import { itemIconMap, fragmentTypes } from './icons/itemIconMap.js'
+
 export default {
   // 组件名称
   name: 'Item',
@@ -170,6 +180,23 @@ export default {
 
       // Fallback：使用 item.name 或直接显示 "Unknown"
       return this.item.name || 'Unknown Item'
+    },
+
+    /**
+     * iconComponent: 根据 item.key 获取对应的 SVG 图标组件
+     */
+    iconComponent() {
+      if (!this.item || !this.item.key) return null
+      return itemIconMap[this.item.key] || null
+    },
+
+    /**
+     * fragmentType: 碎片对应的宠物类型
+     * 非碎片物品返回默认 'cat'
+     */
+    fragmentType() {
+      if (!this.item || !this.item.key) return 'cat'
+      return fragmentTypes[this.item.key] || 'cat'
     }
   },
 
@@ -309,6 +336,13 @@ export default {
 /* 物品图标 */
 .item-icon {
   font-size: 36px;
+  display: block;
+}
+
+/* SVG 图标尺寸 */
+.item-icon-svg {
+  width: 40px;
+  height: 40px;
   display: block;
 }
 
