@@ -1,0 +1,49 @@
+/*
+  Magic Potion 手绘风设计 Token
+  所有 UI 组件应使用这些变量，避免硬编码
+*/
+
+:root {
+  /* 主色 */
+  --mp-purple: #8B5CF6;
+  --mp-purple-light: #A78BFA;
+  --mp-purple-dark: #7C3AED;
+  --mp-purple-soft: #F5F0FF;
+
+  /* 功能色 */
+  --mp-mint: #7DD3C0;
+  --mp-mint-light: #A7F3D0;
+  --mp-pink: #F472B6;
+  --mp-pink-light: #FBCFE8;
+  --mp-gold: #FBBF24;
+  --mp-gold-light: #FDE68A;
+  --mp-red: #F87171;
+  --mp-blue: #60A5FA;
+
+  /* 中性色 */
+  --mp-ink: #612315;
+  --mp-white: #FFFFFF;
+  --mp-bg: #F5F0FF;
+  --mp-text: #612315;
+  --mp-text-muted: rgba(97, 35, 21, 0.6);
+
+  /* 描边与阴影 */
+  --mp-border-width: 3px;
+  --mp-border-color: var(--mp-ink);
+  --mp-shadow-offset: 4px;
+  --mp-shadow-color: rgba(97, 35, 21, 0.15);
+  --mp-shadow: var(--mp-shadow-offset) var(--mp-shadow-offset) 0 var(--mp-shadow-color);
+  --mp-shadow-hover: 6px 6px 0 var(--mp-shadow-color);
+
+  /* 圆角 */
+  --mp-radius-sm: 12px;
+  --mp-radius-md: 16px;
+  --mp-radius-lg: 24px;
+  --mp-radius-full: 9999px;
+
+  /* 动画时长 */
+  --mp-duration-fast: 0.15s;
+  --mp-duration-normal: 0.3s;
+  --mp-duration-slow: 0.6s;
+  --mp-ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}

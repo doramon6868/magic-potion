@@ -253,6 +253,11 @@ export default {
 }
 </script>
 
+<style>
+/* 引入全局设计 Token，供所有组件使用 */
+@import '@/styles/design-tokens.css';
+</style>
+
 <style scoped>
 /**
  * scoped 属性表示这些样式只作用于当前组件
