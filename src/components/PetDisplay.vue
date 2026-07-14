@@ -7,11 +7,15 @@
   3. 属性条（饱食度、心情、健康）
   4. 等级和经验
 
-  风格参考合成界面设计
+  手绘相框风格设计
 -->
 
 <template>
-  <div class="pet-display-panel">
+  <div class="pet-display-panel magic-frame">
+    <!-- 相框装饰星星 -->
+    <StarDecoration class="frame-star top-left" />
+    <StarDecoration class="frame-star bottom-right" />
+
     <!-- 宠物头像区域 -->
     <div class="pet-avatar-section">
       <!-- 宠物切换按钮 -->
@@ -21,7 +25,7 @@
         @click="openPetSwitcher"
         title="切换宠物"
       >
-        <span class="switch-icon">🔄</span>
+        <StarDecoration class="switch-icon" />
       </button>
 
       <!-- 大头像 -->
@@ -47,14 +51,14 @@
         :class="{ 'active': !showBackpack }"
         @click="showBackpack = false"
       >
-        📊 属性
+        属性
       </button>
       <button
         class="toggle-btn"
         :class="{ 'active': showBackpack }"
         @click="showBackpack = true"
       >
-        🎒 背包 ({{ backpackStore.totalItems }})
+        背包 ({{ backpackStore.totalItems }})
       </button>
     </div>
 
@@ -62,7 +66,7 @@
     <div v-if="!showBackpack" class="pet-stats-section">
       <!-- 饱食度条 -->
       <div class="stat-bar">
-        <div class="stat-icon">🍖</div>
+        <div class="stat-icon hunger-dot"></div>
         <div class="stat-info">
           <div class="stat-header">
             <span class="stat-label">{{ $t('pet.stats.hunger') }}</span>
@@ -76,7 +80,7 @@
 
       <!-- 心情条 -->
       <div class="stat-bar">
-        <div class="stat-icon">💖</div>
+        <div class="stat-icon mood-dot"></div>
         <div class="stat-info">
           <div class="stat-header">
             <span class="stat-label">{{ $t('pet.stats.mood') }}</span>
@@ -90,7 +94,7 @@
 
       <!-- 健康条 -->
       <div class="stat-bar">
-        <div class="stat-icon">❤️</div>
+        <div class="stat-icon health-dot"></div>
         <div class="stat-info">
           <div class="stat-header">
             <span class="stat-label">{{ $t('pet.stats.health') }}</span>
@@ -106,7 +110,6 @@
     <!-- 背包区域 -->
     <div v-else class="backpack-section">
       <div v-if="backpackStore.items.length === 0" class="empty-backpack">
-        <span class="empty-icon">📭</span>
         <span class="empty-text">背包是空的</span>
         <span class="empty-hint">去商店购买物品吧</span>
       </div>
@@ -152,7 +155,7 @@
               </div>
             </div>
             <div v-if="ownedPet.instanceId === activePetId" class="active-badge">
-              ✓ {{ $t('synthesis.current') || '当前' }}
+              {{ $t('synthesis.current') || '当前' }}
             </div>
           </div>
         </div>
@@ -170,13 +173,15 @@ import { useNotificationStore } from '../stores/notification.js'
 import { getPetType } from '../config/petTypes.js'
 import Item from './Item.vue'
 import SlugcatAvatar from './icons/SlugcatAvatar.vue'
+import StarDecoration from './icons/decorations/StarDecoration.vue'
 
 export default {
   name: 'PetDisplay',
 
   components: {
     Item,
-    SlugcatAvatar
+    SlugcatAvatar,
+    StarDecoration
   },
 
   data() {
@@ -271,13 +276,36 @@ export default {
 </script>
 
 <style scoped>
-/* 宠物显示面板 - 参考合成界面风格 */
+/* 宠物显示面板 - 魔法相框风格 */
 .pet-display-panel {
-  background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
-  border-radius: 20px;
-  border: 2px solid rgba(197, 179, 224, 0.5);
+  background: linear-gradient(135deg, var(--mp-white) 0%, var(--mp-purple-soft) 100%);
+  border: 4px solid var(--mp-purple);
+  border-radius: var(--mp-radius-lg);
   padding: 20px;
-  box-shadow: 0 4px 20px rgba(139, 92, 246, 0.15);
+  box-shadow: var(--mp-shadow);
+  position: relative;
+}
+
+/* 魔法相框 */
+.magic-frame {
+  position: relative;
+}
+
+.frame-star {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  z-index: 10;
+}
+
+.frame-star.top-left {
+  top: -10px;
+  left: 12px;
+}
+
+.frame-star.bottom-right {
+  bottom: -10px;
+  right: 12px;
 }
 
 /* 宠物头像区域 */
@@ -297,8 +325,8 @@ export default {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-  border: 2px solid white;
+  background: linear-gradient(135deg, var(--mp-purple) 0%, var(--mp-purple-dark) 100%);
+  border: 2px solid var(--mp-white);
   box-shadow: 0 2px 8px rgba(139, 92, 246, 0.4);
   cursor: pointer;
   display: flex;
@@ -314,7 +342,8 @@ export default {
 }
 
 .switch-icon {
-  font-size: 18px;
+  width: 18px;
+  height: 18px;
 }
 
 /* 大头像 */
@@ -355,7 +384,7 @@ export default {
 .pet-name {
   font-size: 18px;
   font-weight: 700;
-  color: #6b21a8;
+  color: var(--mp-purple-dark);
   margin-bottom: 6px;
 }
 
@@ -367,17 +396,17 @@ export default {
 }
 
 .level-badge {
-  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-  color: white;
+  background: linear-gradient(135deg, var(--mp-purple) 0%, var(--mp-purple-dark) 100%);
+  color: var(--mp-white);
   padding: 4px 12px;
-  border-radius: 12px;
+  border-radius: var(--mp-radius-full);
   font-size: 13px;
   font-weight: 600;
 }
 
 .exp-text {
   font-size: 12px;
-  color: #7c3aed;
+  color: var(--mp-purple-dark);
 }
 
 /* 切换按钮区域 */
@@ -392,10 +421,10 @@ export default {
   padding: 10px 12px;
   background: rgba(255, 255, 255, 0.5);
   border: 2px solid rgba(139, 92, 246, 0.2);
-  border-radius: 12px;
+  border-radius: var(--mp-radius-md);
   font-size: 14px;
   font-weight: 600;
-  color: #6b7280;
+  color: var(--mp-text-muted);
   cursor: pointer;
   transition: all 0.3s ease;
 }
@@ -406,16 +435,16 @@ export default {
 }
 
 .toggle-btn.active {
-  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+  background: linear-gradient(135deg, var(--mp-purple) 0%, var(--mp-purple-dark) 100%);
   border-color: transparent;
-  color: white;
+  color: var(--mp-white);
   box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
 }
 
 /* 属性条区域 */
 .pet-stats-section {
   background: rgba(255, 255, 255, 0.6);
-  border-radius: 16px;
+  border-radius: var(--mp-radius-md);
   padding: 16px;
   display: flex;
   flex-direction: column;
@@ -430,8 +459,23 @@ export default {
 }
 
 .stat-icon {
-  font-size: 20px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
   flex-shrink: 0;
+  border: 2px solid var(--mp-ink);
+}
+
+.hunger-dot {
+  background: var(--mp-gold);
+}
+
+.mood-dot {
+  background: var(--mp-pink);
+}
+
+.health-dot {
+  background: var(--mp-mint);
 }
 
 .stat-info {
@@ -447,42 +491,43 @@ export default {
 
 .stat-label {
   font-size: 13px;
-  color: #6b7280;
+  color: var(--mp-text-muted);
   font-weight: 500;
 }
 
 .stat-value {
   font-size: 13px;
-  color: #374151;
+  color: var(--mp-text);
   font-weight: 600;
 }
 
 .stat-track {
-  height: 10px;
-  background: rgba(255, 255, 255, 0.5);
-  border-radius: 5px;
+  height: 12px;
+  background: rgba(97, 35, 21, 0.08);
+  border-radius: 6px;
   overflow: hidden;
+  border: 2px solid rgba(97, 35, 21, 0.1);
 }
 
 .stat-fill {
   height: 100%;
-  border-radius: 5px;
+  border-radius: 6px;
   transition: width 0.3s ease;
 }
 
-/* 饱食度 - 橙色 */
+/* 饱食度 - 金色 */
 .hunger-fill {
-  background: linear-gradient(90deg, #f59e0b, #fbbf24);
+  background: linear-gradient(90deg, var(--mp-gold), var(--mp-gold-light));
 }
 
 /* 心情 - 粉色 */
 .mood-fill {
-  background: linear-gradient(90deg, #ec4899, #f472b6);
+  background: linear-gradient(90deg, var(--mp-pink), var(--mp-pink-light));
 }
 
-/* 健康 - 绿色 */
+/* 健康 - 薄荷绿 */
 .health-fill {
-  background: linear-gradient(90deg, #10b981, #34d399);
+  background: linear-gradient(90deg, var(--mp-mint), var(--mp-mint-light));
 }
 
 /* 状态指示 */
@@ -494,37 +539,37 @@ export default {
   margin-top: 16px;
   padding: 8px 16px;
   background: rgba(255, 255, 255, 0.6);
-  border-radius: 12px;
+  border-radius: var(--mp-radius-md);
   font-size: 13px;
-  color: #6b7280;
+  color: var(--mp-text-muted);
 }
 
 .status-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #10b981;
+  background: var(--mp-mint);
   animation: pulse 2s ease-in-out infinite;
 }
 
 .pet-status.sleeping .status-dot {
-  background: #6b7280;
+  background: var(--mp-text-muted);
 }
 
 .pet-status.playing .status-dot {
-  background: #3b82f6;
+  background: var(--mp-blue);
 }
 
 .pet-status.hunting .status-dot {
-  background: #ef4444;
+  background: var(--mp-red);
 }
 
 .pet-status.tired .status-dot {
-  background: #f59e0b;
+  background: var(--mp-gold);
 }
 
 .pet-status.sad .status-dot {
-  background: #8b5cf6;
+  background: var(--mp-purple);
 }
 
 @keyframes pulse {
@@ -535,7 +580,7 @@ export default {
 /* 背包区域 */
 .backpack-section {
   background: rgba(255, 255, 255, 0.6);
-  border-radius: 16px;
+  border-radius: var(--mp-radius-md);
   padding: 12px;
   min-height: 180px;
 }
@@ -555,12 +600,7 @@ export default {
   align-items: center;
   justify-content: center;
   padding: 40px 20px;
-  color: rgba(74, 74, 106, 0.5);
-}
-
-.empty-icon {
-  font-size: 36px;
-  margin-bottom: 8px;
+  color: var(--mp-text-muted);
 }
 
 .empty-text {
@@ -586,7 +626,7 @@ export default {
   gap: 12px;
   padding: 12px;
   background: rgba(255, 255, 255, 0.8);
-  border-radius: 12px;
+  border-radius: var(--mp-radius-md);
   cursor: pointer;
   transition: all 0.3s ease;
   border: 2px solid transparent;
@@ -598,8 +638,8 @@ export default {
 }
 
 .owned-pet-item.active {
-  background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%);
-  border-color: #8b5cf6;
+  background: linear-gradient(135deg, var(--mp-purple-soft) 0%, var(--mp-purple-light) 100%);
+  border-color: var(--mp-purple);
 }
 
 .pet-preview-avatar {
@@ -620,22 +660,22 @@ export default {
 
 .pet-preview-name {
   font-weight: 600;
-  color: #374151;
+  color: var(--mp-text);
   font-size: 14px;
 }
 
 .pet-preview-skill {
   font-size: 12px;
-  color: #6b7280;
+  color: var(--mp-text-muted);
   margin-top: 2px;
 }
 
 .active-badge {
   padding: 4px 10px;
-  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-  color: white;
+  background: linear-gradient(135deg, var(--mp-purple) 0%, var(--mp-purple-dark) 100%);
+  color: var(--mp-white);
   font-size: 12px;
   font-weight: 600;
-  border-radius: 12px;
+  border-radius: var(--mp-radius-full);
 }
 </style>
