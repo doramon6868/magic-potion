@@ -30,13 +30,18 @@
     @dragleave="handleDragLeave"
     @drop.prevent="handleDrop"
   >
+    <!-- ==================== 危险装饰 ==================== -->
+    <div class="hunt-decoration">
+      <FireDecoration class="fire fire-1" />
+      <FireDecoration class="fire fire-2" />
+      <BatDecoration class="bat bat-1" />
+      <BatDecoration class="bat bat-2" />
+    </div>
+
     <!-- ==================== 区域标题 ==================== -->
     <div class="zone-header">
-      <!-- 危险图标 -->
-      <span class="zone-icon">⚔️</span>
-      <!-- 区域名称 -->
+      <FireDecoration class="zone-icon" />
       <span class="zone-name">{{ $t('areas.hunt.name') }}</span>
-      <!-- 危险等级 -->
       <span class="zone-safety danger">{{ $t('areas.hunt.tag') }}</span>
     </div>
 
@@ -44,7 +49,7 @@
     <div class="zone-description">
       {{ $t('areas.hunt.description') }}
       <br>
-      <span class="warning-text">⚠️ {{ $t('areas.hunt.warning') }}</span>
+      <span class="warning-text">{{ $t('areas.hunt.warning') }}</span>
     </div>
 
     <!-- ==================== 宠物显示区 ==================== -->
@@ -58,7 +63,6 @@
       />
 
       <div v-else class="empty-hint">
-        <span class="hint-icon">⚔️</span>
         <span class="hint-text">{{ $t('areas.hunt.hint') }}</span>
       </div>
     </div>
@@ -66,15 +70,14 @@
     <!-- ==================== 收益/风险显示 ==================== -->
     <div v-if="outdoorStore.huntingPet" class="reward-preview">
       <div class="reward-item">
-        <span class="reward-icon">💰</span>
+        <CoinBagIcon class="reward-icon" />
         <span class="reward-text">{{ $t('areas.hunt.reward') }}</span>
       </div>
       <div class="risk-item">
-        <span class="risk-icon">💀</span>
+        <span class="risk-marker">!</span>
         <span class="risk-text">{{ $t('areas.hunt.deathChance') }}</span>
       </div>
     </div>
-
   </div>
 </template>
 
@@ -84,6 +87,9 @@ import { mapStores } from 'pinia'
 import { useGameStore } from '../stores/game.js'
 import { useOutdoorStore } from '../stores/outdoor.js'
 import Pet from './Pet.vue'
+import FireDecoration from './icons/decorations/FireDecoration.vue'
+import BatDecoration from './icons/decorations/BatDecoration.vue'
+import CoinBagIcon from './icons/ui/CoinBagIcon.vue'
 
 export default {
   // 组件名称
@@ -91,7 +97,10 @@ export default {
 
   // 注册子组件
   components: {
-    Pet
+    Pet,
+    FireDecoration,
+    BatDecoration,
+    CoinBagIcon
   },
 
   // 组件内部状态
@@ -220,34 +229,81 @@ export default {
   width: 100%;
   height: 100%;
   padding: 15px;
-  border-radius: 20px;
-  /**
-   * 背景 - pastel 柔和珊瑚色渐变
-   */
+  border-radius: var(--mp-radius-lg);
   background: linear-gradient(
     180deg,
-    rgba(255, 179, 186, 0.6) 0%,
-    rgba(255, 194, 199, 0.7) 50%,
-    rgba(255, 138, 149, 0.8) 100%
+    color-mix(in srgb, var(--mp-red) 30%, var(--mp-white)) 0%,
+    color-mix(in srgb, var(--mp-red) 20%, var(--mp-white)) 50%,
+    color-mix(in srgb, var(--mp-red) 40%, var(--mp-white)) 100%
   );
-  border: 2px solid rgba(255, 179, 186, 0.5);
+  border: 4px solid var(--mp-red);
+  box-shadow: var(--mp-shadow);
   transition: all 0.3s ease;
   overflow: hidden;
-  box-shadow: 0 4px 20px rgba(255, 179, 186, 0.3);
 }
 
-/* 拖拽高亮状态 - pastel 珊瑚 */
+/* 拖拽高亮状态 - 火焰发光 */
 .outdoor-hunt.drop-target {
-  border-color: rgba(255, 179, 186, 0.9);
-  box-shadow:
-    0 0 30px rgba(255, 179, 186, 0.6),
-    inset 0 0 20px rgba(255, 179, 186, 0.3);
-  transform: scale(1.02);
+  border-color: var(--mp-gold);
+  box-shadow: 0 0 30px var(--mp-crystal-gold-glow);
+  animation: hunt-fire 0.8s ease-in-out infinite;
+}
+
+@keyframes hunt-fire {
+  0%, 100% { box-shadow: 0 0 20px color-mix(in srgb, var(--mp-red) 40%, transparent); }
+  50% { box-shadow: 0 0 40px color-mix(in srgb, var(--mp-red) 70%, transparent); }
+}
+
+/* 危险装饰容器 */
+.hunt-decoration {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+/* 火焰装饰 */
+.fire {
+  position: absolute;
+  bottom: 10px;
+  width: 30px;
+  animation: flicker 0.5s ease-in-out infinite;
+}
+
+.fire-1 { left: 15px; }
+.fire-2 { right: 20px; animation-delay: 0.2s; }
+
+@keyframes flicker {
+  0%, 100% { transform: scale(1) rotate(-2deg); opacity: 0.9; }
+  50% { transform: scale(1.1) rotate(2deg); opacity: 1; }
+}
+
+/* 蝙蝠装饰 */
+.bat {
+  position: absolute;
+  width: 30px;
+  animation: bat-fly 5s ease-in-out infinite;
+}
+
+.bat-1 { top: 20%; left: 20%; }
+.bat-2 { top: 35%; right: 15%; animation-delay: -2s; }
+
+@keyframes bat-fly {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(20px, -10px); }
+  50% { transform: translate(40px, 5px); }
+  75% { transform: translate(10px, 10px); }
 }
 
 /* ==================== 区域标题 ==================== */
 
 .zone-header {
+  position: relative;
+  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -255,48 +311,54 @@ export default {
 }
 
 .zone-icon {
-  font-size: 24px;
+  width: 24px;
+  height: 24px;
   margin-right: 8px;
 }
 
 .zone-name {
   font-size: 18px;
   font-weight: bold;
-  color: #d66a75;
+  color: var(--mp-ink);
 }
 
-/* 危险等级标签 - pastel 珊瑚 */
-.zone-safety.danger {
+.zone-safety {
   margin-left: 8px;
   padding: 2px 8px;
   border-radius: 10px;
   font-size: 12px;
   font-weight: bold;
-  background: rgba(255, 179, 186, 0.5);
-  color: #d66a75;
-  border: 1px solid rgba(255, 179, 186, 0.7);
+}
+
+.zone-safety.danger {
+  background: color-mix(in srgb, var(--mp-red) 50%, transparent);
+  color: var(--mp-ink);
+  border: 1px solid var(--mp-red);
 }
 
 /* ==================== 区域说明 ==================== */
 
 .zone-description {
+  position: relative;
+  z-index: 1;
   text-align: center;
   font-size: 12px;
-  color: rgba(140, 80, 90, 0.9);
+  color: var(--mp-text-muted);
   margin-bottom: 15px;
 }
 
 /* 警告文字 */
 .warning-text {
-  color: #d66a75;
+  color: var(--mp-red);
   font-weight: bold;
 }
 
 /* ==================== 宠物区域 ==================== */
 
 .pet-area {
-  flex: 1;
   position: relative;
+  z-index: 1;
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -307,13 +369,7 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: rgba(140, 80, 90, 0.6);
-}
-
-.hint-icon {
-  font-size: 32px;
-  margin-bottom: 8px;
-  animation: pulse 1s ease-in-out infinite;
+  color: var(--mp-text-muted);
 }
 
 .hint-text {
@@ -323,10 +379,12 @@ export default {
 /* ==================== 收益预览 ==================== */
 
 .reward-preview {
+  position: relative;
+  z-index: 1;
   margin-top: 10px;
   padding: 10px;
-  background: rgba(255, 255, 255, 0.4);
-  border-radius: 10px;
+  background: color-mix(in srgb, var(--mp-white) 40%, transparent);
+  border-radius: var(--mp-radius-md);
 }
 
 .reward-item,
@@ -341,217 +399,35 @@ export default {
   margin-bottom: 0;
 }
 
-.reward-icon,
-.risk-icon {
-  font-size: 16px;
+.reward-icon {
+  width: 18px;
+  height: 18px;
   margin-right: 8px;
 }
 
 .reward-text {
   font-size: 12px;
-  color: #e6a700;
+  color: var(--mp-gold);
+  font-weight: 600;
+}
+
+.risk-marker {
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 8px;
+  background: var(--mp-red);
+  color: var(--mp-white);
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: bold;
 }
 
 .risk-text {
   font-size: 12px;
-  color: #d66a75;
+  color: var(--mp-red);
   font-weight: bold;
-}
-
-/* ==================== 战斗主题装饰 ==================== */
-
-/* 战斗装饰容器 */
-.battle-decoration {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  overflow: hidden;
-  z-index: 0;
-}
-
-/* 月亮 */
-.moon {
-  position: absolute;
-  top: 15px;
-  right: 20px;
-  font-size: 40px;
-  animation: moonGlow 3s ease-in-out infinite;
-  filter: drop-shadow(0 0 20px rgba(200, 200, 255, 0.6));
-}
-
-@keyframes moonGlow {
-  0%, 100% {
-    filter: drop-shadow(0 0 20px rgba(200, 200, 255, 0.6));
-  }
-  50% {
-    filter: drop-shadow(0 0 30px rgba(200, 200, 255, 0.9));
-  }
-}
-
-/* 火焰 */
-.fire {
-  position: absolute;
-  font-size: 24px;
-  animation: flicker 0.5s ease-in-out infinite;
-}
-
-.fire-1 {
-  bottom: 10px;
-  left: 15px;
-  animation-delay: 0s;
-}
-
-.fire-2 {
-  bottom: 15px;
-  right: 20px;
-  font-size: 30px;
-  animation-delay: 0.2s;
-}
-
-.fire-3 {
-  bottom: 5px;
-  left: 45%;
-  font-size: 20px;
-  animation-delay: 0.4s;
-}
-
-@keyframes flicker {
-  0%, 100% {
-    transform: scale(1) rotate(-2deg);
-    opacity: 0.9;
-  }
-  50% {
-    transform: scale(1.1) rotate(2deg);
-    opacity: 1;
-  }
-}
-
-/* 武器装饰 */
-.weapon {
-  position: absolute;
-  font-size: 28px;
-  animation: weaponShine 2s ease-in-out infinite;
-}
-
-.weapon-1 {
-  top: 30%;
-  left: 10px;
-  transform: rotate(-45deg);
-  animation-delay: 0s;
-}
-
-.weapon-2 {
-  top: 50%;
-  right: 10px;
-  transform: rotate(30deg);
-  animation-delay: 0.5s;
-}
-
-.weapon-3 {
-  bottom: 20%;
-  left: 20%;
-  font-size: 32px;
-  animation-delay: 1s;
-}
-
-@keyframes weaponShine {
-  0%, 100% {
-    filter: brightness(1);
-    transform: rotate(var(--rotation, 0deg)) scale(1);
-  }
-  50% {
-    filter: brightness(1.3);
-    transform: rotate(var(--rotation, 0deg)) scale(1.1);
-  }
-}
-
-/* 骷髅装饰 */
-.skull {
-  position: absolute;
-  font-size: 20px;
-  opacity: 0.6;
-  animation: skullFloat 4s ease-in-out infinite;
-}
-
-.skull-1 {
-  top: 60%;
-  left: 15%;
-  animation-delay: 0s;
-}
-
-.skull-2 {
-  top: 40%;
-  right: 15%;
-  font-size: 24px;
-  animation-delay: 2s;
-}
-
-@keyframes skullFloat {
-  0%, 100% {
-    transform: translateY(0) rotate(-5deg);
-    opacity: 0.6;
-  }
-  50% {
-    transform: translateY(-10px) rotate(5deg);
-    opacity: 0.8;
-  }
-}
-
-/* 蝙蝠 */
-.bat {
-  position: absolute;
-  font-size: 18px;
-  animation: fly 6s ease-in-out infinite;
-}
-
-.bat-1 {
-  top: 20%;
-  left: 30%;
-  animation-delay: 0s;
-}
-
-.bat-2 {
-  top: 35%;
-  left: 60%;
-  font-size: 22px;
-  animation-delay: 2s;
-}
-
-.bat-3 {
-  top: 15%;
-  left: 50%;
-  font-size: 16px;
-  animation-delay: 4s;
-}
-
-@keyframes fly {
-  0%, 100% {
-    transform: translate(0, 0) scaleX(1);
-  }
-  25% {
-    transform: translate(20px, -10px) scaleX(-1);
-  }
-  50% {
-    transform: translate(40px, 5px) scaleX(-1);
-  }
-  75% {
-    transform: translate(10px, 10px) scaleX(1);
-  }
-}
-
-/* ==================== 动画定义 ==================== */
-
-@keyframes pulse {
-  0%, 100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.1);
-    opacity: 0.8;
-  }
 }
 </style>
