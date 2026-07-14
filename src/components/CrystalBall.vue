@@ -314,12 +314,7 @@ export default {
     0 0 0 6px var(--mp-crystal-gold-ring),
     0 0 80px var(--mp-crystal-gold-glow),
     8px 8px 0 var(--mp-shadow-color);
-  animation: crystal-absorb 0.8s ease-in-out infinite;
-}
-
-@keyframes crystal-absorb {
-  0%, 100% { transform: scale(1.02); }
-  50% { transform: scale(1.06); }
+  animation: mp-pulse 0.8s var(--mp-ease-bounce) infinite;
 }
 
 /* 内部空间 */

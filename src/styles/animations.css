@@ -1,0 +1,42 @@
+/*
+  Magic Potion 全局手绘风动画
+  供所有组件复用的关键帧动画
+  优先使用 CSS 动画，减少 JS 驱动动画
+*/
+
+/* 弹跳 - 用于按钮、徽章等 */
+@keyframes mp-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* 摇摆 - 用于装饰、提示等 */
+@keyframes mp-wiggle {
+  0%, 100% { transform: rotate(-5deg); }
+  50% { transform: rotate(5deg); }
+}
+
+/* 脉动 - 用于拖拽目标、强调等 */
+@keyframes mp-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+/* 漂浮 - 用于背景、悬浮元素等 */
+@keyframes mp-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* 抖动 - 用于错误、战斗等 */
+@keyframes mp-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+/* 发光 - 用于拖拽反馈、魔法光效等 */
+@keyframes mp-glow {
+  0%, 100% { box-shadow: 0 0 20px color-mix(in srgb, var(--mp-purple) 40%, transparent); }
+  50% { box-shadow: 0 0 40px color-mix(in srgb, var(--mp-purple) 70%, transparent); }
+}

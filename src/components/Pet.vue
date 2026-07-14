@@ -511,10 +511,17 @@ export default {
 /* 可拖拽时的鼠标样式 */
 .pet-container[draggable="true"] .pet-avatar {
   cursor: grab;
+  transition: all var(--mp-duration-fast) ease;
+}
+
+.pet-container[draggable="true"] .pet-avatar:hover {
+  transform: scale(1.05);
+  filter: drop-shadow(0 0 10px color-mix(in srgb, var(--mp-purple) 50%, transparent));
 }
 
 .pet-container[draggable="true"] .pet-avatar:active {
   cursor: grabbing;
+  transform: scale(1.1);
 }
 
 /* 猫耳朵装饰 - 放在蛞蝓头顶 */

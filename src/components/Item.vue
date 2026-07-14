@@ -323,8 +323,9 @@ export default {
 
 /* 正在拖拽的样式 */
 .item-container.dragging {
-  opacity: 0.5;
-  transform: scale(0.95);
+  opacity: 0.7;
+  transform: scale(1.08) rotate(3deg);
+  box-shadow: 0 0 20px color-mix(in srgb, var(--mp-purple) 50%, transparent);
 }
 
 /* 图标包装器 */

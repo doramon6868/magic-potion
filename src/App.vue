@@ -261,6 +261,9 @@ export default {
 <style>
 /* 引入全局设计 Token，供所有组件使用 */
 @import '@/styles/design-tokens.css';
+
+/* 引入全局动画关键帧 */
+@import '@/styles/animations.css';
 </style>
 
 <style scoped>
