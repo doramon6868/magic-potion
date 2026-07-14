@@ -27,8 +27,7 @@
       <!-- 大头像 -->
       <div class="pet-avatar-large" :style="avatarStyle">
         <span v-if="petConfig?.passiveSkill" class="skill-icon">{{ petConfig.passiveSkill.icon }}</span>
-        <span class="pet-emoji-secondary">{{ petEmojiSecondary }}</span>
-        <span class="pet-emoji">{{ petEmoji }}</span>
+        <SlugcatAvatar :status="gameStore.pet.status" :pet-type="petConfig?.type" :size="100" />
       </div>
 
       <!-- 宠物名字 -->
@@ -170,12 +169,14 @@ import { useBackpackStore } from '../stores/backpack.js'
 import { useNotificationStore } from '../stores/notification.js'
 import { getPetType } from '../config/petTypes.js'
 import Item from './Item.vue'
+import SlugcatAvatar from './icons/SlugcatAvatar.vue'
 
 export default {
   name: 'PetDisplay',
 
   components: {
-    Item
+    Item,
+    SlugcatAvatar
   },
 
   data() {
