@@ -1,7 +1,7 @@
 <!--
   CrystalBall.vue - 水晶球组件（游戏核心）
 
-  简化的水晶球设计 - 完美圆形，柔和紫色主题
+  手绘风水晶球设计 - 完美圆形，柔和紫色主题
   参考合成界面设计风格
 
   主要功能：
@@ -37,7 +37,7 @@
           @dragend="handlePetDragEnd"
         >
           <div class="simple-avatar" :style="avatarStyle">
-            <span class="simple-emoji">{{ petEmoji }}</span>
+            <SlugcatAvatar :status="gameStore.pet.status" :pet-type="petConfig?.type" :size="80" />
           </div>
           <div class="simple-name">{{ gameStore.pet.name }}</div>
           <div class="simple-hint">拖拽我到右侧玩耍</div>
@@ -45,7 +45,6 @@
 
         <!-- 宠物不在家时的提示 -->
         <div v-else class="empty-hint">
-          <span class="empty-icon">🏠</span>
           <span class="empty-text">宠物外出中</span>
         </div>
       </div>
@@ -60,7 +59,7 @@
       class="synthesis-btn"
       @click.stop="openSynthesis"
     >
-      <span class="btn-icon">🔮</span>
+      <PotionIcon class="btn-icon" rarity="epic" />
       <span class="btn-text">{{ $t('synthesis.clickToSynthesize') }}</span>
     </button>
 
@@ -74,12 +73,16 @@ import { useNotificationStore } from '../stores/notification.js'
 import { usePetCollectionStore } from '../stores/petCollection.js'
 import { getPetType } from '../config/petTypes.js'
 import ObservatoryDome from './ObservatoryDome.vue'
+import SlugcatAvatar from './icons/SlugcatAvatar.vue'
+import PotionIcon from './icons/items/PotionIcon.vue'
 
 export default {
   name: 'CrystalBall',
 
   components: {
-    ObservatoryDome
+    ObservatoryDome,
+    SlugcatAvatar,
+    PotionIcon
   },
 
   data() {
@@ -99,19 +102,10 @@ export default {
       return getPetType(petType)
     },
 
-    petEmoji() {
-      return this.petConfig?.emoji || '🐌'
-    },
-
     avatarStyle() {
-      const colors = {
-        cat: 'radial-gradient(ellipse at 40% 30%, #c8f0d8 0%, #a8e6cf 30%, #88d8b0 60%, #6b9b7a 100%)',
-        bird: 'radial-gradient(ellipse at 40% 30%, #a8e6f0 0%, #88d8e6 30%, #68c8d8 60%, #4a9ba8 100%)',
-        fox: 'radial-gradient(ellipse at 40% 30%, #ffd4a8 0%, #ffb888 30%, #e89868 60%, #b87848 100%)',
-        dragon: 'radial-gradient(ellipse at 40% 30%, #e8d8f0 0%, #d8c0e8 30%, #c8a8e0 60%, #9878b8 100%)'
-      }
+      const type = this.petConfig?.type || 'cat'
       return {
-        background: colors[this.petConfig?.type] || colors.cat
+        background: `var(--mp-pet-${type}-gradient, var(--mp-pet-cat-gradient))`
       }
     },
 
@@ -245,7 +239,7 @@ export default {
         this.gameStore.recallPet()
         // 显示宠物回家通知
         const notificationStore = useNotificationStore()
-        notificationStore.info('🏠 宠物回家了！')
+        notificationStore.info('宠物回家了！')
         return
       }
 
@@ -257,7 +251,7 @@ export default {
 
 <style scoped>
 /**
- * 水晶球样式 - 简化版完美圆形
+ * 水晶球样式 - 手绘风发光球体
  * 参考合成界面设计风格
  */
 
@@ -270,29 +264,62 @@ export default {
   padding: 20px;
 }
 
-/* 水晶球主体 - 完美圆形 */
+/* 水晶球主体 - 完美圆形，带呼吸动画 */
 .crystal-ball-body {
   position: relative;
-  width: 280px;
-  height: 280px;
+  width: 300px;
+  height: 300px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 50%, #e9d5ff 100%);
+  background: radial-gradient(
+    circle at 35% 30%,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(243, 232, 255, 0.8) 40%,
+    rgba(232, 213, 255, 0.6) 100%
+  );
+  border: 5px solid var(--mp-purple);
   box-shadow:
     0 0 0 4px rgba(139, 92, 246, 0.2),
-    0 0 40px rgba(139, 92, 246, 0.3),
-    inset 0 0 60px rgba(255, 255, 255, 0.5),
+    0 0 50px rgba(139, 92, 246, 0.4),
+    8px 8px 0 var(--mp-shadow-color),
+    inset 0 0 60px rgba(255, 255, 255, 0.6),
     inset -10px -10px 30px rgba(139, 92, 246, 0.1);
   overflow: hidden;
   transition: all 0.3s ease;
+  animation: crystal-breathe 3s ease-in-out infinite;
 }
 
-/* 拖拽经过时的高亮效果 */
+@keyframes crystal-breathe {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow:
+      0 0 0 4px rgba(139, 92, 246, 0.2),
+      0 0 50px rgba(139, 92, 246, 0.4),
+      8px 8px 0 var(--mp-shadow-color),
+      inset 0 0 60px rgba(255, 255, 255, 0.6);
+  }
+  50% {
+    transform: scale(1.02);
+    box-shadow:
+      0 0 0 6px rgba(139, 92, 246, 0.3),
+      0 0 70px rgba(139, 92, 246, 0.55),
+      8px 8px 0 var(--mp-shadow-color),
+      inset 0 0 70px rgba(255, 255, 255, 0.7);
+  }
+}
+
+/* 拖拽经过时的高亮效果 - 金色吸入动画 */
 .crystal-ball.drag-over .crystal-ball-body {
+  border-color: var(--mp-gold);
   box-shadow:
-    0 0 0 4px rgba(139, 92, 246, 0.4),
-    0 0 60px rgba(139, 92, 246, 0.5),
-    inset 0 0 60px rgba(255, 255, 255, 0.5);
-  transform: scale(1.02);
+    0 0 0 6px rgba(251, 191, 36, 0.3),
+    0 0 80px rgba(251, 191, 36, 0.5),
+    8px 8px 0 var(--mp-shadow-color);
+  animation: crystal-absorb 0.8s ease-in-out infinite;
+}
+
+@keyframes crystal-absorb {
+  0%, 100% { transform: scale(1.02); }
+  50% { transform: scale(1.06); }
 }
 
 /* 内部空间 */
@@ -368,11 +395,6 @@ export default {
     inset 2px 2px 6px rgba(255, 255, 255, 0.4);
 }
 
-.simple-emoji {
-  font-size: 48px;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
-}
-
 .simple-name {
   font-size: 16px;
   font-weight: 600;
@@ -394,11 +416,6 @@ export default {
   align-items: center;
   gap: 8px;
   color: #9ca3af;
-}
-
-.empty-icon {
-  font-size: 48px;
-  opacity: 0.5;
 }
 
 .empty-text {
@@ -429,7 +446,8 @@ export default {
 }
 
 .btn-icon {
-  font-size: 18px;
+  width: 20px;
+  height: 20px;
 }
 
 @keyframes btn-float {
