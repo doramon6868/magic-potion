@@ -195,14 +195,9 @@ export default {
     },
 
     avatarStyle() {
-      const colors = {
-        cat: 'radial-gradient(ellipse at 40% 30%, #c8f0d8 0%, #a8e6cf 30%, #88d8b0 60%, #6b9b7a 100%)',
-        bird: 'radial-gradient(ellipse at 40% 30%, #a8e6f0 0%, #88d8e6 30%, #68c8d8 60%, #4a9ba8 100%)',
-        fox: 'radial-gradient(ellipse at 40% 30%, #ffd4a8 0%, #ffb888 30%, #e89868 60%, #b87848 100%)',
-        dragon: 'radial-gradient(ellipse at 40% 30%, #e8d8f0 0%, #d8c0e8 30%, #c8a8e0 60%, #9878b8 100%)'
-      }
+      const type = this.petConfig?.type || 'cat'
       return {
-        background: colors[this.petConfig?.type] || colors.cat
+        background: `var(--mp-pet-${type}-gradient, var(--mp-pet-cat-gradient))`
       }
     },
 

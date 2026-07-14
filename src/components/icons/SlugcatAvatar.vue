@@ -79,12 +79,12 @@ export default {
   justify-content: center;
   position: relative;
 
-  /* 宠物类型配色变量，避免硬编码散落在选择器中 */
-  --pet-cat-color: var(--mp-mint-light, #c8f0d8);
-  --pet-bird-color: var(--mp-blue, #a8e6f0);
-  --pet-fox-color: #ffd4a8;
-  --pet-dragon-color: #e8d8f0;
-  --pet-shell-fill: rgba(255, 255, 255, 0.4);
+  /* 宠物类型配色变量，引用全局设计 Token */
+  --pet-cat-color: var(--mp-pet-cat);
+  --pet-bird-color: var(--mp-pet-bird);
+  --pet-fox-color: var(--mp-pet-fox);
+  --pet-dragon-color: var(--mp-pet-dragon);
+  --pet-shell-fill: var(--mp-pet-shell-fill);
 }
 
 .slugcat-svg {

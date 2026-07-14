@@ -20,6 +20,18 @@
   --mp-red: #F87171;
   --mp-blue: #60A5FA;
 
+  /* 宠物配色 */
+  --mp-pet-cat: #c8f0d8;
+  --mp-pet-bird: #a8e6f0;
+  --mp-pet-fox: #ffd4a8;
+  --mp-pet-dragon: #e8d8f0;
+  --mp-pet-shell-fill: rgba(255, 255, 255, 0.4);
+
+  --mp-pet-cat-gradient: radial-gradient(ellipse at 40% 30%, #c8f0d8 0%, #a8e6cf 30%, #88d8b0 60%, #6b9b7a 100%);
+  --mp-pet-bird-gradient: radial-gradient(ellipse at 40% 30%, #a8e6f0 0%, #88d8e6 30%, #68c8d8 60%, #4a9ba8 100%);
+  --mp-pet-fox-gradient: radial-gradient(ellipse at 40% 30%, #ffd4a8 0%, #ffb888 30%, #e89868 60%, #b87848 100%);
+  --mp-pet-dragon-gradient: radial-gradient(ellipse at 40% 30%, #e8d8f0 0%, #d8c0e8 30%, #c8a8e0 60%, #9878b8 100%);
+
   /* 中性色 */
   --mp-ink: #612315;
   --mp-white: #FFFFFF;
