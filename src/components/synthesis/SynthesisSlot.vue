@@ -74,8 +74,6 @@
 <script>
 import { mapStores } from 'pinia'
 import { useSynthesisStore } from '../../stores/synthesis.js'
-import { getFragmentType } from '../../config/fragmentTypes.js'
-import { getPotionIconByRarity } from '../../config/synthesisRecipes.js'
 import PotionIcon from '../icons/items/PotionIcon.vue'
 import FragmentIcon from '../icons/items/FragmentIcon.vue'
 
@@ -132,17 +130,6 @@ export default {
         return this.synthesisStore.synthesisSlots.potion
       }
       return this.synthesisStore.synthesisSlots.fragments[this.index] || null
-    },
-
-    itemIcon() {
-      if (!this.item) return ''
-
-      if (this.type === 'potion') {
-        return this.item.icon || getPotionIconByRarity(this.item.rarity)
-      }
-
-      const fragmentConfig = getFragmentType(this.item.type)
-      return fragmentConfig?.icon || ''
     },
 
     itemCount() {

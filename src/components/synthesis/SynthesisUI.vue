@@ -189,11 +189,9 @@ import { useBackpackStore } from '../../stores/backpack.js'
 import { getAllPetTypes } from '../../config/petTypes.js'
 import { getFragmentType } from '../../config/fragmentTypes.js'
 import { getPotionNameByRarity } from '../../config/synthesisRecipes.js'
-import { itemIconMap } from '../icons/itemIconMap.js'
 import SlugcatAvatar from '../icons/SlugcatAvatar.vue'
 import PotionIcon from '../icons/items/PotionIcon.vue'
 import FragmentIcon from '../icons/items/FragmentIcon.vue'
-import CoinBagIcon from '../icons/ui/CoinBagIcon.vue'
 import StarDecoration from '../icons/decorations/StarDecoration.vue'
 import PetPreview from './PetPreview.vue'
 import SynthesisSlot from './SynthesisSlot.vue'
@@ -208,7 +206,6 @@ export default {
     SlugcatAvatar,
     PotionIcon,
     FragmentIcon,
-    CoinBagIcon,
     StarDecoration,
     PetPreview,
     SynthesisSlot,
@@ -371,30 +368,6 @@ export default {
 
     viewCollection() {
       this.$emit('viewCollection')
-    },
-
-    /**
-     * getIconComponent: 根据物品 key 获取对应的 SVG 图标组件
-     * @param {string} key - 物品 key
-     * @returns {Object|null} 图标组件或 null
-     */
-    getIconComponent(key) {
-      return itemIconMap[key] || null
-    },
-
-    /**
-     * getFragmentType: 根据碎片 key 获取宠物类型
-     * @param {string} key - 碎片 key
-     * @returns {string} 宠物类型
-     */
-    getFragmentType(key) {
-      const map = {
-        cat_fragment: 'cat',
-        bird_fragment: 'bird',
-        fox_fragment: 'fox',
-        dragon_fragment: 'dragon'
-      }
-      return map[key] || 'cat'
     }
   }
 }
