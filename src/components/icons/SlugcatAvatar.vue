@@ -1,6 +1,6 @@
 <template>
   <div class="slugcat-avatar" :class="[status, `type-${petType}`]" :style="avatarStyle">
-    <svg viewBox="0 0 100 90" class="slugcat-svg">
+    <svg viewBox="0 0 100 90" class="slugcat-svg" role="img" aria-label="Pet avatar">
       <!-- 身体 -->
       <ellipse cx="50" cy="55" rx="42" ry="32" class="body" />
 
@@ -78,6 +78,13 @@ export default {
   align-items: center;
   justify-content: center;
   position: relative;
+
+  /* 宠物类型配色变量，避免硬编码散落在选择器中 */
+  --pet-cat-color: var(--mp-mint-light, #c8f0d8);
+  --pet-bird-color: var(--mp-blue, #a8e6f0);
+  --pet-fox-color: #ffd4a8;
+  --pet-dragon-color: #e8d8f0;
+  --pet-shell-fill: rgba(255, 255, 255, 0.4);
 }
 
 .slugcat-svg {
@@ -88,14 +95,14 @@ export default {
 
 /* 身体描边 */
 .body {
-  fill: var(--body-color, #c8f0d8);
+  fill: var(--body-color, var(--pet-cat-color));
   stroke: var(--mp-ink);
   stroke-width: 3;
 }
 
 /* 壳 */
 .shell circle {
-  fill: rgba(255, 255, 255, 0.4);
+  fill: var(--pet-shell-fill);
   stroke: var(--mp-ink);
   stroke-width: 2.5;
 }
@@ -106,7 +113,7 @@ export default {
 
 /* 耳朵 */
 .ear {
-  fill: var(--body-color, #c8f0d8);
+  fill: var(--body-color, var(--pet-cat-color));
   stroke: var(--mp-ink);
   stroke-width: 3;
   transform-origin: bottom center;
@@ -140,10 +147,10 @@ export default {
 }
 
 /* 类型配色 */
-.type-cat { --body-color: #c8f0d8; }
-.type-bird { --body-color: #a8e6f0; }
-.type-fox { --body-color: #ffd4a8; }
-.type-dragon { --body-color: #e8d8f0; }
+.type-cat { --body-color: var(--pet-cat-color); }
+.type-bird { --body-color: var(--pet-bird-color); }
+.type-fox { --body-color: var(--pet-fox-color); }
+.type-dragon { --body-color: var(--pet-dragon-color); }
 
 /* 状态动画 */
 .sleeping .slugcat-svg {

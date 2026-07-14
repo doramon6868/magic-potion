@@ -194,14 +194,6 @@ export default {
       return getPetType(petType)
     },
 
-    petEmoji() {
-      return this.petConfig?.emoji || '🐌'
-    },
-
-    petEmojiSecondary() {
-      return this.petConfig?.emojiSecondary || '🐱'
-    },
-
     avatarStyle() {
       const colors = {
         cat: 'radial-gradient(ellipse at 40% 30%, #c8f0d8 0%, #a8e6cf 30%, #88d8b0 60%, #6b9b7a 100%)',
@@ -362,24 +354,6 @@ export default {
   justify-content: center;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   z-index: 10;
-}
-
-/* 次要表情 */
-.pet-emoji-secondary {
-  position: absolute;
-  top: -18px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 28px;
-  animation: earWiggle 2s ease-in-out infinite;
-  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.3));
-  z-index: 2;
-}
-
-/* 主要表情 */
-.pet-emoji {
-  font-size: 56px;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
 }
 
 /* 宠物名字 */
@@ -601,12 +575,6 @@ export default {
 
 .empty-hint {
   font-size: 12px;
-}
-
-/* 耳朵摇摆动画 */
-@keyframes earWiggle {
-  0%, 100% { transform: translateX(-50%) rotate(-5deg); }
-  50% { transform: translateX(-50%) rotate(5deg); }
 }
 
 /* 宠物切换弹窗样式 */
