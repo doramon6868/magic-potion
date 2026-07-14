@@ -5,7 +5,7 @@
   宠物可以拖拽到这里进行玩耍，不会受伤
 
   主要功能：
-  1. 显示森林场景
+  1. 显示手绘森林场景
   2. 接收拖拽的宠物（从水晶球来的）
   3. 开始玩耍计时
   4. 显示在这里的宠物状态
@@ -29,10 +29,17 @@
     @dragleave="handleDragLeave"
     @drop.prevent="handleDrop"
   >
+    <!-- 森林装饰 -->
+    <div class="forest-decoration">
+      <TreeDecoration class="tree tree-1" />
+      <TreeDecoration class="tree tree-2" />
+      <StarDecoration class="sun" />
+    </div>
+
     <!-- ==================== 区域标题 ==================== -->
     <div class="zone-header">
-      <!-- 森林图标 -->
-      <span class="zone-icon">🌲</span>
+      <!-- 区域图标 -->
+      <TreeDecoration class="zone-icon" />
       <!-- 区域名称 -->
       <span class="zone-name">{{ $t('areas.forest.name') }}</span>
       <!-- 安全等级 -->
@@ -60,7 +67,6 @@
 
       <!-- 没有宠物时的提示 -->
       <div v-else class="empty-hint">
-        <span class="hint-icon">👆</span>
         <span class="hint-text">{{ $t('areas.forest.hint') }}</span>
       </div>
     </div>
@@ -68,11 +74,10 @@
     <!-- ==================== 收益显示 ==================== -->
     <div v-if="outdoorStore.playingPet" class="reward-preview">
       <div class="reward-item">
-        <span class="reward-icon">😊</span>
+        <StarDecoration class="reward-icon" />
         <span class="reward-text">{{ $t('areas.forest.reward') }}</span>
       </div>
     </div>
-
   </div>
 </template>
 
@@ -82,6 +87,8 @@ import { mapStores } from 'pinia'
 import { useGameStore } from '../stores/game.js'
 import { useOutdoorStore } from '../stores/outdoor.js'
 import Pet from './Pet.vue'
+import TreeDecoration from './icons/decorations/TreeDecoration.vue'
+import StarDecoration from './icons/decorations/StarDecoration.vue'
 
 export default {
   // 组件名称
@@ -89,7 +96,9 @@ export default {
 
   // 注册子组件
   components: {
-    Pet
+    Pet,
+    TreeDecoration,
+    StarDecoration
   },
 
   // 组件内部状态
@@ -232,39 +241,93 @@ export default {
   /* 内边距 */
   padding: 15px;
   /* 圆角 */
-  border-radius: 20px;
+  border-radius: var(--mp-radius-lg);
   /**
-   * 背景 - pastel 薄荷绿色渐变
+   * 背景 - 手绘森林绿色渐变
    */
   background: linear-gradient(
     180deg,
-    rgba(168, 230, 207, 0.6) 0%,
-    rgba(184, 224, 210, 0.7) 50%,
-    rgba(127, 205, 187, 0.8) 100%
+    var(--mp-mint-light) 0%,
+    var(--mp-pet-cat) 50%,
+    var(--mp-mint) 100%
   );
   /* 边框 */
-  border: 2px solid rgba(168, 230, 207, 0.5);
+  border: 4px solid var(--mp-mint);
+  /* 卡片阴影 */
+  box-shadow: var(--mp-shadow);
   /* 过渡动画 */
   transition: all 0.3s ease;
   overflow: hidden;
-  box-shadow: 0 4px 20px rgba(168, 230, 207, 0.3);
 }
 
 /* 拖拽高亮状态 */
 .outdoor-play.drop-target {
-  /* 边框变亮 */
-  border-color: rgba(168, 230, 207, 0.9);
-  /* 阴影 */
-  box-shadow:
-    0 0 30px rgba(168, 230, 207, 0.6),
-    inset 0 0 20px rgba(168, 230, 207, 0.3);
-  /* 放大一点 */
-  transform: scale(1.02);
+  /* 金色边框 */
+  border-color: var(--mp-gold);
+  /* 金色发光阴影 */
+  box-shadow: 0 0 30px var(--mp-crystal-gold-glow);
+  /* 脉冲动画 */
+  animation: forest-pulse 1s ease-in-out infinite;
+}
+
+@keyframes forest-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+}
+
+/* ==================== 森林装饰 ==================== */
+
+/* 森林装饰容器 */
+.forest-decoration {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+/* 树木 */
+.tree {
+  position: absolute;
+  bottom: 10px;
+  width: 50px;
+  animation: tree-sway 3s ease-in-out infinite;
+}
+
+.tree-1 { left: 10px; }
+.tree-2 {
+  right: 10px;
+  animation-delay: -1.5s;
+}
+
+/* 太阳/星星 */
+.sun {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  width: 40px;
+  animation: sun-pulse 3s ease-in-out infinite;
+}
+
+@keyframes tree-sway {
+  0%, 100% { transform: rotate(-3deg); }
+  50% { transform: rotate(3deg); }
+}
+
+@keyframes sun-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
 }
 
 /* ==================== 区域标题 ==================== */
 
 .zone-header {
+  /* 相对定位，确保在装饰层之上 */
+  position: relative;
+  z-index: 1;
   /* 使用 flex */
   display: flex;
   align-items: center;
@@ -275,7 +338,8 @@ export default {
 
 /* 区域图标 */
 .zone-icon {
-  font-size: 24px;
+  width: 24px;
+  height: 24px;
   margin-right: 8px;
 }
 
@@ -283,7 +347,7 @@ export default {
 .zone-name {
   font-size: 18px;
   font-weight: bold;
-  color: #5a9a8a;
+  color: var(--mp-ink);
 }
 
 /* 安全等级标签 */
@@ -301,20 +365,23 @@ export default {
 
 /* 安全 - pastel 薄荷绿 */
 .zone-safety.safe {
-  background: rgba(168, 230, 207, 0.5);
-  color: #5a9a8a;
-  border: 1px solid rgba(168, 230, 207, 0.7);
+  background: rgba(125, 211, 192, 0.5);
+  color: var(--mp-ink);
+  border: 1px solid var(--mp-mint);
 }
 
 /* ==================== 区域说明 ==================== */
 
 .zone-description {
+  /* 相对定位，确保在装饰层之上 */
+  position: relative;
+  z-index: 1;
   /* 文字居中 */
   text-align: center;
   /* 文字大小 */
   font-size: 12px;
   /* 颜色 */
-  color: rgba(90, 120, 110, 0.9);
+  color: var(--mp-text-muted);
   /* 下边距 */
   margin-bottom: 15px;
 }
@@ -322,10 +389,11 @@ export default {
 /* ==================== 宠物区域 ==================== */
 
 .pet-area {
+  /* 相对定位，确保在装饰层之上 */
+  position: relative;
+  z-index: 1;
   /* 占据剩余空间 */
   flex: 1;
-  /* 相对定位，让宠物可以定位 */
-  position: relative;
   /* 使用 flex 居中 */
   display: flex;
   align-items: center;
@@ -341,15 +409,7 @@ export default {
   flex-direction: column;
   align-items: center;
   /* 颜色 */
-  color: rgba(90, 120, 110, 0.6);
-}
-
-/* 提示图标 */
-.hint-icon {
-  font-size: 32px;
-  margin-bottom: 8px;
-  /* 动画 - 上下移动 */
-  animation: point-down 1s ease-in-out infinite;
+  color: var(--mp-text-muted);
 }
 
 /* 提示文字 */
@@ -360,6 +420,9 @@ export default {
 /* ==================== 收益预览 ==================== */
 
 .reward-preview {
+  /* 相对定位，确保在装饰层之上 */
+  position: relative;
+  z-index: 1;
   /* 上边距 */
   margin-top: 10px;
   /* 内边距 */
@@ -367,7 +430,7 @@ export default {
   /* 背景 */
   background: rgba(255, 255, 255, 0.4);
   /* 圆角 */
-  border-radius: 10px;
+  border-radius: var(--mp-radius-md);
 }
 
 /* 收益项 */
@@ -380,170 +443,14 @@ export default {
 
 /* 收益图标 */
 .reward-icon {
-  font-size: 20px;
+  width: 20px;
+  height: 20px;
   margin-right: 8px;
 }
 
 /* 收益文字 */
 .reward-text {
   font-size: 14px;
-  color: #5a9a8a;
-}
-
-/* ==================== 森林主题装饰 ==================== */
-
-/* 森林装饰容器 */
-.forest-decoration {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  overflow: hidden;
-  z-index: 0;
-}
-
-/* 太阳 */
-.sun {
-  position: absolute;
-  top: 15px;
-  right: 20px;
-  font-size: 40px;
-  animation: sunPulse 3s ease-in-out infinite;
-  filter: drop-shadow(0 0 20px rgba(255, 200, 0, 0.8));
-}
-
-@keyframes sunPulse {
-  0%, 100% {
-    transform: scale(1);
-    filter: drop-shadow(0 0 20px rgba(255, 200, 0, 0.8));
-  }
-  50% {
-    transform: scale(1.1);
-    filter: drop-shadow(0 0 30px rgba(255, 200, 0, 1));
-  }
-}
-
-/* 云朵 */
-.cloud {
-  position: absolute;
-  font-size: 30px;
-  opacity: 0.8;
-  animation: float 8s ease-in-out infinite;
-}
-
-.cloud-1 {
-  top: 20px;
-  left: 20px;
-  animation-delay: 0s;
-}
-
-.cloud-2 {
-  top: 40px;
-  left: 60%;
-  animation-delay: 2s;
-}
-
-@keyframes float {
-  0%, 100% {
-    transform: translateX(0);
-  }
-  50% {
-    transform: translateX(20px);
-  }
-}
-
-/* 树木装饰 */
-.tree {
-  position: absolute;
-  font-size: 36px;
-  bottom: 10px;
-  animation: treeSway 4s ease-in-out infinite;
-}
-
-.tree-1 {
-  left: 10px;
-  animation-delay: 0s;
-}
-
-.tree-2 {
-  left: 35%;
-  font-size: 44px;
-  animation-delay: 1s;
-}
-
-.tree-3 {
-  right: 10px;
-  animation-delay: 2s;
-}
-
-.tree-4 {
-  right: 30%;
-  font-size: 32px;
-  animation-delay: 0.5s;
-}
-
-@keyframes treeSway {
-  0%, 100% {
-    transform: rotate(-3deg);
-  }
-  50% {
-    transform: rotate(3deg);
-  }
-}
-
-/* 花朵 */
-.flower {
-  position: absolute;
-  font-size: 20px;
-  bottom: 5px;
-  animation: bloom 2s ease-in-out infinite;
-}
-
-.flower-1 {
-  left: 25%;
-  animation-delay: 0s;
-}
-
-.flower-2 {
-  left: 50%;
-  animation-delay: 0.7s;
-}
-
-.flower-3 {
-  right: 25%;
-  animation-delay: 1.4s;
-}
-
-@keyframes bloom {
-  0%, 100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.2);
-  }
-}
-
-/* 草地 */
-.grass {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 60px;
-  opacity: 0.3;
-}
-
-/* ==================== 动画定义 ==================== */
-
-/* 手指指向动画 */
-@keyframes point-down {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(5px);
-  }
+  color: var(--mp-ink);
 }
 </style>
