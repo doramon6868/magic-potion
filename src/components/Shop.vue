@@ -53,6 +53,7 @@
                 v-if="getIconComponent(item.key)"
                 class="item-icon-svg"
                 :rarity="item.rarity"
+                :type="getFragmentType(item.key)"
               />
               <div v-else class="item-icon-fallback">{{ item.icon }}</div>
               <div class="item-name">{{ $t(`items.list.${item.key}.name`) }}</div>
@@ -95,6 +96,7 @@
                 v-if="getIconComponent(item.key)"
                 class="item-icon-svg"
                 :rarity="item.rarity"
+                :type="getFragmentType(item.key)"
               />
               <div v-else class="item-icon-fallback">{{ item.icon }}</div>
               <div class="item-name">{{ $t(`items.list.${item.key}.name`) }}</div>
@@ -136,6 +138,7 @@
                 v-if="getIconComponent(item.key)"
                 class="item-icon-svg"
                 :rarity="item.rarity"
+                :type="getFragmentType(item.key)"
               />
               <div v-else class="item-icon-fallback">{{ item.icon }}</div>
               <div class="item-name">{{ $t(`items.list.${item.key}.name`) }}</div>
@@ -177,6 +180,7 @@
                 v-if="getIconComponent(item.key)"
                 class="item-icon-svg"
                 :rarity="item.rarity"
+                :type="getFragmentType(item.key)"
               />
               <div v-else class="item-icon-fallback">{{ item.icon }}</div>
               <div class="item-name">{{ $t(`items.list.${item.key}.name`) }}</div>
@@ -218,6 +222,7 @@
                 v-if="getIconComponent(item.key)"
                 class="item-icon-svg"
                 :rarity="item.rarity"
+                :type="getFragmentType(item.key)"
               />
               <div v-else class="item-icon-fallback">{{ item.icon }}</div>
               <div class="item-name">{{ $t(`items.list.${item.key}.name`) }}</div>
@@ -257,6 +262,7 @@
                 v-if="getIconComponent(item.key)"
                 class="item-icon-svg"
                 :rarity="item.rarity"
+                :type="getFragmentType(item.key)"
               />
               <div v-else class="item-icon-fallback">{{ item.icon }}</div>
               <div class="item-name">{{ $t(`items.list.${item.key}.name`) }}</div>
@@ -299,7 +305,7 @@ import { useGameStore } from '../stores/game.js'
 import { useShopStore } from '../stores/shop.js'
 import { useBackpackStore } from '../stores/backpack.js'
 import { useNotificationStore } from '../stores/notification.js'
-import { itemIconMap } from './icons/itemIconMap.js'
+import { itemIconMap, fragmentTypes } from './icons/itemIconMap.js'
 import CoinBagIcon from './icons/ui/CoinBagIcon.vue'
 
 export default {
@@ -394,6 +400,15 @@ export default {
      */
     getIconComponent(key) {
       return itemIconMap[key] || null
+    },
+
+    /**
+     * getFragmentType: 获取碎片对应的宠物类型（用于 FragmentIcon 颜色）
+     * @param {string} key - 物品 key
+     * @returns {string} 宠物类型
+     */
+    getFragmentType(key) {
+      return fragmentTypes[key] || 'cat'
     },
 
     /**

@@ -119,6 +119,15 @@ const { removeNotification } = notificationStore
   color: var(--mp-white);
 }
 
+.notification-item.type-info {
+  background: linear-gradient(135deg, var(--mp-blue) 0%, color-mix(in srgb, var(--mp-blue) 60%, var(--mp-white)) 100%);
+  color: var(--mp-white);
+}
+
+.notification-item.type-info .notification-close:hover {
+  color: var(--mp-blue);
+}
+
 /* 通知消息 */
 .notification-message {
   flex: 1;
