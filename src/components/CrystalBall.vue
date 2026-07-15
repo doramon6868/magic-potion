@@ -141,15 +141,13 @@ export default {
       const dataString = JSON.stringify(dragData)
       event.dataTransfer.setData('application/json', dataString)
       event.dataTransfer.setData('text/plain', dataString)
-
-      console.log('宠物开始拖拽:', this.gameStore.pet.name)
     },
 
     /**
      * 处理宠物拖拽结束
      */
     handlePetDragEnd(event) {
-      console.log('宠物拖拽结束')
+      // 拖拽结束，可在此扩展后续反馈
     },
 
     /**
@@ -191,7 +189,6 @@ export default {
       this.dragEnterCounter++
       this.isDragOver = true
       this.showVortex = true
-      console.log('拖拽进入水晶球')
     },
 
     /**
@@ -204,7 +201,6 @@ export default {
         this.showVortex = false
         this.dragEnterCounter = 0
       }
-      console.log('拖拽离开水晶球')
     },
 
     /**
@@ -225,8 +221,6 @@ export default {
         console.error('解析拖拽数据失败:', e)
         return
       }
-
-      console.log('水晶球接收到拖拽数据：', data)
 
       // 情况1：放下的是物品（从背包来的食物）
       if (data.type === 'item') {

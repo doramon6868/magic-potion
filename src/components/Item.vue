@@ -75,7 +75,7 @@
 
     <!-- 风味文本提示（只在背包中显示） -->
     <div v-if="isDraggable && item.key" class="item-flavor-text">
-      💫 {{ $t(`items.list.${item.key}.flavor`) }}
+      {{ $t(`items.list.${item.key}.flavor`) }}
     </div>
 
   </div>
@@ -265,8 +265,6 @@ export default {
       // 设置正在拖拽状态（用于样式）
       this.isDragging = true
 
-      console.log('开始拖拽物品:', this.$t(`items.list.${this.item.key}.name`))
-
       // 触发自定义事件，让父组件知道开始拖拽
       this.$emit('drag-start', this.dragData)
     },
@@ -277,8 +275,6 @@ export default {
     handleDragEnd(event) {
       // 重置拖拽状态
       this.isDragging = false
-
-      console.log('拖拽结束:', this.$t(`items.list.${this.item.key}.name`))
 
       // 触发自定义事件
       this.$emit('drag-end', this.dragData)

@@ -338,7 +338,7 @@ export default {
     },
 
     onPetSelect(petType) {
-      console.log('选择宠物:', petType)
+      // 宠物选择已由 selectRecipe 处理，此处保留扩展入口
     },
 
     showUnlockTip(petType) {

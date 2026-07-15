@@ -227,8 +227,7 @@ export default {
         const loaded = await saveStore.loadLastSave()
 
         if (!loaded) {
-          console.log('没有现有存档，开始新游戏')
-          // 初始化初始宠物
+          // 没有现有存档，开始新游戏
           petCollectionStore.initWithStarterPet()
         }
       } catch (error) {
