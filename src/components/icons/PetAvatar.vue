@@ -1,7 +1,7 @@
 <template>
   <div
     class="pet-avatar-root"
-    :class="[statusClass, typeClass]"
+    :class="[statusClass]"
     :style="containerStyle"
   >
     <svg
@@ -139,12 +139,12 @@
         <g v-else>
           <path
             v-if="status === 'happy' || status === 'playing'"
-            d="M52 80 Q60 90 68 80"
+            d="M52 84 Q60 74 68 84"
             class="face-stroke"
           />
           <path
             v-else-if="status === 'sad' || status === 'tired'"
-            d="M54 86 Q60 80 66 86"
+            d="M54 80 Q60 90 66 80"
             class="face-stroke"
           />
           <path
@@ -152,19 +152,24 @@
             d="M56 84 L64 84"
             class="face-stroke"
           />
-          <path
+          <ellipse
             v-else-if="status === 'eating'"
-            d="M56 82 Q60 86 64 82"
-            class="face-stroke"
+            cx="60"
+            cy="84"
+            rx="5"
+            ry="4"
+            class="face-fill"
           />
-          <path
+          <circle
             v-else-if="status === 'sleeping'"
-            d="M60 84 L60 84"
-            class="face-stroke-dot"
+            cx="60"
+            cy="84"
+            r="3"
+            class="face-fill"
           />
           <path
             v-else
-            d="M54 82 Q60 86 66 82"
+            d="M54 82 Q60 78 66 82"
             class="face-stroke"
           />
         </g>
@@ -234,25 +239,12 @@ export default {
     },
 
     /**
-     * 类型 CSS 类
-     */
-    typeClass() {
-      return `type-${this.type}`
-    },
-
-    /**
      * 无障碍标签
      */
     ariaLabel() {
       return `${this.type}宠物头像，状态${this.status}`
     }
-  },
-
-  data() {
-    return {}
-  },
-
-  methods: {}
+  }
 }
 </script>
 

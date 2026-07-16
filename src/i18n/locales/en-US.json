@@ -42,7 +42,7 @@
     "types": {
       "cat": {
         "name": "Lilac",
-        "description": "A cute slugcat with a snail shell and cat's agility",
+        "description": "A cute slugcat with a soft, squishy body and cat-like agility.",
         "lore": "Lilac is the first pet you discovered in the magic crystal ball, gentle and loyal, the best companion for your adventure"
       },
       "bird": {
