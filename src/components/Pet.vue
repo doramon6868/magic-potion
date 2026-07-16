@@ -503,57 +503,6 @@ export default {
   transform: scale(1.1);
 }
 
-/* 猫耳朵装饰 - 放在蛞蝓头顶 */
-.cat-ears {
-  position: absolute;
-  top: -15px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 24px;
-  animation: earWiggle 2s ease-in-out infinite;
-  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.3));
-  z-index: 2;
-}
-
-/* 小尾巴 */
-.pet-tail {
-  position: absolute;
-  bottom: 10px;
-  right: 5px;
-  font-size: 20px;
-  color: #a8e6cf;
-  animation: tailWag 1.5s ease-in-out infinite;
-  transform-origin: left center;
-}
-
-/* 耳朵摇摆动画 */
-@keyframes earWiggle {
-  0%, 100% {
-    transform: translateX(-50%) rotate(-5deg);
-  }
-  50% {
-    transform: translateX(-50%) rotate(5deg);
-  }
-}
-
-/* 尾巴摇摆动画 */
-@keyframes tailWag {
-  0%, 100% {
-    transform: rotate(-10deg);
-  }
-  50% {
-    transform: rotate(10deg);
-  }
-}
-
-/* 宠物表情 */
-.pet-emoji {
-  /* 表情符号大小 */
-  font-size: 40px;
-  /* 阴影让表情更突出 */
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
-}
-
 /* 状态指示器 */
 .status-indicator {
   /* 绝对定位在宠物头顶 */

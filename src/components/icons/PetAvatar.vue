@@ -1,6 +1,6 @@
 <template>
   <div
-    class="pet-avatar"
+    class="pet-avatar-root"
     :class="[statusClass, typeClass]"
     :style="containerStyle"
   >
@@ -257,7 +257,7 @@ export default {
 </script>
 
 <style scoped>
-.pet-avatar {
+.pet-avatar-root {
   display: inline-flex;
   align-items: center;
   justify-content: center;
