@@ -189,7 +189,7 @@ export default {
      */
     type: {
       type: String,
-      default: 'cat',
+      required: true,
       validator(value) {
         return ['cat', 'bird', 'fox', 'dragon'].includes(value)
       }
@@ -244,9 +244,15 @@ export default {
      * 无障碍标签
      */
     ariaLabel() {
-      return `${this.type} pet avatar, status ${this.status}`
+      return `${this.type}宠物头像，状态${this.status}`
     }
-  }
+  },
+
+  data() {
+    return {}
+  },
+
+  methods: {}
 }
 </script>
 
@@ -283,7 +289,6 @@ export default {
 
 .face-stroke-dot {
   stroke-width: 3;
-  stroke-linecap: round;
 }
 
 .face-fill {
