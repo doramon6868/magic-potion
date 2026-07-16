@@ -22,7 +22,7 @@
   >
     <!-- 宠物图标 -->
     <div class="pet-avatar">
-      <SlugcatAvatar :status="petStatus" :pet-type="pet.type || 'cat'" :size="56" />
+      <PetAvatar :type="pet.type || 'cat'" :status="petStatus" :size="56" />
     </div>
 
     <!-- 宠物名称 -->
@@ -48,13 +48,13 @@ import { mapStores } from 'pinia'
 import { useSynthesisStore } from '../../stores/synthesis.js'
 import { usePetCollectionStore } from '../../stores/petCollection.js'
 import { getRarityText, getRarityColor } from '../../config/petTypes.js'
-import SlugcatAvatar from '../icons/SlugcatAvatar.vue'
+import PetAvatar from '../icons/PetAvatar.vue'
 
 export default {
   name: 'PetPreview',
 
   components: {
-    SlugcatAvatar
+    PetAvatar
   },
 
   props: {
@@ -97,7 +97,7 @@ export default {
     },
 
     /**
-     * 宠物状态（用于 SlugcatAvatar 表情）
+     * 宠物状态（用于 PetAvatar 表情）
      */
     petStatus() {
       return this.isOwned ? 'happy' : (this.isLocked ? 'sad' : 'idle')
