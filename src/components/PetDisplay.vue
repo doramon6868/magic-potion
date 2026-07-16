@@ -31,7 +31,7 @@
       <!-- 大头像 -->
       <div class="pet-avatar-large" :style="avatarStyle">
         <span v-if="petConfig?.passiveSkill" class="skill-icon">{{ petConfig.passiveSkill.icon }}</span>
-        <SlugcatAvatar :status="gameStore.pet.status" :pet-type="petConfig?.type" :size="100" />
+        <PetAvatar :type="petConfig?.type" :status="gameStore.pet.status" :size="100" />
       </div>
 
       <!-- 宠物名字 -->
@@ -147,7 +147,9 @@
             :class="{ 'active': ownedPet.instanceId === activePetId }"
             @click="switchToPet(ownedPet.instanceId)"
           >
-            <div class="pet-preview-avatar">{{ getPetEmoji(ownedPet.petType) }}</div>
+            <div class="pet-preview-avatar">
+              <PetAvatar :type="ownedPet.petType" status="idle" :size="36" />
+            </div>
             <div class="pet-preview-info">
               <div class="pet-preview-name">{{ ownedPet.name }}</div>
               <div v-if="getPetPassiveSkill(ownedPet.petType)" class="pet-preview-skill">
@@ -172,7 +174,7 @@ import { useBackpackStore } from '../stores/backpack.js'
 import { useNotificationStore } from '../stores/notification.js'
 import { getPetType } from '../config/petTypes.js'
 import Item from './Item.vue'
-import SlugcatAvatar from './icons/SlugcatAvatar.vue'
+import PetAvatar from './icons/PetAvatar.vue'
 import StarDecoration from './icons/decorations/StarDecoration.vue'
 
 export default {
@@ -180,7 +182,7 @@ export default {
 
   components: {
     Item,
-    SlugcatAvatar,
+    PetAvatar,
     StarDecoration
   },
 
@@ -236,11 +238,6 @@ export default {
   methods: {
     openPetSwitcher() {
       this.showPetSwitcher = true
-    },
-
-    getPetEmoji(petType) {
-      const pet = getPetType(petType)
-      return pet?.emoji || '🐌'
     },
 
     getPetPassiveSkill(petType) {
@@ -650,7 +647,6 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
   flex-shrink: 0;
 }
 
