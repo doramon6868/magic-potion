@@ -21,7 +21,7 @@
 
         <div class="pet-reveal">
           <div class="pet-emoji-container">
-            <div class="pet-emoji">{{ result.pet.emoji }}</div>
+            <PetAvatar :type="result.pet.type" status="happy" :size="64" />
             <div class="pet-glow"></div>
           </div>
 
@@ -93,8 +93,14 @@
 </template>
 
 <script>
+import PetAvatar from '../icons/PetAvatar.vue'
+
 export default {
   name: 'SynthesisResult',
+
+  components: {
+    PetAvatar
+  },
 
   props: {
     /**
@@ -282,21 +288,6 @@ export default {
   position: relative;
   display: inline-block;
   margin-bottom: 16px;
-}
-
-.pet-emoji {
-  font-size: 80px;
-  line-height: 1;
-  position: relative;
-  z-index: 2;
-  animation: pop-bounce 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-}
-
-@keyframes pop-bounce {
-  0% { transform: scale(0); }
-  50% { transform: scale(1.3); }
-  70% { transform: scale(0.9); }
-  100% { transform: scale(1); }
 }
 
 .pet-glow {

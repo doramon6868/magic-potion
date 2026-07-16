@@ -423,7 +423,6 @@ export const useSynthesisStore = defineStore('synthesis', {
           id: newPetId,
           type: recipe.targetPetType,
           name: petConfig.name,
-          emoji: petConfig.emoji,
           passiveSkill: petConfig.passiveSkill
         },
         message: `恭喜！成功召唤了 ${petConfig.name}！`

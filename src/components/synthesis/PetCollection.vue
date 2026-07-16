@@ -37,8 +37,7 @@
       >
         <!-- 宠物头像 -->
         <div class="card-avatar">
-          <span class="avatar-emoji">{{ pet.emoji }}</span>
-          <span v-if="pet.emojiSecondary" class="avatar-secondary">{{ pet.emojiSecondary }}</span>
+          <PetAvatar :type="pet.type" status="idle" :size="40" />
           <div v-if="isPetActive(pet.type)" class="active-badge">✓</div>
         </div>
 
@@ -79,9 +78,14 @@
 import { mapStores } from 'pinia'
 import { usePetCollectionStore } from '../../stores/petCollection.js'
 import { getAllPetTypes, getRarityText, getRarityColor } from '../../config/petTypes.js'
+import PetAvatar from '../icons/PetAvatar.vue'
 
 export default {
   name: 'PetCollection',
+
+  components: {
+    PetAvatar
+  },
 
   props: {
     show: {
@@ -254,25 +258,6 @@ export default {
   justify-content: center;
   background: rgba(255, 255, 255, 0.8);
   border-radius: 16px;
-}
-
-.avatar-emoji {
-  font-size: 40px;
-}
-
-.avatar-secondary {
-  position: absolute;
-  bottom: 4px;
-  right: 4px;
-  font-size: 16px;
-  background: white;
-  border-radius: 50%;
-  width: 22px;
-  height: 22px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .active-badge {

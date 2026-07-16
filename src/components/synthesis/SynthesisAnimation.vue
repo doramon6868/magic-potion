@@ -36,7 +36,7 @@
       <transition name="pop">
         <div v-if="result" class="result-display">
           <div v-if="result.success" class="success-reveal">
-            <div class="pet-emoji-large">{{ result.pet.emoji }}</div>
+            <PetAvatar :type="result.pet.type" status="happy" :size="80" />
             <div class="success-text">✨ 合成成功！ ✨</div>
           </div>
           <div v-else class="fail-display">
@@ -53,8 +53,14 @@
 </template>
 
 <script>
+import PetAvatar from '../icons/PetAvatar.vue'
+
 export default {
   name: 'SynthesisAnimation',
+
+  components: {
+    PetAvatar
+  },
 
   props: {
     /**
@@ -296,14 +302,6 @@ export default {
 /* 成功展示 */
 .success-reveal {
   animation: pop-in 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-}
-
-.pet-emoji-large {
-  font-size: 80px;
-  line-height: 1;
-  margin-bottom: 12px;
-  filter: drop-shadow(0 4px 12px rgba(139, 92, 246, 0.4));
-  animation: bounce 0.6s ease-in-out infinite alternate;
 }
 
 .success-text {
