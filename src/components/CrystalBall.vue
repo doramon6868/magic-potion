@@ -37,7 +37,7 @@
           @dragend="handlePetDragEnd"
         >
           <div class="simple-avatar" :style="avatarStyle">
-            <SlugcatAvatar :status="gameStore.pet.status" :pet-type="petConfig?.type" :size="80" />
+            <PetAvatar :type="petConfig?.type || 'cat'" :status="gameStore.pet.status" :size="80" />
           </div>
           <div class="simple-name">{{ gameStore.pet.name }}</div>
           <div class="simple-hint">拖拽我到右侧玩耍</div>
@@ -73,7 +73,7 @@ import { useNotificationStore } from '../stores/notification.js'
 import { usePetCollectionStore } from '../stores/petCollection.js'
 import { getPetType } from '../config/petTypes.js'
 import ObservatoryDome from './ObservatoryDome.vue'
-import SlugcatAvatar from './icons/SlugcatAvatar.vue'
+import PetAvatar from './icons/PetAvatar.vue'
 import PotionIcon from './icons/items/PotionIcon.vue'
 
 export default {
@@ -81,7 +81,7 @@ export default {
 
   components: {
     ObservatoryDome,
-    SlugcatAvatar,
+    PetAvatar,
     PotionIcon
   },
 

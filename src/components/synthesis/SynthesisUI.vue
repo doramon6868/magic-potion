@@ -25,7 +25,7 @@
       <!-- 左侧：宠物列表 -->
       <div class="pet-list-section">
         <h3 class="section-title">
-          <SlugcatAvatar class="section-icon" :size="24" />
+          <PetAvatar class="section-icon" type="cat" status="idle" :size="24" />
           可合成宠物
         </h3>
         <div class="pet-list">
@@ -189,7 +189,7 @@ import { useBackpackStore } from '../../stores/backpack.js'
 import { getAllPetTypes } from '../../config/petTypes.js'
 import { getFragmentType } from '../../config/fragmentTypes.js'
 import { getPotionNameByRarity } from '../../config/synthesisRecipes.js'
-import SlugcatAvatar from '../icons/SlugcatAvatar.vue'
+import PetAvatar from '../icons/PetAvatar.vue'
 import PotionIcon from '../icons/items/PotionIcon.vue'
 import FragmentIcon from '../icons/items/FragmentIcon.vue'
 import StarDecoration from '../icons/decorations/StarDecoration.vue'
@@ -203,7 +203,7 @@ export default {
   name: 'SynthesisUI',
 
   components: {
-    SlugcatAvatar,
+    PetAvatar,
     PotionIcon,
     FragmentIcon,
     StarDecoration,
