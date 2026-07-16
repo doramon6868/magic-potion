@@ -46,8 +46,7 @@
     <!-- ==================== 宠物形象 ==================== -->
     <div class="pet-avatar" :style="avatarStyle">
       <span v-if="petConfig?.passiveSkill" class="skill-icon">{{ petConfig.passiveSkill.icon }}</span>
-      <span class="cat-ears">{{ petEmojiSecondary }}</span>
-      <span class="pet-emoji">{{ petEmoji }}</span>
+      <PetAvatar :type="petConfig?.type" :status="pet.status" :size="72" />
     </div>
 
     <!-- ==================== 宠物名字 ==================== -->
@@ -122,7 +121,9 @@
             :class="{ 'active': ownedPet.instanceId === activePetId }"
             @click="switchToPet(ownedPet.instanceId)"
           >
-            <div class="pet-preview-avatar">{{ getPetEmoji(ownedPet.petType) }}</div>
+            <div class="pet-preview-avatar">
+              <PetAvatar :type="ownedPet.petType" status="idle" :size="32" />
+            </div>
             <div class="pet-preview-info">
               <div class="pet-preview-name">{{ ownedPet.name }}</div>
               <div v-if="getPetPassiveSkill(ownedPet.petType)" class="pet-preview-skill">
@@ -146,10 +147,15 @@ import { usePetCollectionStore } from '../stores/petCollection.js'
 import { useGameStore } from '../stores/game.js'
 import { useNotificationStore } from '../stores/notification.js'
 import { getPetType } from '../config/petTypes.js'
+import PetAvatar from './icons/PetAvatar.vue'
 
 export default {
   // 组件名称
   name: 'Pet',
+
+  components: {
+    PetAvatar
+  },
 
   /**
    * props: 从父组件接收的数据
@@ -261,23 +267,6 @@ export default {
     petConfig() {
       const petType = this.petCollectionStore.activePet?.petType || 'cat'
       return getPetType(petType)
-    },
-
-    /**
-     * petEmoji: 宠物的主要形象
-     * 根据宠物类型返回对应的emoji
-     * @returns {string} 表情符号
-     */
-    petEmoji() {
-      return this.petConfig?.emoji || '🐌'
-    },
-
-    /**
-     * petEmojiSecondary: 宠物的次要形象/装饰
-     * @returns {string} 表情符号
-     */
-    petEmojiSecondary() {
-      return this.petConfig?.emojiSecondary || '🐱'
     },
 
     /**
@@ -394,16 +383,6 @@ export default {
      */
     openPetSwitcher() {
       this.showPetSwitcher = true
-    },
-
-    /**
-     * getPetEmoji: 获取宠物emoji
-     * @param {string} petType - 宠物类型
-     * @returns {string}
-     */
-    getPetEmoji(petType) {
-      const pet = getPetType(petType)
-      return pet?.emoji || '🐌'
     },
 
     /**
@@ -794,7 +773,6 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
   flex-shrink: 0;
 }
 
@@ -823,38 +801,6 @@ export default {
   border-radius: 12px;
 }
 
-/* ==================== 状态动画 ==================== */
-
-/* 睡觉状态 - 轻微摇摆 */
-.sleeping .pet-avatar {
-  animation: sway 3s ease-in-out infinite;
-}
-
-.sleeping .status-indicator {
-  /* 睡觉时不显示状态表情 */
-  opacity: 0;
-}
-
-/* 开心状态 - 跳跃 */
-.happy .pet-avatar {
-  animation: jump 0.5s ease-in-out infinite;
-}
-
-/* 玩耍状态 - 摇摆 */
-.playing .pet-avatar {
-  animation: wiggle 0.3s ease-in-out infinite;
-}
-
-/* 战斗状态 - 快速抖动 */
-.hunting .pet-avatar {
-  animation: shake 0.2s ease-in-out infinite;
-}
-
-/* 疲惫状态 - 慢速呼吸 */
-.tired .pet-avatar {
-  animation: breathe 2s ease-in-out infinite;
-}
-
 /* ==================== 动画定义 ==================== */
 
 /* 弹跳动画 - 用于状态表情 */
@@ -864,59 +810,6 @@ export default {
   }
   50% {
     transform: translateX(-50%) translateY(-5px);
-  }
-}
-
-/* 摇摆动画 - 睡觉 */
-@keyframes sway {
-  0%, 100% {
-    transform: rotate(-5deg);
-  }
-  50% {
-    transform: rotate(5deg);
-  }
-}
-
-/* 跳跃动画 - 开心 */
-@keyframes jump {
-  0%, 100% {
-    transform: translateY(0) scale(1);
-  }
-  50% {
-    transform: translateY(-10px) scale(1.1);
-  }
-}
-
-/* 摇摆动画 - 玩耍 */
-@keyframes wiggle {
-  0%, 100% {
-    transform: rotate(-10deg);
-  }
-  50% {
-    transform: rotate(10deg);
-  }
-}
-
-/* 抖动动画 - 战斗 */
-@keyframes shake {
-  0%, 100% {
-    transform: translateX(0);
-  }
-  25% {
-    transform: translateX(-3px);
-  }
-  75% {
-    transform: translateX(3px);
-  }
-}
-
-/* 呼吸动画 - 疲惫 */
-@keyframes breathe {
-  0%, 100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(0.95);
   }
 }
 </style>
