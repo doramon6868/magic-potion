@@ -36,10 +36,14 @@ Thumbs.db
 
 # Claude Code
 .claude/settings.local.json
+.claude/worktrees/
 
 # Screenshots
 screenshot*.png
 final_result.png
+forest-check.png
+task-4-bubble.png
+task-4-drag-bubble.png
 
 # Test screenshots directory
 test-screenshots/

@@ -109,7 +109,7 @@ export const useOutdoorStore = defineStore('outdoor', {
 
       // ====== 步骤 1: 保存宠物到玩耍区 ======
       // 创建宠物副本，避免直接修改原对象
-      this.playingPet = { ...pet }
+      this.playingPet = { ...pet, status: 'playing', isAtHome: false }
 
       // ====== 步骤 2: 记录开始时间 ======
       this.playStartTime = Date.now()
@@ -124,6 +124,8 @@ export const useOutdoorStore = defineStore('outdoor', {
       setTimeout(() => {
         this.finishPlay()
       }, playDuration)
+
+      return true
     },
 
     /**
@@ -185,7 +187,7 @@ export const useOutdoorStore = defineStore('outdoor', {
       }
 
       // ====== 步骤 1: 保存宠物到游猎区 ======
-      this.huntingPet = { ...pet }
+      this.huntingPet = { ...pet, status: 'hunting', isAtHome: false }
 
       // ====== 步骤 2: 记录开始时间 ======
       this.huntStartTime = Date.now()
@@ -215,6 +217,8 @@ export const useOutdoorStore = defineStore('outdoor', {
       this.huntTimer = setTimeout(() => {
         this.finishHunt()
       }, 5000)
+
+      return true
     },
 
     /**
@@ -264,7 +268,7 @@ export const useOutdoorStore = defineStore('outdoor', {
         // 设置死亡状态
         gameStore.pet.isDead = true
         gameStore.pet.health = 0
-        gameStore.pet.status = 'tired'
+        gameStore.pet.status = 'dead'
 
       } else {
         // ====== 情况 2: 战斗胜利 ======

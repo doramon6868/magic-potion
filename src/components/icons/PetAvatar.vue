@@ -7,178 +7,430 @@
     <svg
       class="pet-svg"
       viewBox="0 0 120 120"
+      stroke-linecap="round"
+      stroke-linejoin="round"
       role="img"
       :aria-label="ariaLabel"
     >
-      <!-- ==================== 身体 + 类型特征 ==================== -->
-      <g class="body-features">
-        <!-- 小紫 · 蛞蝓猫 -->
-        <g v-if="type === 'cat'">
-          <ellipse cx="60" cy="75" rx="46" ry="36" class="body-cat" />
-          <path d="M28 52 Q24 24 42 42" class="feature-cat" />
-          <path d="M92 52 Q96 24 78 42" class="feature-cat" />
-          <path d="M102 78 Q118 72 112 88 Q108 96 100 88" class="feature-cat" />
-        </g>
+      <!-- ==================== 小紫 · 蛞蝓猫 ==================== -->
+      <g v-if="type === 'cat'">
+        <!-- 尾巴：身体右侧伸出的小问号 -->
+        <path d="M 84,100 C 94,99 99,93 96,86" fill="none" stroke="#3d3d3d" stroke-width="3"/>
+        <!-- 身体：糯米团 -->
+        <path d="M 36,100 C 35,87 46,80 60,80 C 74,80 85,87 84,100 C 84,110 74,114 60,114 C 46,114 36,110 36,100 Z"
+              fill="#c8f0d8" stroke="#3d3d3d" stroke-width="3"/>
+        <!-- 背上的小圆壳 -->
+        <circle cx="41" cy="93" r="9" fill="#e8d8f0" stroke="#3d3d3d" stroke-width="2.5"/>
+        <path d="M 37.5,93 a 3.5,3.5 0 1,1 7,0 a 2,2 0 1,1 -4,0" fill="none" stroke="#3d3d3d" stroke-width="1.6"/>
+        <!-- 耳朵 -->
+        <path d="M 39,33 L 28,14 L 49,29 Z" fill="#c8f0d8" stroke="#3d3d3d" stroke-width="3"/>
+        <path d="M 81,33 L 92,14 L 71,29 Z" fill="#c8f0d8" stroke="#3d3d3d" stroke-width="3"/>
+        <path d="M 38,28 L 32,19 L 44,26 Z" fill="#ff9ecd"/>
+        <path d="M 82,28 L 88,19 L 76,26 Z" fill="#ff9ecd"/>
+        <!-- 头部 -->
+        <path d="M 60,20 C 79,19 96,36 97,57 C 98,78 82,95 60,96 C 39,97 23,80 22,58 C 21,37 41,21 60,20 Z"
+              fill="#c8f0d8" stroke="#3d3d3d" stroke-width="3"/>
+        <!-- 腮红 -->
+        <circle cx="30" cy="70" r="7" fill="#ff9ecd" opacity="0.4"/>
+        <circle cx="90" cy="70" r="7" fill="#ff9ecd" opacity="0.4"/>
 
-        <!-- 青鸟 · 风羽鸟 -->
-        <g v-else-if="type === 'bird'">
-          <ellipse cx="60" cy="74" rx="40" ry="34" class="body-bird" />
-          <path d="M24 68 Q12 48 32 58 Q36 64 28 70" class="feature-bird-wing" />
-          <path d="M96 68 Q108 48 88 58 Q84 64 92 70" class="feature-bird-wing" />
-          <path d="M50 42 Q52 28 58 40" class="feature-bird" />
-          <path d="M60 40 Q62 22 68 40" class="feature-bird" />
-          <path d="M70 42 Q72 28 78 44" class="feature-bird" />
-        </g>
+        <!-- 鼻子：常驻 -->
+        <path d="M 56.8,68.5 L 63.2,68.5 L 60,73 Z" fill="#ff9ecd" stroke="#3d3d3d" stroke-width="1.8"/>
 
-        <!-- 赤狐 · 焰尾狐 -->
-        <g v-else-if="type === 'fox'">
-          <ellipse cx="60" cy="74" rx="42" ry="36" class="body-fox" />
-          <path d="M28 52 Q22 22 44 42" class="feature-fox" />
-          <path d="M92 52 Q98 22 76 42" class="feature-fox" />
-          <path d="M30 44 L26 32 L38 40 Z" class="feature-fox-inner" />
-          <path d="M90 44 L94 32 L82 40 Z" class="feature-fox-inner" />
-          <path
-            d="M98 78 Q116 68 110 52 Q118 58 112 72 Q122 78 108 90 Q100 94 98 78"
-            class="feature-fox-tail"
-          />
+        <!-- ==================== 眼睛表情 ==================== -->
+        <!-- 睡觉 / 进食：眯眼弧线 -->
+        <g v-if="['sleeping', 'eating'].includes(status)">
+          <path d="M38 56 Q44 61 50 56" fill="none" stroke="#3d3d3d" stroke-width="3" stroke-linecap="round"/>
+          <path d="M70 56 Q76 61 82 56" fill="none" stroke="#3d3d3d" stroke-width="3" stroke-linecap="round"/>
         </g>
-
-        <!-- 晶晶 · 晶石龙 -->
-        <g v-else-if="type === 'dragon'">
-          <ellipse cx="60" cy="74" rx="44" ry="38" class="body-dragon" />
-          <path d="M36 48 Q32 22 44 42" class="feature-dragon-horn" />
-          <path d="M84 48 Q88 22 76 42" class="feature-dragon-horn" />
-          <path d="M20 70 Q8 50 28 60 Q32 66 24 72" class="feature-dragon-wing" />
-          <path d="M100 70 Q112 50 92 60 Q88 66 96 72" class="feature-dragon-wing" />
-          <path d="M40 42 L48 30 L56 42" class="feature-dragon-crystal" />
-          <path d="M54 38 L60 26 L66 38" class="feature-dragon-crystal" />
-          <path d="M64 42 L72 30 L80 42" class="feature-dragon-crystal" />
+        <!-- 开心 / 玩耍：笑眯眯弧线 -->
+        <g v-else-if="['happy', 'playing'].includes(status)">
+          <path d="M38 56 Q44 51 50 56" fill="none" stroke="#3d3d3d" stroke-width="3" stroke-linecap="round"/>
+          <path d="M70 56 Q76 51 82 56" fill="none" stroke="#3d3d3d" stroke-width="3" stroke-linecap="round"/>
         </g>
-
-        <!-- 安全兜底：未知类型按猫渲染 -->
+        <!-- 难过 / 疲惫：睁眼 + 眼皮下垂 -->
+        <g v-else-if="['sad', 'tired'].includes(status)">
+          <circle cx="44" cy="56" r="9" fill="#ffffff" stroke="#3d3d3d" stroke-width="2"/>
+          <circle cx="76" cy="56" r="9" fill="#ffffff" stroke="#3d3d3d" stroke-width="2"/>
+          <circle cx="44" cy="54.5" r="5" fill="#3d3d3d"/>
+          <circle cx="76" cy="54.5" r="5" fill="#3d3d3d"/>
+          <circle cx="46" cy="52" r="2" fill="#ffffff"/>
+          <circle cx="78" cy="52" r="2" fill="#ffffff"/>
+          <path d="M38 56 Q44 52 50 56" fill="none" stroke="#3d3d3d" stroke-width="2" stroke-linecap="round"/>
+          <path d="M70 56 Q76 52 82 56" fill="none" stroke="#3d3d3d" stroke-width="2" stroke-linecap="round"/>
+          <g v-if="status === 'sad'">
+            <circle cx="38" cy="64" r="3" fill="#60a5fa"/>
+            <circle cx="82" cy="64" r="3" fill="#60a5fa"/>
+          </g>
+        </g>
+        <!-- 狩猎：锐利斜眼 -->
+        <g v-else-if="status === 'hunting'">
+          <path d="M38 52 L46 60" stroke="#3d3d3d" stroke-width="3" stroke-linecap="round"/>
+          <path d="M82 52 L74 60" stroke="#3d3d3d" stroke-width="3" stroke-linecap="round"/>
+        </g>
+        <!-- 死亡：X 眼 -->
+        <g v-else-if="status === 'dead'">
+          <path d="M38 50 L46 58 M46 50 L38 58" stroke="#3d3d3d" stroke-width="3" stroke-linecap="round"/>
+          <path d="M74 50 L82 58 M82 50 L74 58" stroke="#3d3d3d" stroke-width="3" stroke-linecap="round"/>
+        </g>
+        <!-- idle / 默认：正常睁眼 -->
         <g v-else>
-          <ellipse cx="60" cy="75" rx="46" ry="36" class="body-cat" />
-          <path d="M28 52 Q24 24 42 42" class="feature-cat" />
-          <path d="M92 52 Q96 24 78 42" class="feature-cat" />
+          <circle cx="44" cy="56" r="9" fill="#ffffff" stroke="#3d3d3d" stroke-width="2"/>
+          <circle cx="76" cy="56" r="9" fill="#ffffff" stroke="#3d3d3d" stroke-width="2"/>
+          <circle cx="44" cy="54.5" r="5" fill="#3d3d3d"/>
+          <circle cx="76" cy="54.5" r="5" fill="#3d3d3d"/>
+          <circle cx="46" cy="52" r="2" fill="#ffffff"/>
+          <circle cx="78" cy="52" r="2" fill="#ffffff"/>
+        </g>
+
+        <!-- ==================== 嘴巴表情 ==================== -->
+        <!-- 开心 / 玩耍：大笑 -->
+        <g v-if="['happy', 'playing'].includes(status)">
+          <path d="M 52,77 C 55,82 65,82 68,77" fill="none" stroke="#3d3d3d" stroke-width="2" stroke-linecap="round"/>
+        </g>
+        <!-- 难过 / 疲惫：委屈嘴 -->
+        <g v-else-if="['sad', 'tired'].includes(status)">
+          <path d="M 52,80 C 55,76 65,76 68,80" fill="none" stroke="#3d3d3d" stroke-width="2" stroke-linecap="round"/>
+        </g>
+        <!-- 睡觉：小圆嘴 -->
+        <g v-else-if="status === 'sleeping'">
+          <circle cx="60" cy="76" r="2.5" fill="#3d3d3d"/>
+        </g>
+        <!-- 狩猎 / 死亡：严肃直线 -->
+        <g v-else-if="['hunting', 'dead'].includes(status)">
+          <path d="M 54,76 L 66,76" fill="none" stroke="#3d3d3d" stroke-width="2" stroke-linecap="round"/>
+        </g>
+        <!-- 进食：咀嚼的椭圆嘴 -->
+        <g v-else-if="status === 'eating'">
+          <ellipse cx="60" cy="77" rx="5" ry="4" fill="#3d3d3d"/>
+        </g>
+        <!-- idle：ω 嘴 -->
+        <g v-else>
+          <path d="M 60,73.5 C 59,77 55,79 52,77 M 60,73.5 C 61,77 65,79 68,77" fill="none" stroke="#3d3d3d" stroke-width="2"/>
         </g>
       </g>
 
-      <!-- ==================== 通用五官 ==================== -->
-      <g class="face">
-        <!-- 眼睛：开心 / 睡觉 / 进食（享受眯眼） -->
-        <g v-if="['happy', 'sleeping', 'eating'].includes(status)">
-          <path d="M38 64 Q44 69 50 64" class="face-stroke" />
-          <path d="M62 64 Q68 69 74 64" class="face-stroke" />
-        </g>
+      <!-- ==================== 青鸟 · 风羽鸟 ==================== -->
+      <g v-else-if="type === 'bird'">
+        <!-- 冠羽：三片小叶子 -->
+        <path d="M 57,30 C 54,17 56,8 60,5 C 64,8 66,17 63,30 Z" fill="#8dd4e0" stroke="#3d3d3d" stroke-width="2.5"/>
+        <path d="M 48,31 C 41,23 39,14 43,10 C 48,12 52,22 53,30 Z" fill="#8dd4e0" stroke="#3d3d3d" stroke-width="2.5"/>
+        <path d="M 72,31 C 79,23 81,14 77,10 C 72,12 68,22 67,30 Z" fill="#8dd4e0" stroke="#3d3d3d" stroke-width="2.5"/>
+        <!-- 尾羽 -->
+        <path d="M 46,96 C 41,100 39,108 43,113 C 48,111 50,103 46,96 Z" fill="#8dd4e0" stroke="#3d3d3d" stroke-width="2.5"/>
+        <path d="M 60,98 C 56,103 56,111 60,114 C 64,111 64,103 60,98 Z" fill="#8dd4e0" stroke="#3d3d3d" stroke-width="2.5"/>
+        <path d="M 74,96 C 70,103 72,111 77,113 C 81,108 79,100 74,96 Z" fill="#8dd4e0" stroke="#3d3d3d" stroke-width="2.5"/>
+        <!-- 翅膀 -->
+        <path d="M 33,58 C 21,56 12,65 14,76 C 16,87 27,91 34,84 C 38,77 38,66 33,58 Z" fill="#8dd4e0" stroke="#3d3d3d" stroke-width="3"/>
+        <path d="M 87,58 C 99,56 108,65 106,76 C 104,87 93,91 86,84 C 82,77 82,66 87,58 Z" fill="#8dd4e0" stroke="#3d3d3d" stroke-width="3"/>
+        <path d="M 20,66 C 24,70 29,72 34,72 M 21,76 C 25,79 30,80 34,79" fill="none" stroke="#3d3d3d" stroke-width="2"/>
+        <path d="M 100,66 C 96,70 91,72 86,72 M 99,76 C 95,79 90,80 86,79" fill="none" stroke="#3d3d3d" stroke-width="2"/>
+        <!-- 身体（头身一体圆球） -->
+        <path d="M 60,26 C 82,25 101,43 102,64 C 103,86 84,102 60,102 C 36,102 18,86 18,64 C 18,43 38,27 60,26 Z"
+              fill="#a8e6f0" stroke="#3d3d3d" stroke-width="3"/>
+        <!-- 腮红 -->
+        <circle cx="28" cy="68" r="6" fill="#ff9ecd" opacity="0.4"/>
+        <circle cx="92" cy="68" r="6" fill="#ff9ecd" opacity="0.4"/>
 
-        <!-- 眼睛：难过 -->
-        <g v-else-if="status === 'sad'">
-          <circle cx="44" cy="64" r="5" class="face-fill" />
-          <circle cx="76" cy="64" r="5" class="face-fill" />
-          <circle cx="46" cy="62" r="1.5" fill="white" />
-          <circle cx="78" cy="62" r="1.5" fill="white" />
-          <path d="M40 74 Q44 80 48 74" class="tear" />
-          <path d="M72 74 Q76 80 80 74" class="tear" />
+        <!-- ==================== 眼睛表情 ==================== -->
+        <!-- 睡觉 / 进食：眯眼弧线 -->
+        <g v-if="['sleeping', 'eating'].includes(status)">
+          <path d="M36 60 Q42 65 48 60" fill="none" stroke="#3d3d3d" stroke-width="3" stroke-linecap="round"/>
+          <path d="M72 60 Q78 65 84 60" fill="none" stroke="#3d3d3d" stroke-width="3" stroke-linecap="round"/>
         </g>
-
-        <!-- 眼睛：疲惫（半睁） -->
-        <g v-else-if="status === 'tired'">
-          <circle cx="44" cy="64" r="5" class="face-fill" />
-          <circle cx="76" cy="64" r="5" class="face-fill" />
-          <circle cx="46" cy="62" r="1.5" fill="white" />
-          <circle cx="78" cy="62" r="1.5" fill="white" />
-          <path d="M38 64 Q44 60 50 64" class="face-stroke" />
-          <path d="M62 64 Q68 60 74 64" class="face-stroke" />
+        <!-- 开心 / 玩耍：笑眯眯弧线 -->
+        <g v-else-if="['happy', 'playing'].includes(status)">
+          <path d="M36 60 Q42 55 48 60" fill="none" stroke="#3d3d3d" stroke-width="3" stroke-linecap="round"/>
+          <path d="M72 60 Q78 55 84 60" fill="none" stroke="#3d3d3d" stroke-width="3" stroke-linecap="round"/>
         </g>
-
-        <!-- 眼睛：狩猎（锐利斜眼） -->
+        <!-- 难过 / 疲惫：睁眼 + 眼皮下垂 -->
+        <g v-else-if="['sad', 'tired'].includes(status)">
+          <circle cx="42" cy="60" r="10" fill="#ffffff" stroke="#3d3d3d" stroke-width="2"/>
+          <circle cx="78" cy="60" r="10" fill="#ffffff" stroke="#3d3d3d" stroke-width="2"/>
+          <circle cx="42" cy="58" r="5.5" fill="#3d3d3d"/>
+          <circle cx="78" cy="58" r="5.5" fill="#3d3d3d"/>
+          <circle cx="44.5" cy="55.5" r="2.2" fill="#ffffff"/>
+          <circle cx="80.5" cy="55.5" r="2.2" fill="#ffffff"/>
+          <path d="M36 60 Q42 56 48 60" fill="none" stroke="#3d3d3d" stroke-width="2" stroke-linecap="round"/>
+          <path d="M72 60 Q78 56 84 60" fill="none" stroke="#3d3d3d" stroke-width="2" stroke-linecap="round"/>
+          <g v-if="status === 'sad'">
+            <circle cx="36" cy="68" r="3" fill="#60a5fa"/>
+            <circle cx="84" cy="68" r="3" fill="#60a5fa"/>
+          </g>
+        </g>
+        <!-- 狩猎：锐利斜眼 -->
         <g v-else-if="status === 'hunting'">
-          <path d="M40 62 L48 66" class="face-stroke-thick" />
-          <path d="M72 62 L80 66" class="face-stroke-thick" />
+          <path d="M36 56 L44 64" stroke="#3d3d3d" stroke-width="3" stroke-linecap="round"/>
+          <path d="M84 56 L76 64" stroke="#3d3d3d" stroke-width="3" stroke-linecap="round"/>
         </g>
-
-        <!-- 眼睛：玩耍（睁大圆眼） -->
-        <g v-else-if="status === 'playing'">
-          <circle cx="44" cy="64" r="6" class="face-fill" />
-          <circle cx="76" cy="64" r="6" class="face-fill" />
-          <circle cx="47" cy="61" r="2" fill="white" />
-          <circle cx="79" cy="61" r="2" fill="white" />
-        </g>
-
-        <!-- 眼睛：死亡 / 默认兜底（idle 用下面的正常眼） -->
+        <!-- 死亡：X 眼 -->
         <g v-else-if="status === 'dead'">
-          <path d="M40 60 L48 68" class="face-stroke-thick" />
-          <path d="M48 60 L40 68" class="face-stroke-thick" />
-          <path d="M72 60 L80 68" class="face-stroke-thick" />
-          <path d="M80 60 L72 68" class="face-stroke-thick" />
+          <path d="M36 54 L44 62 M44 54 L36 62" stroke="#3d3d3d" stroke-width="3" stroke-linecap="round"/>
+          <path d="M76 54 L84 62 M84 54 L76 62" stroke="#3d3d3d" stroke-width="3" stroke-linecap="round"/>
         </g>
-
-        <!-- 眼睛：idle / 默认 -->
+        <!-- idle / 默认：正常睁眼 -->
         <g v-else>
-          <circle cx="44" cy="64" r="5" class="face-fill" />
-          <circle cx="76" cy="64" r="5" class="face-fill" />
-          <circle cx="46" cy="62" r="1.5" fill="white" />
-          <circle cx="78" cy="62" r="1.5" fill="white" />
+          <circle cx="42" cy="60" r="10" fill="#ffffff" stroke="#3d3d3d" stroke-width="2"/>
+          <circle cx="78" cy="60" r="10" fill="#ffffff" stroke="#3d3d3d" stroke-width="2"/>
+          <circle cx="42" cy="58" r="5.5" fill="#3d3d3d"/>
+          <circle cx="78" cy="58" r="5.5" fill="#3d3d3d"/>
+          <circle cx="44.5" cy="55.5" r="2.2" fill="#ffffff"/>
+          <circle cx="80.5" cy="55.5" r="2.2" fill="#ffffff"/>
         </g>
 
-        <!-- 嘴巴：鸟喙 -->
-        <g v-if="type === 'bird'">
-          <path
-            v-if="status === 'sleeping' || status === 'tired'"
-            d="M58 78 L62 78"
-            class="face-stroke"
-          />
-          <path
-            v-else
-            d="M58 76 L62 76 L60 80 Z"
-            class="beak"
-          />
+        <!-- ==================== 喙表情 ==================== -->
+        <!-- 睡觉 / 疲惫 / 狩猎 / 死亡：闭合小喙 -->
+        <g v-if="['sleeping', 'tired', 'hunting', 'dead'].includes(status)">
+          <path d="M 58,74 L 62,74" fill="none" stroke="#3d3d3d" stroke-width="2" stroke-linecap="round"/>
         </g>
-
-        <!-- 嘴巴：猫 / 狐 / 龙 -->
+        <!-- 进食：张开的大喙 -->
+        <g v-else-if="status === 'eating'">
+          <ellipse cx="60" cy="74" rx="5" ry="5" fill="#ffb347" stroke="#3d3d3d" stroke-width="2"/>
+        </g>
+        <!-- 默认 / 开心 / 玩耍 / 难过：三角喙 -->
         <g v-else>
-          <path
-            v-if="status === 'happy' || status === 'playing'"
-            d="M52 84 Q60 74 68 84"
-            class="face-stroke"
-          />
-          <path
-            v-else-if="status === 'sad' || status === 'tired'"
-            d="M54 80 Q60 90 66 80"
-            class="face-stroke"
-          />
-          <path
-            v-else-if="status === 'hunting'"
-            d="M56 84 L64 84"
-            class="face-stroke"
-          />
-          <ellipse
-            v-else-if="status === 'eating'"
-            cx="60"
-            cy="84"
-            rx="5"
-            ry="4"
-            class="face-fill"
-          />
-          <circle
-            v-else-if="status === 'sleeping'"
-            cx="60"
-            cy="84"
-            r="3"
-            class="face-fill"
-          />
-          <path
-            v-else
-            d="M54 82 Q60 78 66 82"
-            class="face-stroke"
-          />
+          <path d="M 54,69 L 66,69 L 60,77 Z" fill="#ffb347" stroke="#3d3d3d" stroke-width="2"/>
         </g>
 
-        <!-- 腮红：开心 / 玩耍 / 进食 -->
-        <g v-if="['happy', 'playing', 'eating'].includes(status)">
-          <circle cx="32" cy="76" r="4" class="blush" />
-          <circle cx="88" cy="76" r="4" class="blush" />
+        <!-- 小脚爪 -->
+        <ellipse cx="49" cy="109" rx="2.6" ry="2" fill="#ffb347" stroke="#3d3d3d" stroke-width="1.6"/>
+        <ellipse cx="54.5" cy="110" rx="2.6" ry="2" fill="#ffb347" stroke="#3d3d3d" stroke-width="1.6"/>
+        <ellipse cx="65.5" cy="110" rx="2.6" ry="2" fill="#ffb347" stroke="#3d3d3d" stroke-width="1.6"/>
+        <ellipse cx="71" cy="109" rx="2.6" ry="2" fill="#ffb347" stroke="#3d3d3d" stroke-width="1.6"/>
+      </g>
+
+      <!-- ==================== 赤狐 · 焰尾狐 ==================== -->
+      <g v-else-if="type === 'fox'">
+        <!-- 大尾巴：火焰形，末端橙红外露 -->
+        <path d="M 72,104 C 86,107 100,101 107,90 C 112,81 112,70 109,60 C 106,50 100,44 93,42 C 92,41 90,42 90,44 C 92,50 92,57 89,63 C 86,69 82,74 80,80 C 78,87 75,96 72,104 Z"
+              fill="#ffd4a8" stroke="#3d3d3d" stroke-width="3"/>
+        <path d="M 92,42 C 101,43 108,51 110,62 C 104,60 95,52 91,44 Z" fill="#ff6b4a" stroke="#3d3d3d" stroke-width="2"/>
+        <path d="M 80,88 C 86,82 90,75 91,68" fill="none" stroke="#3d3d3d" stroke-width="2"/>
+        <!-- 耳朵 -->
+        <path d="M 37,29 L 22,8 L 51,27 Z" fill="#ffd4a8" stroke="#3d3d3d" stroke-width="3"/>
+        <path d="M 83,29 L 98,8 L 69,27 Z" fill="#ffd4a8" stroke="#3d3d3d" stroke-width="3"/>
+        <path d="M 36,24 L 27,12 L 45,23 Z" fill="#ffffff"/>
+        <path d="M 84,24 L 93,12 L 75,23 Z" fill="#ffffff"/>
+        <!-- 身体 -->
+        <path d="M 42,100 C 42,88 50,83 60,83 C 70,83 78,88 78,100 C 78,108 70,113 60,113 C 50,113 42,108 42,100 Z"
+              fill="#ffd4a8" stroke="#3d3d3d" stroke-width="3"/>
+        <path d="M 51,92 C 53,100 56,107 60,109 C 64,107 67,100 69,92 C 65,95.5 55,95.5 51,92 Z" fill="#fff4e6"/>
+        <ellipse cx="51" cy="110" rx="4.5" ry="3" fill="#ffd4a8" stroke="#3d3d3d" stroke-width="2"/>
+        <ellipse cx="69" cy="110" rx="4.5" ry="3" fill="#ffd4a8" stroke="#3d3d3d" stroke-width="2"/>
+        <!-- 头部：上宽下窄圆润三角 -->
+        <path d="M 60,23 C 80,23 94,36 93,52 C 92,66 78,81 60,85 C 42,81 28,66 27,52 C 26,36 40,23 60,23 Z"
+              fill="#ffd4a8" stroke="#3d3d3d" stroke-width="3"/>
+        <!-- 脸颊白毛 -->
+        <path d="M 43,61 C 47,72 52,81 60,85 C 68,81 73,72 77,61 C 71,68 49,68 43,61 Z" fill="#fff4e6"/>
+        <!-- 腮红 -->
+        <circle cx="34" cy="72" r="5" fill="#ff9ecd" opacity="0.4"/>
+        <circle cx="86" cy="72" r="5" fill="#ff9ecd" opacity="0.4"/>
+
+        <!-- 鼻子：常驻 -->
+        <path d="M 56.5,71 L 63.5,71 L 60,76 Z" fill="#3d3d3d"/>
+
+        <!-- ==================== 眼睛表情 ==================== -->
+        <!-- 睡觉 / 进食：眯眼弧线 -->
+        <g v-if="['sleeping', 'eating'].includes(status)">
+          <path d="M36 56 Q42 61 48 56" fill="none" stroke="#3d3d3d" stroke-width="3" stroke-linecap="round"/>
+          <path d="M72 56 Q78 61 84 56" fill="none" stroke="#3d3d3d" stroke-width="3" stroke-linecap="round"/>
         </g>
+        <!-- 开心 / 玩耍：笑眯眯弧线 -->
+        <g v-else-if="['happy', 'playing'].includes(status)">
+          <path d="M36 56 Q42 51 48 56" fill="none" stroke="#3d3d3d" stroke-width="3" stroke-linecap="round"/>
+          <path d="M72 56 Q78 51 84 56" fill="none" stroke="#3d3d3d" stroke-width="3" stroke-linecap="round"/>
+        </g>
+        <!-- 难过 / 疲惫：睁眼 + 眼皮下垂 -->
+        <g v-else-if="['sad', 'tired'].includes(status)">
+          <circle cx="42" cy="56" r="9" fill="#ffffff" stroke="#3d3d3d" stroke-width="2"/>
+          <circle cx="78" cy="56" r="9" fill="#ffffff" stroke="#3d3d3d" stroke-width="2"/>
+          <path d="M 31,53 C 29,51 28,49 29,47 M 89,53 C 91,51 92,49 91,47" fill="none" stroke="#3d3d3d" stroke-width="2"/>
+          <circle cx="42" cy="54.5" r="5" fill="#3d3d3d"/>
+          <circle cx="78" cy="54.5" r="5" fill="#3d3d3d"/>
+          <circle cx="44" cy="52" r="2" fill="#ffffff"/>
+          <circle cx="80" cy="52" r="2" fill="#ffffff"/>
+          <path d="M36 56 Q42 52 48 56" fill="none" stroke="#3d3d3d" stroke-width="2" stroke-linecap="round"/>
+          <path d="M72 56 Q78 52 84 56" fill="none" stroke="#3d3d3d" stroke-width="2" stroke-linecap="round"/>
+          <g v-if="status === 'sad'">
+            <circle cx="36" cy="64" r="3" fill="#60a5fa"/>
+            <circle cx="84" cy="64" r="3" fill="#60a5fa"/>
+          </g>
+        </g>
+        <!-- 狩猎：锐利斜眼 -->
+        <g v-else-if="status === 'hunting'">
+          <path d="M36 52 L44 60" stroke="#3d3d3d" stroke-width="3" stroke-linecap="round"/>
+          <path d="M84 52 L76 60" stroke="#3d3d3d" stroke-width="3" stroke-linecap="round"/>
+        </g>
+        <!-- 死亡：X 眼 -->
+        <g v-else-if="status === 'dead'">
+          <path d="M36 50 L44 58 M44 50 L36 58" stroke="#3d3d3d" stroke-width="3" stroke-linecap="round"/>
+          <path d="M76 50 L84 58 M84 50 L76 58" stroke="#3d3d3d" stroke-width="3" stroke-linecap="round"/>
+        </g>
+        <!-- idle / 默认：正常睁眼 -->
+        <g v-else>
+          <circle cx="42" cy="56" r="9" fill="#ffffff" stroke="#3d3d3d" stroke-width="2"/>
+          <circle cx="78" cy="56" r="9" fill="#ffffff" stroke="#3d3d3d" stroke-width="2"/>
+          <path d="M 31,53 C 29,51 28,49 29,47 M 89,53 C 91,51 92,49 91,47" fill="none" stroke="#3d3d3d" stroke-width="2"/>
+          <circle cx="42" cy="54.5" r="5" fill="#3d3d3d"/>
+          <circle cx="78" cy="54.5" r="5" fill="#3d3d3d"/>
+          <circle cx="44" cy="52" r="2" fill="#ffffff"/>
+          <circle cx="80" cy="52" r="2" fill="#ffffff"/>
+        </g>
+
+        <!-- ==================== 嘴巴表情 ==================== -->
+        <!-- 开心 / 玩耍：大笑 -->
+        <g v-if="['happy', 'playing'].includes(status)">
+          <path d="M 52,77 C 55,82 65,82 68,77" fill="none" stroke="#3d3d3d" stroke-width="2" stroke-linecap="round"/>
+        </g>
+        <!-- 难过 / 疲惫：委屈嘴 -->
+        <g v-else-if="['sad', 'tired'].includes(status)">
+          <path d="M 52,80 C 55,76 65,76 68,80" fill="none" stroke="#3d3d3d" stroke-width="2" stroke-linecap="round"/>
+        </g>
+        <!-- 睡觉：小圆嘴 -->
+        <g v-else-if="status === 'sleeping'">
+          <circle cx="60" cy="78" r="2.5" fill="#3d3d3d"/>
+        </g>
+        <!-- 狩猎 / 死亡：严肃直线 -->
+        <g v-else-if="['hunting', 'dead'].includes(status)">
+          <path d="M 54,78 L 66,78" fill="none" stroke="#3d3d3d" stroke-width="2" stroke-linecap="round"/>
+        </g>
+        <!-- 进食：咀嚼的椭圆嘴 -->
+        <g v-else-if="status === 'eating'">
+          <ellipse cx="60" cy="78" rx="5" ry="4" fill="#3d3d3d"/>
+        </g>
+        <!-- idle：微笑 -->
+        <g v-else>
+          <path d="M 60,76 C 59,79.5 55,81.5 52,79.5 M 60,76 C 61,79.5 65,81.5 68,79.5" fill="none" stroke="#3d3d3d" stroke-width="2"/>
+        </g>
+      </g>
+
+      <!-- ==================== 晶晶 · 晶石龙 ==================== -->
+      <g v-else-if="type === 'dragon'">
+        <!-- 尾巴 + 末端小水晶 -->
+        <path d="M 69,105 C 78,110 87,110 91,104 L 94,108 C 89,114 78,115 68,111 Z" fill="#e8d8f0" stroke="#3d3d3d" stroke-width="2.5"/>
+        <path d="M 90,100 L 97,103 L 93,111 L 87,108 Z" fill="#a855f7" stroke="#3d3d3d" stroke-width="2"/>
+        <!-- 翅膀：小蝙蝠翼 -->
+        <path d="M 47,90 C 39,82 30,82 25,89 C 30,89 31,92 29,96 C 33,94 37,96 37,100 C 40,96 44,93 47,90 Z"
+              fill="#c8a8e0" stroke="#3d3d3d" stroke-width="2.5"/>
+        <path d="M 73,90 C 81,82 90,82 95,89 C 90,89 89,92 91,96 C 87,94 83,96 83,100 C 80,96 76,93 73,90 Z"
+              fill="#c8a8e0" stroke="#3d3d3d" stroke-width="2.5"/>
+        <!-- 头顶大水晶（头后） -->
+        <path d="M 60,3 L 71,17 L 65,31 L 55,31 L 49,17 Z" fill="#a855f7" stroke="#3d3d3d" stroke-width="2.5"/>
+        <path d="M 60,5 L 60,29 M 50,17 L 70,17" fill="none" stroke="#ffffff" stroke-width="1.5" opacity="0.7"/>
+        <!-- 圆角小芽角 -->
+        <path d="M 40,29 C 37,21 39,14 44,12 C 49,14 51,21 48,29 Z" fill="#e8d8f0" stroke="#3d3d3d" stroke-width="2.5"/>
+        <path d="M 72,29 C 69,21 71,14 76,12 C 81,14 83,21 80,29 Z" fill="#e8d8f0" stroke="#3d3d3d" stroke-width="2.5"/>
+        <!-- 身体 -->
+        <path d="M 44,102 C 44,90 51,85 60,85 C 69,85 76,90 76,102 C 76,110 69,114 60,114 C 51,114 44,110 44,102 Z"
+              fill="#e8d8f0" stroke="#3d3d3d" stroke-width="3"/>
+        <ellipse cx="60" cy="103" rx="9" ry="7.5" fill="#ffffff"/>
+        <!-- 背部小水晶 -->
+        <path d="M 70,85 L 78,83 L 75,94 Z" fill="#a855f7" stroke="#3d3d3d" stroke-width="2"/>
+        <path d="M 74,96 L 81,95 L 78,104 Z" fill="#a855f7" stroke="#3d3d3d" stroke-width="2"/>
+        <!-- 头部：圆润方脑袋 -->
+        <path d="M 42,27 C 51,24 69,24 78,27 C 88,31 93,42 93,54 C 93,71 78,86 60,86 C 42,86 27,71 27,54 C 27,42 32,31 42,27 Z"
+              fill="#e8d8f0" stroke="#3d3d3d" stroke-width="3"/>
+        <!-- 鼻梁隆起线 -->
+        <path d="M 60,34 C 60.6,39 60.6,44 60,48" fill="none" stroke="#3d3d3d" stroke-width="1.5" opacity="0.35"/>
+        <!-- 腮红 -->
+        <circle cx="30" cy="72" r="6" fill="#ff9ecd" opacity="0.4"/>
+        <circle cx="90" cy="72" r="6" fill="#ff9ecd" opacity="0.4"/>
+
+        <!-- 鼻孔：常驻 -->
+        <circle cx="56" cy="74" r="1.8" fill="#3d3d3d"/>
+        <circle cx="64" cy="74" r="1.8" fill="#3d3d3d"/>
+
+        <!-- ==================== 眼睛表情 ==================== -->
+        <!-- 睡觉 / 进食：眯眼弧线 -->
+        <g v-if="['sleeping', 'eating'].includes(status)">
+          <path d="M34 56 Q40 61 46 56" fill="none" stroke="#3d3d3d" stroke-width="3" stroke-linecap="round"/>
+          <path d="M74 56 Q80 61 86 56" fill="none" stroke="#3d3d3d" stroke-width="3" stroke-linecap="round"/>
+        </g>
+        <!-- 开心 / 玩耍：笑眯眯弧线 -->
+        <g v-else-if="['happy', 'playing'].includes(status)">
+          <path d="M34 56 Q40 51 46 56" fill="none" stroke="#3d3d3d" stroke-width="3" stroke-linecap="round"/>
+          <path d="M74 56 Q80 51 86 56" fill="none" stroke="#3d3d3d" stroke-width="3" stroke-linecap="round"/>
+        </g>
+        <!-- 难过 / 疲惫：睁眼 + 眼皮下垂 -->
+        <g v-else-if="['sad', 'tired'].includes(status)">
+          <circle cx="40" cy="56" r="10" fill="#ffffff" stroke="#3d3d3d" stroke-width="2"/>
+          <circle cx="80" cy="56" r="10" fill="#ffffff" stroke="#3d3d3d" stroke-width="2"/>
+          <path d="M 31,51 C 34,46 46,46 49,51 M 71,51 C 74,46 86,46 89,51" fill="none" stroke="#3d3d3d" stroke-width="2"/>
+          <circle cx="40" cy="54" r="5.5" fill="#3d3d3d"/>
+          <circle cx="80" cy="54" r="5.5" fill="#3d3d3d"/>
+          <circle cx="42.5" cy="51.5" r="2.2" fill="#ffffff"/>
+          <circle cx="82.5" cy="51.5" r="2.2" fill="#ffffff"/>
+          <path d="M34 56 Q40 52 46 56" fill="none" stroke="#3d3d3d" stroke-width="2" stroke-linecap="round"/>
+          <path d="M74 56 Q80 52 86 56" fill="none" stroke="#3d3d3d" stroke-width="2" stroke-linecap="round"/>
+          <g v-if="status === 'sad'">
+            <circle cx="34" cy="64" r="3" fill="#60a5fa"/>
+            <circle cx="86" cy="64" r="3" fill="#60a5fa"/>
+          </g>
+        </g>
+        <!-- 狩猎：锐利斜眼 -->
+        <g v-else-if="status === 'hunting'">
+          <path d="M34 52 L42 60" stroke="#3d3d3d" stroke-width="3" stroke-linecap="round"/>
+          <path d="M86 52 L78 60" stroke="#3d3d3d" stroke-width="3" stroke-linecap="round"/>
+        </g>
+        <!-- 死亡：X 眼 -->
+        <g v-else-if="status === 'dead'">
+          <path d="M34 50 L42 58 M42 50 L34 58" stroke="#3d3d3d" stroke-width="3" stroke-linecap="round"/>
+          <path d="M78 50 L86 58 M86 50 L78 58" stroke="#3d3d3d" stroke-width="3" stroke-linecap="round"/>
+        </g>
+        <!-- idle / 默认：正常睁眼 -->
+        <g v-else>
+          <circle cx="40" cy="56" r="10" fill="#ffffff" stroke="#3d3d3d" stroke-width="2"/>
+          <circle cx="80" cy="56" r="10" fill="#ffffff" stroke="#3d3d3d" stroke-width="2"/>
+          <path d="M 31,51 C 34,46 46,46 49,51 M 71,51 C 74,46 86,46 89,51" fill="none" stroke="#3d3d3d" stroke-width="2"/>
+          <circle cx="40" cy="54" r="5.5" fill="#3d3d3d"/>
+          <circle cx="80" cy="54" r="5.5" fill="#3d3d3d"/>
+          <circle cx="42.5" cy="51.5" r="2.2" fill="#ffffff"/>
+          <circle cx="82.5" cy="51.5" r="2.2" fill="#ffffff"/>
+        </g>
+
+        <!-- ==================== 嘴巴表情 ==================== -->
+        <!-- 开心 / 玩耍：大笑（无尖牙） -->
+        <g v-if="['happy', 'playing'].includes(status)">
+          <path d="M 51,79 C 55,83 65,83 69,79" fill="none" stroke="#3d3d3d" stroke-width="2" stroke-linecap="round"/>
+        </g>
+        <!-- 难过 / 疲惫：委屈嘴 -->
+        <g v-else-if="['sad', 'tired'].includes(status)">
+          <path d="M 51,81 C 55,77 65,77 69,81" fill="none" stroke="#3d3d3d" stroke-width="2" stroke-linecap="round"/>
+        </g>
+        <!-- 睡觉：小圆嘴 -->
+        <g v-else-if="status === 'sleeping'">
+          <circle cx="60" cy="80" r="2.5" fill="#3d3d3d"/>
+        </g>
+        <!-- 狩猎 / 死亡：严肃直线 -->
+        <g v-else-if="['hunting', 'dead'].includes(status)">
+          <path d="M 54,80 L 66,80" fill="none" stroke="#3d3d3d" stroke-width="2" stroke-linecap="round"/>
+        </g>
+        <!-- 进食：咀嚼的椭圆嘴 -->
+        <g v-else-if="status === 'eating'">
+          <ellipse cx="60" cy="80" rx="5" ry="4" fill="#3d3d3d"/>
+        </g>
+        <!-- idle：微笑 + 小尖牙 -->
+        <g v-else>
+          <path d="M 51,79 C 55,83 65,83 69,79" fill="none" stroke="#3d3d3d" stroke-width="2"/>
+          <path d="M 52,79.5 L 56.5,80.5 L 53.5,85 Z" fill="#ffffff" stroke="#3d3d3d" stroke-width="1.5"/>
+          <path d="M 68,79.5 L 63.5,80.5 L 66.5,85 Z" fill="#ffffff" stroke="#3d3d3d" stroke-width="1.5"/>
+        </g>
+      </g>
+
+      <!-- ==================== 兜底：未知类型按猫渲染 ==================== -->
+      <g v-else>
+        <path d="M 84,100 C 94,99 99,93 96,86" fill="none" stroke="#3d3d3d" stroke-width="3"/>
+        <path d="M 36,100 C 35,87 46,80 60,80 C 74,80 85,87 84,100 C 84,110 74,114 60,114 C 46,114 36,110 36,100 Z"
+              fill="#c8f0d8" stroke="#3d3d3d" stroke-width="3"/>
+        <circle cx="41" cy="93" r="9" fill="#e8d8f0" stroke="#3d3d3d" stroke-width="2.5"/>
+        <path d="M 39,33 L 28,14 L 49,29 Z" fill="#c8f0d8" stroke="#3d3d3d" stroke-width="3"/>
+        <path d="M 81,33 L 92,14 L 71,29 Z" fill="#c8f0d8" stroke="#3d3d3d" stroke-width="3"/>
+        <path d="M 60,20 C 79,19 96,36 97,57 C 98,78 82,95 60,96 C 39,97 23,80 22,58 C 21,37 41,21 60,20 Z"
+              fill="#c8f0d8" stroke="#3d3d3d" stroke-width="3"/>
+        <circle cx="44" cy="56" r="9" fill="#ffffff" stroke="#3d3d3d" stroke-width="2"/>
+        <circle cx="76" cy="56" r="9" fill="#ffffff" stroke="#3d3d3d" stroke-width="2"/>
+        <circle cx="44" cy="54.5" r="5" fill="#3d3d3d"/>
+        <circle cx="76" cy="54.5" r="5" fill="#3d3d3d"/>
       </g>
     </svg>
   </div>
@@ -260,114 +512,6 @@ export default {
   width: 100%;
   height: 100%;
   overflow: visible;
-}
-
-/* 描边统一用深色 */
-.face-stroke,
-.face-stroke-thick,
-.face-stroke-dot {
-  fill: none;
-  stroke: var(--mp-ink, #4a4a4a);
-  stroke-linecap: round;
-}
-
-.face-stroke {
-  stroke-width: 3;
-}
-
-.face-stroke-thick {
-  stroke-width: 3.5;
-}
-
-.face-stroke-dot {
-  stroke-width: 3;
-}
-
-.face-fill {
-  fill: var(--mp-ink, #4a4a4a);
-}
-
-.tear {
-  fill: var(--mp-blue, #60a5fa);
-}
-
-.blush {
-  fill: var(--mp-pink, #ff9ecd);
-  opacity: 0.6;
-}
-
-.beak {
-  fill: #ffb347;
-  stroke: var(--mp-ink, #4a4a4a);
-  stroke-width: 2;
-  stroke-linejoin: round;
-}
-
-/* 身体填充 - 使用全局设计 Token */
-.body-cat,
-.feature-cat {
-  fill: var(--mp-pet-cat, #c8f0d8);
-  stroke: var(--mp-ink, #4a4a4a);
-  stroke-width: 3;
-  stroke-linejoin: round;
-}
-
-.body-bird,
-.feature-bird {
-  fill: var(--mp-pet-bird, #a8e6f0);
-  stroke: var(--mp-ink, #4a4a4a);
-  stroke-width: 3;
-  stroke-linecap: round;
-}
-
-.feature-bird-wing {
-  fill: #b8e8f0;
-  stroke: var(--mp-ink, #4a4a4a);
-  stroke-width: 3;
-  stroke-linejoin: round;
-}
-
-.body-fox,
-.feature-fox {
-  fill: var(--mp-pet-fox, #ffd4a8);
-  stroke: var(--mp-ink, #4a4a4a);
-  stroke-width: 3;
-  stroke-linejoin: round;
-}
-
-.feature-fox-inner {
-  fill: #ffe4d6;
-  stroke: var(--mp-ink, #4a4a4a);
-  stroke-width: 2;
-}
-
-.feature-fox-tail {
-  fill: #ff6b4a;
-  stroke: var(--mp-ink, #4a4a4a);
-  stroke-width: 2.5;
-  stroke-linejoin: round;
-}
-
-.body-dragon,
-.feature-dragon-horn {
-  fill: var(--mp-pet-dragon, #e8d8f0);
-  stroke: var(--mp-ink, #4a4a4a);
-  stroke-width: 3;
-  stroke-linejoin: round;
-}
-
-.feature-dragon-wing {
-  fill: #c8a8e0;
-  stroke: var(--mp-ink, #4a4a4a);
-  stroke-width: 3;
-  stroke-linejoin: round;
-}
-
-.feature-dragon-crystal {
-  fill: #a855f7;
-  stroke: var(--mp-ink, #4a4a4a);
-  stroke-width: 2;
-  stroke-linejoin: round;
 }
 
 /* 状态动画 */

@@ -518,6 +518,11 @@ export const useGameStore = defineStore('game', {
      *   - 'hunt': 去游猎区战斗
      */
     sendPetOutdoor(destination) {
+      // 死亡宠物不能外出
+      if (this.pet.isDead) {
+        return false
+      }
+
       // ====== 步骤 1: 设置状态 ======
       if (destination === 'play') {
         this.pet.status = 'playing'
@@ -529,6 +534,7 @@ export const useGameStore = defineStore('game', {
       this.pet.isAtHome = false
 
       console.log(`宠物外出${destination === 'play' ? '玩耍' : '战斗'}了`)
+      return true
     },
 
     /**
@@ -540,7 +546,10 @@ export const useGameStore = defineStore('game', {
       this.pet.isAtHome = true
 
       // ====== 步骤 2: 恢复状态 ======
-      this.pet.status = 'idle'
+      // 如果宠物已死亡，保持死亡状态，不要重置为 idle
+      if (!this.pet.isDead) {
+        this.pet.status = 'idle'
+      }
 
       console.log('宠物回家了')
     },
@@ -581,6 +590,9 @@ export const useGameStore = defineStore('game', {
      * 应该在游戏的时间循环中定期调用
      */
     decreaseStats() {
+      // 死亡宠物不再随时间改变状态
+      if (this.pet.isDead) return
+
       // 饱食度慢慢下降（在家降得慢，户外降得快）
       const hungerDecay = this.pet.isAtHome ? DECAY.HUNGER_AT_HOME : DECAY.HUNGER_OUTDOOR
       this.pet.hunger = Math.max(0, this.pet.hunger - hungerDecay)

@@ -660,6 +660,56 @@ export const useSaveStore = defineStore('save', {
     },
 
     /**
+     * restartGame: 重新开始游戏
+     * 清空存档、重置所有 store、重新初始化初始宠物
+     */
+    restartGame() {
+      // 停止自动保存，避免在重置过程中触发保存
+      this.stopAutoSave()
+
+      // 清空本地存档
+      this.clearAllSaves()
+
+      // 获取需要重置的 store
+      const gameStore = useGameStore()
+      const backpackStore = useBackpackStore()
+      const outdoorStore = useOutdoorStore()
+      const synthesisStore = useSynthesisStore()
+      const petCollectionStore = usePetCollectionStore()
+      const notificationStore = useNotificationStore()
+
+      // 重置各 store 到初始状态
+      gameStore.$reset()
+      backpackStore.$reset()
+      outdoorStore.clearAll()
+      synthesisStore.clearAll()
+      notificationStore.clearAll()
+
+      // 清空宠物收集并重新创建初始宠物
+      petCollectionStore.clearAll()
+      petCollectionStore.initWithStarterPet()
+
+      // 同步初始宠物数据到 game store
+      const starterPet = petCollectionStore.activePet
+      if (starterPet) {
+        gameStore.pet.name = starterPet.name
+        gameStore.pet.hunger = starterPet.hunger
+        gameStore.pet.mood = starterPet.mood
+        gameStore.pet.health = starterPet.health
+        gameStore.pet.level = starterPet.level
+        gameStore.pet.experience = starterPet.experience
+        gameStore.pet.status = starterPet.status
+        gameStore.pet.isAtHome = starterPet.isAtHome
+        gameStore.pet.isDead = starterPet.isDead
+      }
+
+      // 重新启动自动保存
+      this.initAutoSave()
+
+      console.log('🔄 游戏已重新开始')
+    },
+
+    /**
      * clearAllSaves: 清理所有存档
      * 谨慎使用！
      */

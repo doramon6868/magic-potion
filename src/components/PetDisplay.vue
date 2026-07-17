@@ -229,7 +229,8 @@ export default {
         'hunting': '战斗中',
         'tired': '疲惫中',
         'sad': '难过中',
-        'eating': '进食中'
+        'eating': '进食中',
+        'dead': '已阵亡'
       }
       return statusMap[this.gameStore.pet.status] || '休息中'
     }
@@ -567,6 +568,11 @@ export default {
 
 .pet-status.sad .status-dot {
   background: var(--mp-purple);
+}
+
+.pet-status.dead .status-dot {
+  background: var(--mp-red);
+  animation: none;
 }
 
 @keyframes pulse {

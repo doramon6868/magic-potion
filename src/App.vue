@@ -77,6 +77,9 @@
     <!-- ==================== 底部通知栏 ==================== -->
     <NotificationBar />
 
+    <!-- ==================== 游戏结束弹窗 ==================== -->
+    <GameOverModal v-model:show="showGameOver" />
+
   </div>
 </template>
 
@@ -99,6 +102,7 @@ import SaveManager from './components/SaveManager.vue'
 import SynthesisUI from './components/synthesis/SynthesisUI.vue'
 import PetCollection from './components/synthesis/PetCollection.vue'
 import MagicBackground from './components/MagicBackground.vue'
+import GameOverModal from './components/GameOverModal.vue'
 
 // ==================== 导入 Store ====================
 import { useGameStore } from './stores/game.js'
@@ -127,7 +131,8 @@ export default {
     SaveManager,
     SynthesisUI,
     PetCollection,
-    MagicBackground
+    MagicBackground,
+    GameOverModal
   },
 
   /**
@@ -153,6 +158,10 @@ export default {
        * showPetCollection: 控制宠物图鉴的显示
        */
       showPetCollection: false,
+      /**
+       * showGameOver: 控制游戏结束弹窗的显示
+       */
+      showGameOver: false,
       /**
        * moodTimer: 心情衰减定时器ID
        * 用于每分钟减少宠物心情
@@ -186,6 +195,19 @@ export default {
 
     // 监听页面关闭事件，在离开前保存
     window.addEventListener('beforeunload', this.handleBeforeUnload)
+
+    // 监听宠物死亡状态，死亡时弹出游戏结束面板
+    const gameStore = useGameStore()
+    this.$watch(() => gameStore.pet.isDead, (isDead) => {
+      if (isDead) {
+        this.showGameOver = true
+      }
+    })
+
+    // 如果加载的存档中宠物已经死亡，立即显示游戏结束面板
+    if (gameStore.pet.isDead) {
+      this.showGameOver = true
+    }
   },
 
   /**

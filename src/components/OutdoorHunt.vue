@@ -32,15 +32,13 @@
   >
     <!-- ==================== 危险装饰 ==================== -->
     <div class="hunt-decoration">
-      <FireDecoration class="fire fire-1" />
-      <FireDecoration class="fire fire-2" />
       <BatDecoration class="bat bat-1" />
       <BatDecoration class="bat bat-2" />
     </div>
 
     <!-- ==================== 区域标题 ==================== -->
     <div class="zone-header">
-      <FireDecoration class="zone-icon" />
+      <HuntIcon class="zone-icon" />
       <span class="zone-name">{{ $t('areas.hunt.name') }}</span>
       <span class="zone-safety danger">{{ $t('areas.hunt.tag') }}</span>
     </div>
@@ -87,9 +85,9 @@ import { mapStores } from 'pinia'
 import { useGameStore } from '../stores/game.js'
 import { useOutdoorStore } from '../stores/outdoor.js'
 import Pet from './Pet.vue'
-import FireDecoration from './icons/decorations/FireDecoration.vue'
 import BatDecoration from './icons/decorations/BatDecoration.vue'
 import CoinBagIcon from './icons/ui/CoinBagIcon.vue'
+import HuntIcon from './icons/ui/HuntIcon.vue'
 
 export default {
   // 组件名称
@@ -98,9 +96,9 @@ export default {
   // 注册子组件
   components: {
     Pet,
-    FireDecoration,
     BatDecoration,
-    CoinBagIcon
+    CoinBagIcon,
+    HuntIcon
   },
 
   // 组件内部状态
@@ -188,10 +186,12 @@ export default {
       }
 
       // 调用 store 方法让宠物开始战斗
-      this.outdoorStore.sendToHunt(data.pet)
+      const success = this.outdoorStore.sendToHunt(data.pet)
 
-      // 更新游戏主状态
-      this.gameStore.sendPetOutdoor('hunt')
+      // 只有成功出发战斗，才更新游戏主状态
+      if (success) {
+        this.gameStore.sendPetOutdoor('hunt')
+      }
     },
 
     /**
@@ -264,22 +264,6 @@ export default {
   pointer-events: none;
   overflow: hidden;
   z-index: 0;
-}
-
-/* 火焰装饰 */
-.fire {
-  position: absolute;
-  bottom: 10px;
-  width: 30px;
-  animation: flicker 0.5s ease-in-out infinite;
-}
-
-.fire-1 { left: 15px; }
-.fire-2 { right: 20px; animation-delay: 0.2s; }
-
-@keyframes flicker {
-  0%, 100% { transform: scale(1) rotate(-2deg); opacity: 0.9; }
-  50% { transform: scale(1.1) rotate(2deg); opacity: 1; }
 }
 
 /* 蝙蝠装饰 */

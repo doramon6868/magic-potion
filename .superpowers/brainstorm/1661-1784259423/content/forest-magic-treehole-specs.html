@@ -1,0 +1,131 @@
+<h2>魔法树洞 · 详细设计规格</h2>
+<p class="subtitle">基于你的反馈：SVG 树冠外包、emoji 动态小生物、冒泡收益</p>
+
+<div class="section">
+  <div class="label">一、SVG 树冠轮廓设计需求</div>
+  <p>这个 SVG 将作为 <code>OutdoorPlay.vue</code> 容器的顶部装饰层（也可作为 clip-path 参考），下面是给外部工具/设计师的完整需求：</p>
+
+  <ul>
+    <li><strong>画布尺寸：</strong> 宽度 260px（与右侧面板等宽），高度 40–50px，视口 <code>0 0 260 48</code>。</li>
+    <li><strong>风格：</strong> 手绘卡通，粗描边（2–3px），与现有 TreeDecoration 一致。线条可以略带抖动，不要完美的贝塞尔曲线。</li>
+    <li><strong>结构：</strong>
+      <ul>
+        <li>底部是一条平直的“枝干/林冠底线”，作为与下方内容的分界线。</li>
+        <li>上方有 3 个圆润的“树冠团”，像云朵一样连在一起：左侧一团较小，中间一团最高最大，右侧一团中等。</li>
+        <li>每个树冠团内部用 2–3 条弧线暗示叶片层次，不要画单一片叶子。</li>
+      </ul>
+    </li>
+    <li><strong>配色：</strong>
+      <ul>
+        <li>填充：比主背景深半档的绿色，例如 <code>#4a8b6a</code>，带一点半透明（80–90% 不透明），让后面能透出淡淡的光晕。</li>
+        <li>描边：与游戏主描边色一致 <code>#612315</code>（或 <code>--mp-ink</code>），2.5px。</li>
+        <li>点缀：在树冠右侧或中间缝隙加 1–2 个金色小圆点（魔法果实），直径 4–5px，描边同色系。</li>
+      </ul>
+    </li>
+    <li><strong>可切分：</strong> 请导出为扁平 SVG（单一路径或 2–3 个路径），不要包含复杂渐变，方便我们后续用 CSS 变量调整颜色。</li>
+  </ul>
+
+  <div class="mockup" style="max-width: 320px;">
+    <div class="mockup-header">树冠轮廓示意（简化版）</div>
+    <div class="mockup-body" style="background: #88d8b0; padding: 0;">
+      <svg viewBox="0 0 260 48" width="100%" height="48" style="display:block;">
+        <path d="M0,48 L0,38 C15,38 25,20 45,22 C60,5 90,5 110,20 C130,0 170,0 190,22 C210,10 240,15 260,32 L260,48 Z" fill="#4a8b6a" stroke="#612315" stroke-width="2.5" stroke-linejoin="round"/>
+        <path d="M50,25 C70,18 90,18 105,28" fill="none" stroke="#612315" stroke-width="1.5" opacity="0.4"/>
+        <path d="M130,15 C150,10 175,12 185,25" fill="none" stroke="#612315" stroke-width="1.5" opacity="0.4"/>
+        <circle cx="210" cy="22" r="4" fill="#ffd93d" stroke="#612315" stroke-width="1.5"/>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="label">二、emoji 动态小生物规格</div>
+  <p>所有动态生物都用 emoji + CSS 动画实现，不引入额外图片资源。</p>
+
+  <table style="width:100%; border-collapse: collapse; margin-top: 12px;">
+    <thead>
+      <tr style="text-align:left; border-bottom: 1px solid #ddd;">
+        <th>生物</th>
+        <th>Emoji</th>
+        <th>数量</th>
+        <th>动画</th>
+        <th>出现时机</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>萤火虫 / 魔法孢子</td>
+        <td>✨ 或 🌟</td>
+        <td>3–4 个</td>
+        <td>缓慢上下漂浮 + 明暗闪烁，周期 4–6s，不同相位</td>
+        <td>始终显示（营造森林氛围）</td>
+      </tr>
+      <tr>
+        <td>蝴蝶</td>
+        <td>🦋</td>
+        <td>1–2 只</td>
+        <td>沿柔和曲线飞行，翅膀轻微缩放（scaleX 交替），周期 8–10s</td>
+        <td>宠物在场时显示</td>
+      </tr>
+      <tr>
+        <td>小瓢虫 / 甲虫</td>
+        <td>🐞</td>
+        <td>1 个</td>
+        <td>沿底部草丛缓慢爬行，偶尔停顿，周期 12s</td>
+        <td>始终显示</td>
+      </tr>
+      <tr>
+        <td>飘落花瓣 / 叶子</td>
+        <td>🌸 或 🍃</td>
+        <td>2–3 片</td>
+        <td>从顶部缓慢旋转飘落到底部，周期 6–8s，循环</td>
+        <td>始终显示</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p style="margin-top: 12px; color: #666; font-size: 14px;"><strong>注意：</strong> 所有生物使用绝对定位，<code>pointer-events: none</code>，不影响拖拽交互。动画默认播放，尊重 <code>prefers-reduced-motion</code>。</p>
+</div>
+
+<div class="section">
+  <div class="label">三、冒泡收益提示设计</div>
+  <p>当宠物在森林区玩耍时，每隔一段时间头顶冒出一个心情/经验气泡，像 RPG 里的浮动战斗文字。</p>
+
+  <ul>
+    <li><strong>触发时机：</strong> 宠物在场时，每 5–8 秒随机冒出一个气泡。</li>
+    <li><strong>内容：</strong> 例如 <code>+❤️ 心情</code>、<code>+✨ 快乐</code>、<code>+🌱 成长</code>，使用 i18n 文本。</li>
+    <li><strong>视觉：</strong> 圆角小标签，白底半透明，带金色/粉色小图标，描边与游戏风格一致。</li>
+    <li><strong>动画：</strong> 从宠物头顶向上漂浮 30–40px，同时 opacity 从 1 → 0，持续 1.5s，然后移除。</li>
+    <li><strong>位置：</strong> 气泡从宠物中心略上方发出，水平偏移随机 ±10px，避免多个气泡重叠。</li>
+    <li><strong>收益预览（静态）：</strong> 空状态时不再显示底部收益卡片；当宠物在场时，用一个固定的小徽章显示“+心情/分钟”作为提示。</li>
+  </ul>
+
+  <div class="mockup" style="max-width: 240px;">
+    <div class="mockup-header">冒泡示意</div>
+    <div class="mockup-body" style="background: #88d8b0; padding: 40px 20px 60px; display: flex; flex-direction: column; align-items: center; position: relative;">
+      <div style="background: rgba(255,255,255,0.85); border: 2px solid #612315; border-radius: 12px; padding: 4px 10px; font-size: 12px; color: #612315; font-weight: bold; animation: bob 1.5s ease-out infinite;">
+        +❤️ 心情
+      </div>
+      <div style="width: 48px; height: 48px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #c8f0d8, #88d8b0); border: 3px solid #612315; margin-top: 16px; display: flex; align-items: center; justify-content: center; font-size: 24px;">🐱</div>
+      <style>
+        @keyframes bob {
+          0% { transform: translateY(0); opacity: 1; }
+          100% { transform: translateY(-30px); opacity: 0; }
+        }
+      </style>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="label">四、空状态设计</div>
+  <ul>
+    <li>背景保留森林场景（树冠、地面、萤火虫），但宠物区域显示一片飘落的叶子 🍃 作为占位。</li>
+    <li>提示文字改为短句：「把宠物拖到这里玩耍」或 i18n 等价文本。</li>
+    <li>文字下方加一个虚线圆圈，暗示“这里将会有一个宠物”。</li>
+  </ul>
+</div>
+
+<div class="section">
+  <p><strong>下一步：</strong> 如果你确认以上规格，我就把完整设计写入 <code>docs/superpowers/specs/</code> 并提交，然后进入实施计划。</p>
+</div>

@@ -1,0 +1,97 @@
+<h2>魔法树洞 · 森林玩耍区视觉方案</h2>
+<p class="subtitle">方案 B：把圆角卡片改成有机树冠轮廓，同时与下方游猎区形成鲜明对比</p>
+
+<div class="section">
+  <div class="label">核心概念</div>
+  <p>森林区不再是一块信息面板，而是水晶球世界向右侧自然延伸出的一个“树洞入口”。顶部是树冠起伏的轮廓，底部有草地覆盖，宠物站在林间空地上。整体情绪是柔和、安全、充满生机的。</p>
+</div>
+
+<div class="section">
+  <div class="label">与游猎区的对比</div>
+  <table style="width:100%; border-collapse: collapse; margin-top: 12px;">
+    <thead>
+      <tr style="text-align:left; border-bottom: 1px solid #ddd;">
+        <th>维度</th>
+        <th>森林区（本次改造）</th>
+        <th>游猎区（后续改造方向）</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>轮廓</td><td>有机树冠 + 草地起伏</td><td>尖锐岩石 / 荆棘直线</td></tr>
+      <tr><td>主色</td><td>冷绿 + 金粉点缀</td><td>暗红 + 炭黑</td></tr>
+      <tr><td>动效</td><td>摇摆、飘落、萤火虫聚集</td><td>闪烁、震动、火光脉冲</td></tr>
+      <tr><td>情绪</td><td>安全、生长、治愈</td><td>危险、紧张、未知</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="section">
+  <div class="label">关键视觉元素</div>
+  <ul>
+    <li><strong>背景层次：</strong>远景蓝绿雾气 → 中景主林绿 → 近景深绿地面，形成纵深。</li>
+    <li><strong>顶部树冠：</strong>用 SVG 剪影做出 2–3 个圆润起伏，颜色比主背景深半档，让容器看起来像被树冠框住。</li>
+    <li><strong>底部草地：</strong>一条略深的地面色带 + 几丛小草，左侧的树可以下探 5–10px 营造“探出边界”的错觉。</li>
+    <li><strong>林间漏光：</strong>从顶部中心向下的淡金色径向光晕，宠物区域最亮，自然形成视觉焦点。</li>
+    <li><strong>魔法粒子：</strong>3–5 个缓慢漂浮的萤火虫/孢子，仅在宠物在场时显示，避免空状态过吵。</li>
+    <li><strong>信息层级：</strong>标题左对齐，安全标签右对齐；收益以宠物脚下浮动提示泡或头顶粒子形式出现，不再占底部卡片。</li>
+  </ul>
+</div>
+
+<div class="section">
+  <div class="label">交互反馈</div>
+  <ul>
+    <li><strong>拖拽高亮：</strong>边框和整体脉冲改成“草丛向四周轻微摆动 + 萤火虫向中心聚集 + 光晕变亮”。</li>
+    <li><strong>宠物放入：</strong>触发一阵花瓣/叶子被惊起的粒子效果，强调“安全、活泼、自然”。</li>
+    <li><strong>空状态：</strong>显示一片飘落叶子 + “把宠物拖到这里玩耍”的短句，而不是孤零零的灰色文字。</li>
+  </ul>
+</div>
+
+<div class="section">
+  <div class="label">技术约束</div>
+  <ul>
+    <li>保持组件在右侧 260px 面板内，高度维持约 200px，不挤压游猎区空间。</li>
+    <li>树冠轮廓用 <code>border-radius</code> 或 SVG clip-path 实现，确保响应式下不会变形。</li>
+    <li>所有新粒子用纯 CSS 动画，不引入新依赖。</li>
+  </ul>
+</div>
+
+<div class="mockup">
+  <div class="mockup-header">示意：改造后的森林区外观</div>
+  <div class="mockup-body" style="background: #F5F0FF; padding: 20px; display: flex; justify-content: center;">
+    <div style="width: 220px; height: 200px; position: relative; border-radius: 24px 24px 20px 20px / 60px 60px 20px 20px; overflow: hidden; background: linear-gradient(180deg, #a7e6cf 0%, #88d8b0 45%, #6b9b7a 100%); box-shadow: 4px 4px 0 rgba(97,35,21,0.15); border: 3px solid #612315;">
+      <!-- 树冠剪影 -->
+      <div style="position: absolute; top: -18px; left: 0; width: 100%; height: 50px; background: #4a8b6a; border-radius: 50% 50% 0 0 / 100% 100% 0 0; opacity: 0.9;"></div>
+      <div style="position: absolute; top: -10px; left: -20px; width: 110px; height: 40px; background: #5aa07a; border-radius: 50% 50% 0 0 / 100% 100% 0 0; opacity: 0.85;"></div>
+      <div style="position: absolute; top: -12px; right: -25px; width: 120px; height: 45px; background: #5aa07a; border-radius: 50% 50% 0 0 / 100% 100% 0 0; opacity: 0.85;"></div>
+      <!-- 漏光 -->
+      <div style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 120px; height: 140px; background: radial-gradient(ellipse at center top, rgba(255,255,255,0.35) 0%, transparent 70%); pointer-events: none;"></div>
+      <!-- 标题 -->
+      <div style="position: relative; z-index: 2; display: flex; align-items: center; justify-content: space-between; padding: 10px 12px 0;">
+        <span style="font-size: 14px; font-weight: bold; color: #612315;">🌲 森林</span>
+        <span style="font-size: 10px; padding: 2px 6px; background: rgba(125,211,192,0.5); border: 1px solid #7DD3C0; border-radius: 10px; color: #612315;">安全</span>
+      </div>
+      <!-- 描述 -->
+      <div style="position: relative; z-index: 2; text-align: center; font-size: 10px; color: rgba(97,35,21,0.65); margin-top: 6px;">低风险玩耍，提升心情</div>
+      <!-- 宠物占位 -->
+      <div style="position: absolute; bottom: 38px; left: 50%; transform: translateX(-50%); width: 56px; height: 56px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #c8f0d8, #88d8b0); border: 3px solid #612315; display: flex; align-items: center; justify-content: center; font-size: 24px;">🐱</div>
+      <!-- 地面 -->
+      <div style="position: absolute; bottom: 0; left: 0; width: 100%; height: 36px; background: linear-gradient(180deg, rgba(75,130,100,0) 0%, rgba(75,130,100,0.4) 100%); pointer-events: none;"></div>
+      <!-- 前景树 -->
+      <div style="position: absolute; bottom: -8px; left: 8px; font-size: 42px; transform: rotate(-5deg);">🌳</div>
+      <div style="position: absolute; bottom: -6px; right: 6px; font-size: 34px; transform: rotate(3deg); opacity: 0.8;">🌲</div>
+      <!-- 萤火虫 -->
+      <div style="position: absolute; top: 60px; left: 40px; width: 4px; height: 4px; background: #ffd93d; border-radius: 50%; box-shadow: 0 0 6px #ffd93d; animation: none;"></div>
+      <div style="position: absolute; top: 90px; right: 50px; width: 3px; height: 3px; background: #ffd93d; border-radius: 50%; box-shadow: 0 0 5px #ffd93d;"></div>
+      <div style="position: absolute; top: 120px; left: 70px; width: 3px; height: 3px; background: #ffd93d; border-radius: 50%; box-shadow: 0 0 5px #ffd93d;"></div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <p><strong>需要你确认的点：</strong></p>
+  <ol>
+    <li>这个有机树冠轮廓是否符合你对“魔法森林”的预期？</li>
+    <li>萤火虫/孢子粒子是否想要？还是只保留静态装饰？</li>
+    <li>收益提示是做成宠物脚下浮动泡，还是保留底部小卡片但更精致？</li>
+  </ol>
+</div>

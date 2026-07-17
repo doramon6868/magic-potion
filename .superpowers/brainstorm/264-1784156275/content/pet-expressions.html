@@ -1,0 +1,89 @@
+<h2>状态表情与动画设计</h2>
+<p class="subtitle">所有宠物共享同一套表情规则，只在眼睛和嘴巴上做变化，保持可爱一致。</p>
+
+<div class="section">
+  <h3>表情状态表</h3>
+  <table style="width:100%;border-collapse:collapse;margin-top:12px">
+    <thead>
+      <tr style="border-bottom:2px solid var(--mp-purple)">
+        <th style="text-align:left;padding:8px">状态</th>
+        <th style="text-align:left;padding:8px">眼睛</th>
+        <th style="text-align:left;padding:8px">嘴巴</th>
+        <th style="text-align:left;padding:8px">腮红</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom:1px solid rgba(0,0,0,0.1)">
+        <td style="padding:8px">😊 happy</td>
+        <td style="padding:8px">弯月笑眼 + 高光</td>
+        <td style="padding:8px">大大弧线笑嘴</td>
+        <td style="padding:8px">✅ 有</td>
+      </tr>
+      <tr style="border-bottom:1px solid rgba(0,0,0,0.1)">
+        <td style="padding:8px">😴 sleeping</td>
+        <td style="padding:8px">闭眼曲线</td>
+        <td style="padding:8px">小圆点 / 轻微笑</td>
+        <td style="padding:8px">❌ 无</td>
+      </tr>
+      <tr style="border-bottom:1px solid rgba(0,0,0,0.1)">
+        <td style="padding:8px">😢 sad</td>
+        <td style="padding:8px">下垂眼 + 泪珠</td>
+        <td style="padding:8px">向下弧线</td>
+        <td style="padding:8px">❌ 无</td>
+      </tr>
+      <tr style="border-bottom:1px solid rgba(0,0,0,0.1)">
+        <td style="padding:8px">😫 tired</td>
+        <td style="padding:8px">半睁眼皮</td>
+        <td style="padding:8px">平线 / 微皱</td>
+        <td style="padding:8px">❌ 无</td>
+      </tr>
+      <tr style="border-bottom:1px solid rgba(0,0,0,0.1)">
+        <td style="padding:8px">⚔️ hunting</td>
+        <td style="padding:8px">锐利斜眼</td>
+        <td style="padding:8px">紧闭小嘴</td>
+        <td style="padding:8px">❌ 无</td>
+      </tr>
+      <tr style="border-bottom:1px solid rgba(0,0,0,0.1)">
+        <td style="padding:8px">🎮 playing</td>
+        <td style="padding:8px">睁大圆圆眼</td>
+        <td style="padding:8px">开心笑嘴</td>
+        <td style="padding:8px">✅ 有</td>
+      </tr>
+      <tr style="border-bottom:1px solid rgba(0,0,0,0.1)">
+        <td style="padding:8px">🍔 eating</td>
+        <td style="padding:8px">享受眯眼</td>
+        <td style="padding:8px">咀嚼小圆嘴</td>
+        <td style="padding:8px">✅ 有</td>
+      </tr>
+      <tr style="border-bottom:1px solid rgba(0,0,0,0.1)">
+        <td style="padding:8px">😐 idle</td>
+        <td style="padding:8px">正常圆眼 + 高光</td>
+        <td style="padding:8px">小弧线 / 中性</td>
+        <td style="padding:8px">❌ 无</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="section">
+  <h3>动画映射</h3>
+  <ul>
+    <li><strong>idle</strong>：轻微呼吸缩放 + 耳朵/翅膀微动</li>
+    <li><strong>happy</strong>：上下弹跳 + 轻微放大</li>
+    <li><strong>sleeping</strong>：缓慢左右摇摆</li>
+    <li><strong>sad</strong>：小幅度左右颤抖</li>
+    <li><strong>tired</strong>：慢速深呼吸缩放</li>
+    <li><strong>hunting</strong>：快速左右抖动</li>
+    <li><strong>playing</strong>：左右快速摇摆</li>
+    <li><strong>eating</strong>：快速小弹跳（咀嚼感）</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h3>设计原则</h3>
+  <ul>
+    <li>表情只通过眼睛、嘴巴、腮红变化实现，不换宠物造型本身</li>
+    <li>动画加在整个 SVG 容器上，所有宠物共享同一组 keyframes</li>
+    <li>状态指示器（头顶 💤/⚔️ 等）保留，和现有逻辑一致</li>
+  </ul>
+</div>
