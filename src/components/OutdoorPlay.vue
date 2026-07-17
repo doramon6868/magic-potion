@@ -38,6 +38,17 @@
     <!-- 近景地面 -->
     <div class="ground-strip" />
 
+    <!-- ==================== 动态小生物 ==================== -->
+    <div class="creatures">
+      <span class="creature firefly firefly-1">✨</span>
+      <span class="creature firefly firefly-2">🌟</span>
+      <span class="creature firefly firefly-3">✨</span>
+      <span v-if="outdoorStore.playingPet" class="creature butterfly">🦋</span>
+      <span class="creature ladybug">🐞</span>
+      <span class="creature petal petal-1">🌸</span>
+      <span class="creature petal petal-2">🍃</span>
+    </div>
+
     <!-- ==================== 区域标题 ==================== -->
     <!-- 树冠顶部装饰 -->
     <CanopyTop class="forest-canopy" />
@@ -460,6 +471,104 @@ export default {
   color: var(--mp-ink);
 }
 
+/* ==================== 动态小生物 ==================== */
+
+/* 小生物容器 */
+.creatures {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
+/* 小生物基础样式 */
+.creature {
+  position: absolute;
+  font-size: 14px;
+  line-height: 1;
+  filter: drop-shadow(0 1px 1px rgba(0,0,0,0.1));
+}
+
+/* 萤火虫 */
+.firefly {
+  opacity: 0.8;
+  animation: firefly-float 5s ease-in-out infinite, firefly-glow 3s ease-in-out infinite;
+}
+
+.firefly-1 { top: 55px; left: 25px; animation-delay: 0s, 0s; }
+.firefly-2 { top: 85px; right: 40px; animation-delay: -2s, -1s; }
+.firefly-3 { top: 115px; left: 70px; animation-delay: -4s, -2s; }
+
+/* 蝴蝶：仅当宠物在场时出现 */
+.butterfly {
+  top: 60px;
+  left: 50%;
+  font-size: 18px;
+  animation: butterfly-flight 10s ease-in-out infinite;
+}
+
+/* 瓢虫 */
+.ladybug {
+  bottom: 8px;
+  left: 20%;
+  font-size: 12px;
+  animation: ladybug-crawl 12s linear infinite;
+}
+
+/* 飘落的花瓣 */
+.petal {
+  top: -20px;
+  font-size: 12px;
+  opacity: 0.7;
+  animation: petal-fall 7s linear infinite;
+}
+
+.petal-1 { left: 20%; animation-delay: 0s; }
+.petal-2 { left: 70%; animation-delay: -3.5s; }
+
+/* 萤火虫漂浮动画 */
+@keyframes firefly-float {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(6px, -10px); }
+}
+
+/* 萤火虫发光动画 */
+@keyframes firefly-glow {
+  0%, 100% { opacity: 0.5; filter: drop-shadow(0 0 2px #ffd93d); }
+  50% { opacity: 1; filter: drop-shadow(0 0 6px #ffd93d); }
+}
+
+/* 蝴蝶飞舞动画 */
+@keyframes butterfly-flight {
+  0% { transform: translate(-40px, 10px) scaleX(1); }
+  25% { transform: translate(10px, -15px) scaleX(-1); }
+  50% { transform: translate(50px, 5px) scaleX(1); }
+  75% { transform: translate(20px, 20px) scaleX(-1); }
+  100% { transform: translate(-40px, 10px) scaleX(1); }
+}
+
+/* 瓢虫爬行动画 */
+@keyframes ladybug-crawl {
+  0% { transform: translateX(0) rotate(0deg); }
+  20% { transform: translateX(30px) rotate(5deg); }
+  40% { transform: translateX(30px) rotate(0deg); }
+  60% { transform: translateX(60px) rotate(-3deg); }
+  80% { transform: translateX(60px) rotate(0deg); }
+  100% { transform: translateX(0) rotate(0deg); }
+}
+
+/* 花瓣飘落动画 */
+@keyframes petal-fall {
+  0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+  10% { opacity: 0.7; }
+  90% { opacity: 0.7; }
+  100% { transform: translateY(220px) rotate(360deg); opacity: 0; }
+}
+
 /* 减少动态效果偏好：禁用森林区所有动画和过渡 */
 @media (prefers-reduced-motion: reduce) {
   .outdoor-play,
@@ -467,6 +576,10 @@ export default {
   .tree {
     animation: none !important;
     transition: none !important;
+  }
+
+  .creature {
+    animation: none !important;
   }
 }
 </style>
