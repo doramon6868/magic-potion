@@ -33,18 +33,22 @@
     <div class="forest-decoration">
       <TreeDecoration class="tree tree-1" />
       <TreeDecoration class="tree tree-2" />
-      <StarDecoration class="sun" />
     </div>
+
+    <!-- 近景地面 -->
+    <div class="ground-strip" />
 
     <!-- ==================== 区域标题 ==================== -->
     <!-- 树冠顶部装饰 -->
     <CanopyTop class="forest-canopy" />
 
     <div class="zone-header">
-      <!-- 区域图标 -->
-      <TreeDecoration class="zone-icon" />
-      <!-- 区域名称 -->
-      <span class="zone-name">{{ $t('areas.forest.name') }}</span>
+      <div class="title-group">
+        <!-- 区域图标 -->
+        <TreeDecoration class="zone-icon" />
+        <!-- 区域名称 -->
+        <span class="zone-name">{{ $t('areas.forest.name') }}</span>
+      </div>
       <!-- 安全等级 -->
       <span class="zone-safety safe">{{ $t('areas.forest.tag') }}</span>
     </div>
@@ -235,32 +239,18 @@ export default {
 
 /* 区域容器 */
 .outdoor-play {
-  /* 相对定位 */
   position: relative;
-  /* 使用 flex 垂直排列 */
   display: flex;
   flex-direction: column;
-  /* 尺寸 */
   width: 100%;
   height: 100%;
-  /* 内边距 */
-  padding: 15px;
-  /* 圆角 */
+  padding: 0 15px 15px; /* top padding removed; canopy is absolute */
   border-radius: var(--mp-radius-lg);
-  /**
-   * 背景 - 手绘森林绿色渐变
-   */
-  background: linear-gradient(
-    180deg,
-    var(--mp-mint-light) 0%,
-    var(--mp-pet-cat) 50%,
-    var(--mp-mint) 100%
-  );
-  /* 边框 */
-  border: 4px solid var(--mp-mint);
-  /* 卡片阴影 */
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.35) 0%, transparent 55%),
+    linear-gradient(180deg, #a7e6cf 0%, #88d8b0 45%, #6b9b7a 100%);
+  border: 3px solid var(--mp-ink);
   box-shadow: var(--mp-shadow);
-  /* 过渡动画 */
   transition: all 0.3s ease;
   overflow: hidden;
 }
@@ -280,6 +270,18 @@ export default {
   50% { transform: scale(1.03); }
 }
 
+/* 近景地面 */
+.ground-strip {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 36px;
+  background: linear-gradient(180deg, rgba(75,130,100,0) 0%, rgba(75,130,100,0.5) 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
 /* ==================== 森林装饰 ==================== */
 
 /* 森林装饰容器 */
@@ -297,24 +299,18 @@ export default {
 /* 树木 */
 .tree {
   position: absolute;
-  bottom: 10px;
-  width: 50px;
+  bottom: -6px;
+  width: 56px;
   animation: tree-sway 3s ease-in-out infinite;
+  z-index: 2;
 }
 
-.tree-1 { left: 10px; }
+.tree-1 { left: 6px; }
 .tree-2 {
-  right: 10px;
+  right: 8px;
+  width: 44px;
+  opacity: 0.85;
   animation-delay: -1.5s;
-}
-
-/* 太阳/星星 */
-.sun {
-  position: absolute;
-  top: 15px;
-  right: 20px;
-  width: 40px;
-  animation: sun-pulse 3s ease-in-out infinite;
 }
 
 @keyframes tree-sway {
@@ -322,23 +318,21 @@ export default {
   50% { transform: rotate(3deg); }
 }
 
-@keyframes sun-pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.15); }
-}
-
 /* ==================== 区域标题 ==================== */
 
 .zone-header {
-  /* 相对定位，确保在装饰层之上 */
   position: relative;
-  z-index: 1;
-  /* 使用 flex */
+  z-index: 3;
   display: flex;
   align-items: center;
-  justify-content: center;
-  /* 下边距 */
-  margin-bottom: 10px;
+  justify-content: space-between;
+  margin-top: 8px;
+  margin-bottom: 6px;
+}
+
+.title-group {
+  display: flex;
+  align-items: center;
 }
 
 /* 区域图标 */
@@ -378,17 +372,12 @@ export default {
 /* ==================== 区域说明 ==================== */
 
 .zone-description {
-  /* 相对定位，确保在装饰层之上 */
   position: relative;
-  z-index: 1;
-  /* 文字居中 */
+  z-index: 3;
   text-align: center;
-  /* 文字大小 */
-  font-size: 12px;
-  /* 颜色 */
+  font-size: 11px;
   color: var(--mp-text-muted);
-  /* 下边距 */
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
 
 /* ==================== 宠物区域 ==================== */
