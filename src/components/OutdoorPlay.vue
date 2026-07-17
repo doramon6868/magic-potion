@@ -75,13 +75,26 @@
         当宠物在这里时显示
         outdoorStore.playingPet 存储在玩耍区的宠物
       -->
-      <Pet
-        v-if="outdoorStore.playingPet"
-        :pet="outdoorStore.playingPet"
-        draggable="true"
-        @dragstart="handlePetDragStart"
-        @dragend="handlePetDragEnd"
-      />
+      <template v-if="outdoorStore.playingPet">
+        <!-- 收益冒泡容器 -->
+        <div class="bubbles-container">
+          <div
+            v-for="bubble in bubbles"
+            :key="bubble.id"
+            class="reward-bubble"
+            :style="{ '--bubble-x': bubble.xOffset + 'px' }"
+          >
+            <span class="bubble-icon">{{ bubble.icon }}</span>
+            <span class="bubble-text">{{ bubble.text }}</span>
+          </div>
+        </div>
+        <Pet
+          :pet="outdoorStore.playingPet"
+          draggable="true"
+          @dragstart="handlePetDragStart"
+          @dragend="handlePetDragEnd"
+        />
+      </template>
 
       <!-- 没有宠物时的提示 -->
       <div v-else class="empty-hint">
@@ -133,7 +146,32 @@ export default {
        * dragEnterCounter: 拖拽进入计数器
        * 用于处理嵌套元素的 dragenter/dragleave 问题
        */
-      dragEnterCounter: 0
+      dragEnterCounter: 0,
+      /**
+       * bubbles: 当前显示的收益冒泡
+       * 每个冒泡包含 id、文字、图标和水平偏移
+       */
+      bubbles: [],
+      /**
+       * bubbleTimer: 冒泡定时器
+       * 用于每 6 秒生成一个新的收益冒泡
+       */
+      bubbleTimer: null
+    }
+  },
+
+  // 监听器
+  watch: {
+    /**
+     * 监听正在玩耍的宠物
+     * 宠物在场时开始冒泡，离开时清理冒泡
+     */
+    'outdoorStore.playingPet'(pet) {
+      if (pet) {
+        this.startRewardBubbles()
+      } else {
+        this.stopRewardBubbles()
+      }
     }
   },
 
@@ -158,6 +196,49 @@ export default {
 
   // 方法
   methods: {
+    /**
+     * startRewardBubbles: 开始生成收益冒泡
+     * 立即生成一个，然后每 6 秒生成一个
+     */
+    startRewardBubbles() {
+      if (this.bubbleTimer) return
+      this.spawnBubble()
+      this.bubbleTimer = setInterval(() => {
+        this.spawnBubble()
+      }, 6000)
+    },
+
+    /**
+     * stopRewardBubbles: 停止生成收益冒泡
+     * 清除定时器并清空当前冒泡
+     */
+    stopRewardBubbles() {
+      if (this.bubbleTimer) {
+        clearInterval(this.bubbleTimer)
+        this.bubbleTimer = null
+      }
+      this.bubbles = []
+    },
+
+    /**
+     * spawnBubble: 生成一个收益冒泡
+     * 随机选择心情、快乐或成长奖励，1.5 秒后自动移除
+     */
+    spawnBubble() {
+      const rewards = [
+        { text: this.$t('areas.forest.rewards.mood'), icon: '❤️' },
+        { text: this.$t('areas.forest.rewards.joy'), icon: '✨' },
+        { text: this.$t('areas.forest.rewards.growth'), icon: '🌱' }
+      ]
+      const reward = rewards[Math.floor(Math.random() * rewards.length)]
+      const id = Date.now() + Math.random()
+      const xOffset = (Math.random() - 0.5) * 20 // ±10px
+      this.bubbles.push({ id, ...reward, xOffset })
+      setTimeout(() => {
+        this.bubbles = this.bubbles.filter(b => b.id !== id)
+      }, 1500)
+    },
+
     /**
      * handleDragOver: 拖拽经过时
      */
@@ -239,6 +320,14 @@ export default {
     handlePetDragEnd(event) {
       console.log('宠物从森林拖拽结束')
     }
+  },
+
+  // 生命周期钩子
+  beforeUnmount() {
+    /**
+     * 组件卸载前停止冒泡，避免内存泄漏
+     */
+    this.stopRewardBubbles()
   }
 }
 </script>
@@ -422,6 +511,61 @@ export default {
   font-size: 14px;
 }
 
+/* ==================== 收益冒泡 ==================== */
+
+/* 冒泡容器：覆盖在宠物上方 */
+.bubbles-container {
+  /* 绝对定位，居中于宠物区域 */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 4;
+  pointer-events: none;
+  width: 100px;
+  height: 0;
+  display: flex;
+  justify-content: center;
+}
+
+/* 单个收益冒泡 */
+.reward-bubble {
+  /* 绝对定位，从容器底部向上飘 */
+  position: absolute;
+  bottom: 40px;
+  left: calc(50% + var(--bubble-x, 0px));
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px solid var(--mp-ink);
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: bold;
+  color: var(--mp-ink);
+  box-shadow: 0 2px 0 rgba(97, 35, 21, 0.1);
+  white-space: nowrap;
+  animation: bubble-rise 1.5s ease-out forwards;
+}
+
+/* 冒泡图标 */
+.bubble-icon {
+  font-size: 12px;
+}
+
+/* 冒泡文字 */
+.bubble-text {
+  font-size: 12px;
+}
+
+/* 冒泡上升动画 */
+@keyframes bubble-rise {
+  0% { transform: translate(-50%, 0) scale(0.8); opacity: 0; }
+  20% { transform: translate(-50%, -10px) scale(1); opacity: 1; }
+  100% { transform: translate(-50%, -45px) scale(1); opacity: 0; }
+}
+
 /* ==================== 树冠顶部装饰 ==================== */
 .forest-canopy {
   /* 绝对定位，覆盖在卡片顶部，不占用文档流高度 */
@@ -580,6 +724,11 @@ export default {
 
   .creature {
     animation: none !important;
+  }
+
+  .reward-bubble {
+    animation: none;
+    opacity: 0.9;
   }
 }
 </style>
