@@ -86,7 +86,12 @@
       "description": "Bring your pet here to play and increase mood",
       "hint": "Drag pet here",
       "reward": "Mood +10",
-      "exp_reward": "XP +10"
+      "exp_reward": "XP +10",
+      "rewards": {
+        "mood": "Mood",
+        "joy": "Joy",
+        "growth": "Growth"
+      }
     },
     "hunt": {
       "name": "Hunting Zone",

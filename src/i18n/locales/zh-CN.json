@@ -86,7 +86,12 @@
       "description": "带宠物来这里玩耍，增加心情值",
       "hint": "拖拽宠物到这里",
       "reward": "心情 +10",
-      "exp_reward": "经验 +10"
+      "exp_reward": "经验 +10",
+      "rewards": {
+        "mood": "心情",
+        "joy": "快乐",
+        "growth": "成长"
+      }
     },
     "hunt": {
       "name": "游猎区",
