@@ -459,4 +459,14 @@ export default {
   font-size: 14px;
   color: var(--mp-ink);
 }
+
+/* 减少动态效果偏好：禁用森林区所有动画和过渡 */
+@media (prefers-reduced-motion: reduce) {
+  .outdoor-play,
+  .outdoor-play.drop-target,
+  .tree {
+    animation: none !important;
+    transition: none !important;
+  }
+}
 </style>
