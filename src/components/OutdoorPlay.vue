@@ -37,6 +37,9 @@
     </div>
 
     <!-- ==================== 区域标题 ==================== -->
+    <!-- 树冠顶部装饰 -->
+    <CanopyTop class="forest-canopy" />
+
     <div class="zone-header">
       <!-- 区域图标 -->
       <TreeDecoration class="zone-icon" />
@@ -89,6 +92,7 @@ import { useOutdoorStore } from '../stores/outdoor.js'
 import Pet from './Pet.vue'
 import TreeDecoration from './icons/decorations/TreeDecoration.vue'
 import StarDecoration from './icons/decorations/StarDecoration.vue'
+import CanopyTop from './icons/decorations/CanopyTop.vue'
 
 export default {
   // 组件名称
@@ -98,7 +102,8 @@ export default {
   components: {
     Pet,
     TreeDecoration,
-    StarDecoration
+    StarDecoration,
+    CanopyTop
   },
 
   // 组件内部状态
@@ -415,6 +420,18 @@ export default {
 /* 提示文字 */
 .hint-text {
   font-size: 14px;
+}
+
+/* ==================== 树冠顶部装饰 ==================== */
+.forest-canopy {
+  /* 绝对定位，覆盖在卡片顶部，不占用文档流高度 */
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 48px;
+  z-index: 2;
+  pointer-events: none;
 }
 
 /* ==================== 收益预览 ==================== */
