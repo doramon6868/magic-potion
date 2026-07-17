@@ -98,7 +98,24 @@
 
       <!-- 没有宠物时的提示 -->
       <div v-else class="empty-hint">
+        <span class="empty-leaf">🍃</span>
         <span class="hint-text">{{ $t('areas.forest.hint') }}</span>
+        <div class="drop-circle"></div>
+      </div>
+
+      <!-- 宠物落下时的花瓣爆发特效 -->
+      <div class="burst-container">
+        <span
+          v-for="petal in burstPetals"
+          :key="petal.id"
+          class="burst-petal"
+          :class="{ fly: petal.active }"
+          :style="{
+            '--rotation': `${petal.rotation}deg`,
+            '--tx': `${petal.x}px`,
+            '--ty': `${petal.y}px`
+          }"
+        >🌸</span>
       </div>
     </div>
 
@@ -152,6 +169,11 @@ export default {
        * 每个冒泡包含 id、文字、图标和水平偏移
        */
       bubbles: [],
+      /**
+       * burstPetals: 宠物落下时的花瓣爆发特效列表
+       * 每个花瓣包含 id、旋转角度和位移量
+       */
+      burstPetals: [],
       /**
        * bubbleTimer: 冒泡定时器
        * 用于每 6 秒生成一个新的收益冒泡
@@ -301,6 +323,29 @@ export default {
 
       // 同时更新游戏主状态
       this.gameStore.sendPetOutdoor('play')
+
+      // 触发花瓣爆发特效
+      this.triggerBurst()
+    },
+
+    /**
+     * triggerBurst: 触发花瓣爆发特效
+     * 生成 5 片随机方向飞散的花瓣，1 秒后自动清理
+     */
+    triggerBurst() {
+      const petals = Array.from({ length: 5 }, (_, i) => ({
+        id: Date.now() + i,
+        rotation: Math.random() * 360,
+        x: (Math.random() - 0.5) * 60,
+        y: (Math.random() - 0.5) * 40
+      }))
+      this.burstPetals = petals
+      requestAnimationFrame(() => {
+        this.$nextTick(() => {
+          this.burstPetals = this.burstPetals.map(p => ({ ...p, active: true }))
+        })
+      })
+      setTimeout(() => { this.burstPetals = [] }, 1000)
     },
 
     /**
@@ -357,17 +402,27 @@ export default {
 
 /* 拖拽高亮状态 */
 .outdoor-play.drop-target {
-  /* 金色边框 */
   border-color: var(--mp-gold);
-  /* 金色发光阴影 */
   box-shadow: 0 0 30px var(--mp-crystal-gold-glow);
-  /* 脉冲动画 */
-  animation: forest-pulse 1s ease-in-out infinite;
+  animation: forest-glow 1s ease-in-out infinite;
 }
 
-@keyframes forest-pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.03); }
+.outdoor-play.drop-target .firefly {
+  animation-duration: 1.5s; /* speed up gathering */
+}
+
+.outdoor-play.drop-target .ground-strip {
+  animation: grass-sway 0.6s ease-in-out infinite;
+}
+
+@keyframes forest-glow {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.08); }
+}
+
+@keyframes grass-sway {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(2px); }
 }
 
 /* 近景地面 */
@@ -498,17 +553,67 @@ export default {
 
 /* 空状态提示 */
 .empty-hint {
-  /* 使用 flex 垂直排列 */
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* 颜色 */
   color: var(--mp-text-muted);
+}
+
+/* 空状态叶子图标 */
+.empty-leaf {
+  font-size: 28px;
+  margin-bottom: 8px;
+  animation: leaf-sway 3s ease-in-out infinite;
+  opacity: 0.7;
 }
 
 /* 提示文字 */
 .hint-text {
   font-size: 14px;
+}
+
+/* 放置提示圆圈 */
+.drop-circle {
+  width: 56px;
+  height: 56px;
+  margin-top: 8px;
+  border: 2px dashed rgba(97,35,21,0.3);
+  border-radius: 50%;
+  animation: drop-circle-pulse 2s ease-in-out infinite;
+}
+
+@keyframes leaf-sway {
+  0%, 100% { transform: rotate(-8deg); }
+  50% { transform: rotate(8deg); }
+}
+
+@keyframes drop-circle-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.6; }
+  50% { transform: scale(1.05); opacity: 1; }
+}
+
+/* ==================== 落下花瓣爆发特效 ==================== */
+
+.burst-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 5;
+  pointer-events: none;
+}
+
+.burst-petal {
+  position: absolute;
+  font-size: 14px;
+  opacity: 1;
+  transition: transform 1s ease-out, opacity 1s ease-out;
+  transform: translate(0, 0) rotate(var(--rotation, 0deg));
+}
+
+.burst-petal.fly {
+  transform: translate(var(--tx, 0), var(--ty, 0)) rotate(var(--rotation, 0deg));
+  opacity: 0;
 }
 
 /* ==================== 收益冒泡 ==================== */
@@ -717,13 +822,12 @@ export default {
 @media (prefers-reduced-motion: reduce) {
   .outdoor-play,
   .outdoor-play.drop-target,
-  .tree {
+  .tree,
+  .creature,
+  .empty-leaf,
+  .drop-circle {
     animation: none !important;
     transition: none !important;
-  }
-
-  .creature {
-    animation: none !important;
   }
 
   .reward-bubble {
