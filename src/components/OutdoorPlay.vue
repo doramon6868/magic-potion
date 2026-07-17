@@ -68,7 +68,7 @@
     </div>
 
     <!-- ==================== 区域说明 ==================== -->
-    <div class="zone-description">
+    <div v-if="!outdoorStore.playingPet" class="zone-description">
       {{ $t('areas.forest.description') }}
     </div>
 
@@ -87,7 +87,7 @@
             class="reward-bubble"
             :style="{ '--bubble-x': bubble.xOffset + 'px' }"
           >
-            <span class="bubble-icon">{{ bubble.icon }}</span>
+            <span class="bubble-icon">+{{ bubble.icon }}</span>
             <span class="bubble-text">{{ bubble.text }}</span>
           </div>
         </div>
@@ -177,7 +177,12 @@ export default {
        * burstTimer: 花瓣爆发清理定时器
        * 用于组件卸载前清理未完成的爆发动画
        */
-      burstTimer: null
+      burstTimer: null,
+      /**
+       * bubbleRemoveTimers: 单个冒泡移除定时器集合
+       * 用于在组件卸载前清理未触发的移除定时器，避免内存泄漏
+       */
+      bubbleRemoveTimers: []
     }
   },
 
@@ -255,9 +260,11 @@ export default {
       const id = Date.now() + Math.random()
       const xOffset = (Math.random() - 0.5) * 20 // ±10px
       this.bubbles.push({ id, ...reward, xOffset })
-      setTimeout(() => {
+      const timerId = setTimeout(() => {
         this.bubbles = this.bubbles.filter(b => b.id !== id)
+        this.bubbleRemoveTimers = this.bubbleRemoveTimers.filter(t => t !== timerId)
       }, 1500)
+      this.bubbleRemoveTimers.push(timerId)
     },
 
     /**
@@ -318,13 +325,15 @@ export default {
       }
 
       // 调用 store 方法让宠物开始玩耍
-      this.outdoorStore.sendToPlay(data.pet)
+      const success = this.outdoorStore.sendToPlay(data.pet)
 
-      // 同时更新游戏主状态
-      this.gameStore.sendPetOutdoor('play')
+      if (success) {
+        // 同时更新游戏主状态
+        this.gameStore.sendPetOutdoor('play')
 
-      // 触发花瓣爆发特效
-      this.triggerBurst()
+        // 触发花瓣爆发特效
+        this.triggerBurst()
+      }
     },
 
     /**
@@ -369,9 +378,15 @@ export default {
   // 生命周期钩子
   beforeUnmount() {
     /**
-     * 组件卸载前停止冒泡，避免内存泄漏
+     * 组件卸载前停止冒泡并清理所有定时器，避免内存泄漏
      */
     this.stopRewardBubbles()
+    if (this.bubbleTimer) {
+      clearInterval(this.bubbleTimer)
+      this.bubbleTimer = null
+    }
+    this.bubbleRemoveTimers.forEach(timerId => clearTimeout(timerId))
+    this.bubbleRemoveTimers = []
     if (this.burstTimer) {
       clearTimeout(this.burstTimer)
       this.burstTimer = null
@@ -484,7 +499,8 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 8px;
+  /* 留出足够上边距避开 48px 树冠 */
+  margin-top: 42px;
   margin-bottom: 6px;
 }
 
@@ -804,6 +820,10 @@ export default {
   .empty-leaf,
   .drop-circle {
     animation: none !important;
+    transition: none !important;
+  }
+
+  .burst-petal {
     transition: none !important;
   }
 

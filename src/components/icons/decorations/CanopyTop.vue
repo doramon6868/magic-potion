@@ -34,16 +34,13 @@ export default {
   display: block;
   width: 100%;
   height: auto;
-  /* 若全局已定义同名变量，删除这两行即可被全局覆盖 */
-  --mp-ink: #612315;
-  --mp-canopy: #4a8b6a;
 }
 
 /* 树冠主体：85% 不透明，透出背后光晕；2.5px 描边 */
 .canopy-body {
-  fill: var(--mp-canopy);
+  fill: var(--mp-canopy, #4a8b6a);
   fill-opacity: 0.85;
-  stroke: var(--mp-ink);
+  stroke: var(--mp-ink, #612315);
   stroke-width: 2.5;
   stroke-linejoin: round;
 }
@@ -51,7 +48,7 @@ export default {
 /* 叶层弧线：2px 描边、无填充，弱化处理只做暗示 */
 .canopy-leaves {
   fill: none;
-  stroke: var(--mp-ink);
+  stroke: var(--mp-ink, #612315);
   stroke-width: 2;
   stroke-linecap: round;
   stroke-opacity: 0.55;
@@ -60,7 +57,7 @@ export default {
 /* 魔法果实：金色 + 同色系描边 */
 .canopy-fruit {
   fill: #ffd93d;
-  stroke: var(--mp-ink);
+  stroke: var(--mp-ink, #612315);
   stroke-width: 2;
 }
 </style>
