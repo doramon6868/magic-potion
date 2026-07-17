@@ -85,7 +85,7 @@
       "tag_safe": "Safe",
       "description": "Bring your pet here to play and increase mood",
       "hint": "Drag pet here",
-      "reward": "Mood +10",
+      "reward": "+Mood/min",
       "exp_reward": "XP +10",
       "rewards": {
         "mood": "Mood",

@@ -85,7 +85,7 @@
       "tag_safe": "安全",
       "description": "带宠物来这里玩耍，增加心情值",
       "hint": "拖拽宠物到这里",
-      "reward": "心情 +10",
+      "reward": "+心情/分钟",
       "exp_reward": "经验 +10",
       "rewards": {
         "mood": "心情",

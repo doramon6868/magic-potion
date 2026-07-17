@@ -60,6 +60,9 @@
         <!-- 区域名称 -->
         <span class="zone-name">{{ $t('areas.forest.name') }}</span>
       </div>
+      <span v-if="outdoorStore.playingPet" class="reward-badge">
+        {{ $t('areas.forest.reward') }}
+      </span>
       <!-- 安全等级 -->
       <span class="zone-safety safe">{{ $t('areas.forest.tag') }}</span>
     </div>
@@ -119,13 +122,6 @@
       </div>
     </div>
 
-    <!-- ==================== 收益显示 ==================== -->
-    <div v-if="outdoorStore.playingPet" class="reward-preview">
-      <div class="reward-item">
-        <StarDecoration class="reward-icon" />
-        <span class="reward-text">{{ $t('areas.forest.reward') }}</span>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -136,7 +132,6 @@ import { useGameStore } from '../stores/game.js'
 import { useOutdoorStore } from '../stores/outdoor.js'
 import Pet from './Pet.vue'
 import TreeDecoration from './icons/decorations/TreeDecoration.vue'
-import StarDecoration from './icons/decorations/StarDecoration.vue'
 import CanopyTop from './icons/decorations/CanopyTop.vue'
 
 export default {
@@ -147,7 +142,6 @@ export default {
   components: {
     Pet,
     TreeDecoration,
-    StarDecoration,
     CanopyTop
   },
 
@@ -178,7 +172,12 @@ export default {
        * bubbleTimer: 冒泡定时器
        * 用于每 6 秒生成一个新的收益冒泡
        */
-      bubbleTimer: null
+      bubbleTimer: null,
+      /**
+       * burstTimer: 花瓣爆发清理定时器
+       * 用于组件卸载前清理未完成的爆发动画
+       */
+      burstTimer: null
     }
   },
 
@@ -345,7 +344,7 @@ export default {
           this.burstPetals = this.burstPetals.map(p => ({ ...p, active: true }))
         })
       })
-      setTimeout(() => { this.burstPetals = [] }, 1000)
+      this.burstTimer = setTimeout(() => { this.burstPetals = [] }, 1000)
     },
 
     /**
@@ -373,6 +372,10 @@ export default {
      * 组件卸载前停止冒泡，避免内存泄漏
      */
     this.stopRewardBubbles()
+    if (this.burstTimer) {
+      clearTimeout(this.burstTimer)
+      this.burstTimer = null
+    }
   }
 }
 </script>
@@ -522,6 +525,17 @@ export default {
   background: color-mix(in srgb, var(--mp-mint) 50%, transparent);
   color: var(--mp-ink);
   border: 1px solid var(--mp-mint);
+}
+
+/* 收益徽章 */
+.reward-badge {
+  padding: 2px 8px;
+  background: rgba(255,255,255,0.7);
+  border: 1px solid var(--mp-gold);
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: bold;
+  color: var(--mp-ink);
 }
 
 /* ==================== 区域说明 ==================== */
@@ -681,43 +695,6 @@ export default {
   height: 48px;
   z-index: 2;
   pointer-events: none;
-}
-
-/* ==================== 收益预览 ==================== */
-
-.reward-preview {
-  /* 相对定位，确保在装饰层之上 */
-  position: relative;
-  z-index: 1;
-  /* 上边距 */
-  margin-top: 10px;
-  /* 内边距 */
-  padding: 10px;
-  /* 背景 */
-  background: color-mix(in srgb, var(--mp-white) 40%, transparent);
-  /* 圆角 */
-  border-radius: var(--mp-radius-md);
-}
-
-/* 收益项 */
-.reward-item {
-  /* 使用 flex */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* 收益图标 */
-.reward-icon {
-  width: 20px;
-  height: 20px;
-  margin-right: 8px;
-}
-
-/* 收益文字 */
-.reward-text {
-  font-size: 14px;
-  color: var(--mp-ink);
 }
 
 /* ==================== 动态小生物 ==================== */
